@@ -18,6 +18,56 @@
 
             <div class="embed-events-view-content-text" v-html="translateField(event, 'text', locale)"></div>
 
+            <div class="embed-events-view-content-videos" v-if="(translateField(event, 'videos', locale) || []).length">
+
+                <div class="embed-events-view-content-videos-video" v-for="video in (translateField(event, 'videos', locale) || [])">
+                    <iframe :src="parseVideoEmbedUrl(video.value)"></iframe>
+                </div>
+
+            </div>
+
+            <div class="embed-events-view-content-programs" v-for="program in event.programs">
+
+                <div class="embed-events-view-content-programs-program">
+
+                    <div class="embed-events-view-content-programs-program-title"><h3>{{ translateField(program, 'title', locale) }}</h3></div>
+
+                    <div class="embed-events-view-content-programs-program-units" v-if="program.units?.length">
+
+                        <div class="embed-events-view-content-programs-program-units-unit" v-for="unit in program.units">
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <div class="embed-events-view-content-programs-program-units-unit-time">{{ translateField(unit, 'time', locale) }}</div>
+
+                                </div>
+
+                                <div class="col-md-9">
+
+                                    <div class="embed-events-view-content-programs-program-units-unit-descriptions">
+
+                                        <div class="embed-events-view-content-programs-program-units-unit-descriptions-description" v-for="description in unit.descriptions">
+
+                                            <div v-html="translateField(description, 'value', locale)"></div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
             <div class="embed-events-view-content-gallery" v-if="(translateField(event, 'images', locale) || []).length > 1">
 
                 <div class="embed-events-view-content-gallery-image" v-for="image in (translateField(event, 'images', locale) || []).slice(1)">
@@ -234,6 +284,26 @@ export default {
 
             this.lightboxImage = images[index+1] || images[0];
         },
+
+        parseVideoEmbedUrl(url) {
+
+            let matches;
+
+            if(url.indexOf('vimeo') !== -1) {
+                matches = url.match(/^https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)(?:[?]?.*)$/, url);
+                if (matches[3]) {
+                    return 'https://player.vimeo.com/video/' + matches[3];
+                }
+            } else {
+                matches = url.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/, url);
+
+                if (matches && matches[1]) {
+                    return 'https://www.youtube-nocookie.com/embed/' + matches[1];
+                }
+            }
+
+            return url;
+        }
 
     },
 

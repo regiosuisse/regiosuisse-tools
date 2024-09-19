@@ -78,14 +78,10 @@
 
             </div>
 
-            <div class="embed-projects-view-content-videos" v-if="(translateField(project, 'videos', locale) || []).length > 1">
+            <div class="embed-projects-view-content-videos" v-if="(translateField(project, 'videos', locale) || []).length">
 
                 <div class="embed-projects-view-content-videos-video" v-for="video in (translateField(project, 'videos', locale) || [])">
-
-                    <div class="youtube-embed" v-if="parseYoutubeId(video.url)">
-                        <iframe width="560" height="315" :src="'https://www.youtube-nocookie.com/embed/'+parseYoutubeId(video.url)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-
+                    <iframe :src="parseVideoEmbedUrl(video.url)" frameborder="0"></iframe>
                 </div>
 
             </div>
@@ -338,9 +334,24 @@ export default {
             this.lightboxImage = images[index+1] || images[0];
         },
 
-        parseYoutubeId(url) {
-            const result = (url || '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-            return (result[2] !== undefined) ? result[2].split(/[^0-9a-z_\-]/i)[0] : false;
+        parseVideoEmbedUrl(url) {
+
+            let matches;
+
+            if(url.indexOf('vimeo') !== -1) {
+                matches = url.match(/^https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)(?:[?]?.*)$/, url);
+                if (matches[3]) {
+                    return 'https://player.vimeo.com/video/' + matches[3];
+                }
+            } else {
+                matches = url.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/, url);
+
+                if (matches && matches[1]) {
+                    return 'https://www.youtube-nocookie.com/embed/' + matches[1];
+                }
+            }
+
+            return url;
         },
 
     },
