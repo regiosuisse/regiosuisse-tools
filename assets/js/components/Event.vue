@@ -595,7 +595,6 @@
                             time: '',
                             descriptions: [{
                                 value: '',
-                                attachments: [],
                                 translations: {
                                     'fr': {
                                         value: '',
@@ -657,7 +656,6 @@
                     time: '',
                     descriptions: [{
                         value: '',
-                        attachments: [],
                         translations: {
                             'fr': {
                                 value: '',
@@ -740,10 +738,6 @@
                     return context.translations.it[property] || context.translations.fr[property] || context[property];
                 }
                 return context[property];
-            },
-            parseYoutubeId(url) {
-                const result = (url || '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-                return (result[2] !== undefined) ? result[2].split(/[^0-9a-z_\-]/i)[0] : false;
             },
         },
         created () {
