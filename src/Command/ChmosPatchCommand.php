@@ -42,6 +42,7 @@ class ChmosPatchCommand extends Command
             ->setDescription('Patch projects with chmos data.')
             ->addOption('ids', null, InputOption::VALUE_OPTIONAL, 'Ids of projects to patch.')
             ->addOption('properties', null, InputOption::VALUE_REQUIRED, 'Comma separated list of properties to patch.')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Whether properties should be overwritten.')
         ;
     }
 
@@ -82,7 +83,7 @@ class ChmosPatchCommand extends Command
 
         foreach($projects as $project) {
             try {
-                if($this->chmosService->performProjectPatch($project, $properties)) {
+                if($this->chmosService->performProjectPatch($project, $properties, $input->getOption('force'))) {
                     $count++;
                     $io->info(sprintf('Patch of project %s succeeded..', $project->getProjectCode()));
                 }
