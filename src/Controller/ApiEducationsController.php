@@ -91,7 +91,7 @@ class ApiEducationsController extends AbstractController
         $qb = $em->createQueryBuilder();
 
         $qb
-            ->select('e')
+            ->select('DISTINCT e')
             ->from(Education::class, 'e')
         ;
 

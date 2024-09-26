@@ -126,7 +126,7 @@ class ApiContactsController extends AbstractController
         $qb = $em->createQueryBuilder();
 
         $qb
-            ->select('c')
+            ->select('DISTINCT c')
             ->from(Contact::class, 'c')
         ;
 

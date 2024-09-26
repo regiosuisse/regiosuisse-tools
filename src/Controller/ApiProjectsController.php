@@ -172,7 +172,7 @@ class ApiProjectsController extends AbstractController
         $qb = $em->createQueryBuilder();
         
         $qb
-            ->select('p')
+            ->select('DISTINCT p')
             ->from(Project::class, 'p')
         ;
         

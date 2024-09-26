@@ -92,7 +92,7 @@ class ApiJobsController extends AbstractController
         $qb = $em->createQueryBuilder();
 
         $qb
-            ->select('e')
+            ->select('DISTINCT e')
             ->from(Job::class, 'e')
         ;
 
