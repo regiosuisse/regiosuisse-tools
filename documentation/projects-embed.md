@@ -98,6 +98,7 @@ Basic styles can be overwritten using CSS variables:
             }
         ],
         middleware: {
+            modifyQueryParams: params => ({ ...params, randomize: 0 })
             mapTopics: topic => ({ ...topic, name: topic.name === 'Foo' ? 'Bar' : topic.name }),
             filterTopics: topic => topic.id !== 1,
             sortTopics: (a, b) => a.name.localeCompare(b.name),
