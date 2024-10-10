@@ -1030,6 +1030,7 @@ class ChmosService {
                     $tag = new Tag();
 
                     $tag
+                        ->setContext('project')
                         ->setCreatedAt(new \DateTime())
                         ->setIsPublic(true)
                     ;
