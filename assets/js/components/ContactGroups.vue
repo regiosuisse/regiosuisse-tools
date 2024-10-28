@@ -245,7 +245,7 @@
                   v-for="(receiver, index) in emailModalData.receivers"
                   :key="receiver.id"
                 >
-                  <td>{{ getContactById(receiver.id).email }} -</td>
+                  <td>{{ getContactById(receiver.id).email }}</td>
                   <td>
                     {{ getContactById(receiver.id).firstName }}
                     {{ getContactById(receiver.id).lastName }}
@@ -272,7 +272,7 @@
                     </span>
                   </td>
                   <td>
-                    <button @click="removeReceiver(index)">Entfernen</button>
+                    <button class="button error" @click="removeReceiver(index)">Entfernen</button>
                   </td>
                 </tr>
               </table>
@@ -287,10 +287,10 @@
                 Empfänger senden?
               </p>
 
-              <button class="modal-default-button" @click="sendEmails">
+              <button class="button success modal-default-button" @click="sendEmails">
                 E-Mails senden
               </button>
-              <button class="modal-default-button" @click="closeEmailModal">
+              <button class="button error modal-default-button" @click="closeEmailModal">
                 Abbrechen
               </button>
             </div>
@@ -672,6 +672,12 @@ export default {
 
 .modal-footer {
   padding-bottom: 20px;
+}
+
+.modal-footer::after {
+  content: '';
+  clear: both;
+  display: block;
 }
 
 .modal-enter .modal-container,
