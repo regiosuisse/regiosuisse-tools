@@ -217,7 +217,7 @@ class ChmosService {
 
     }
 
-    public function performProjectPatch ($project, $properties = [])
+    public function performProjectPatch ($project, $properties = [], $force = false)
     {
         if(!$project->getProjectCode()) {
             return false;
@@ -240,10 +240,53 @@ class ChmosService {
 
         $normalizedProject = $this->normalizeProject($chmosProject);
 
+        foreach(['topic', 'state', 'program', 'instrument'] as $attribute) {
+
+            if(!in_array($attribute.'s', $properties)) {
+                continue;
+            }
+
+            $matches = [];
+
+            foreach($normalizedProject[$attribute.'s'] as $normalizedAttribute) {
+
+                if(!$normalizedAttribute['id']) {
+                    continue;
+                }
+
+                $entityName = 'App\\Entity\\'.ucfirst($attribute);
+                $entity = $this->em->getRepository($entityName)->find($normalizedAttribute['id']);
+
+                if(!$entity) {
+                    continue;
+                }
+
+                $matches[] = $entity;
+
+            }
+
+            if(!count($matches)) {
+                continue;
+            }
+
+            $project->setUpdatedAt(new \DateTime());
+
+            if($force) {
+                $project->{'set'.ucfirst($attribute.'s')}(new ArrayCollection());
+            }
+
+            foreach($matches as $match) {
+                $project->{'add'.ucfirst($attribute)}($match);
+            }
+
+        }
+
         if(in_array('tags', $properties)) {
             $normalizedProject = $this->applyTags($normalizedProject);
 
-            $project->setTags(new ArrayCollection());
+            if($force) {
+                $project->setTags(new ArrayCollection());
+            }
 
             foreach($normalizedProject['tags'] as $tag) {
 
@@ -261,7 +304,7 @@ class ChmosService {
 
             if(count($normalizedProject['links'])) {
 
-                if(!count($project->getLinks())) {
+                if(!count($project->getLinks()) || $force) {
                     $project->setUpdatedAt(new \DateTime());
                     $project->setLinks($normalizedProject['links']);
                 }
@@ -987,6 +1030,7 @@ class ChmosService {
                     $tag = new Tag();
 
                     $tag
+                        ->setContext('project')
                         ->setCreatedAt(new \DateTime())
                         ->setIsPublic(true)
                     ;

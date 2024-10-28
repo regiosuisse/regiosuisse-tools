@@ -92,15 +92,21 @@
         methods: {
             clickSvg (event) {
 
-                if(!event.target.matches(this.selector)) {
+                let target = event.target;
+
+                if(!target.matches(this.selector) && !target.matches(this.selector+' *')) {
                     return;
                 }
 
-                this.clickSvgElement(event.target);
+                if(!target.matches(this.selector)) {
+                    target = event.target.closest(this.selector);
+                }
+
+                this.clickSvgElement(target);
 
             },
             clickSvgElement (target) {
-                this.$refs.svg.querySelectorAll('svg '+this.selector).forEach((e) => {
+                this.$refs.svg.querySelectorAll('svg '+this.selector+', svg '+this.selector+' *').forEach((e) => {
                     e.classList.remove('active');
                 });
 
@@ -131,6 +137,11 @@
                         'cursor: pointer;' +
                         'pointer-events: auto;' +
                         'transition: all .25s;' +
+                    '}';
+
+                style += '.interactive-graphic-editor-component svg ' + this.selector + ' * ' +
+                    '{' +
+                        'pointer-events: auto;' +
                     '}';
 
                 style += '.interactive-graphic-editor-component svg ' + this.selector + ':hover ' +

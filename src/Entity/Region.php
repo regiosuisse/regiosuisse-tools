@@ -94,10 +94,21 @@ class Region
     #[Groups(['region'])]
     private $contacts;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    #[ORM\ManyToMany(targetEntity: 'Tag')]
+    #[ORM\JoinTable(name: 'pv_region_tag')]
+    #[ORM\JoinColumn(name: 'region_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'tag_id', referencedColumnName: 'id')]
+    #[Groups(['region'])]
+    private $tags;
+
     public function __construct()
     {
         $this->cities = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -482,6 +493,49 @@ class Region
      */
     public function removeContact($contacts) {
         $this->contacts->removeElement($contacts);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags() {
+        return $this->tags;
+    }
+
+    /**
+     * Set tags
+     *
+     * @return self
+     */
+    public function setTags($tags) {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Add to tags
+     *
+     * @param $tag
+     * @return self
+     */
+    public function addTag($tag) {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param $tags
+     */
+    public function removeTag($tags) {
+        $this->tags->removeElement($tags);
     }
 }
 

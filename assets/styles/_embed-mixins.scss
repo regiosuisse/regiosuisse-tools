@@ -594,7 +594,7 @@
             height: auto;
         }
 
-        &-text, &-downloads, &-contacts, &-gallery {
+        &-text, &-downloads, &-contacts, &-gallery, &-videos, &-programs {
             margin-bottom: 2em;
         }
 
@@ -623,27 +623,81 @@
             row-gap: 1em;
 
             &-video {
+                position: relative;
 
-                .youtube-embed {
-                    position: relative;
-                    width: 83.33%;
-                    background: $grey-light;
-
-                    &::before {
-                        content: "";
-                        display: block;
-                        padding-bottom: 66.666%;
-                    }
-
-                    iframe {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        border: 0;
-                    }
+                &:before {
+                    content: "";
+                    padding-bottom: 56.25%;
+                    display: block;
                 }
+
+                & + & {
+                    margin-top: 2em;
+                }
+
+                iframe {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 0;
+                    padding: 0;
+                }
+            }
+        }
+
+        &-programs {
+
+            &-program {
+                margin: 2em 0;
+                padding: 1em;
+                background: $grey-ultralight;
+                border-radius: .25em;
+
+                &-title h3 {
+                    margin: 0;
+                }
+
+                &-units {
+
+                    &-unit {
+                        margin: 1em 0;
+
+                        &-time {
+                            font-weight: bold;
+                        }
+
+                        &-descriptions {
+                            border-left: 1px solid $grey-light;
+                            padding-left: 2em;
+                            position: relative;
+
+                            &:before, &:after {
+                                content: '';
+                                display: block;
+                                width: .6em;
+                                height: .6em;
+                                border-radius: .3em;
+                                background: $grey-ultralight;
+                                position: absolute;
+                                top: 0;
+                                left: -.3em;
+                                border: 1px solid $grey-light;
+                                box-sizing: border-box;
+                            }
+
+                            &:after {
+                                top: auto;
+                                bottom: 0;
+                                left: -.3em;
+                            }
+                        }
+
+                    }
+
+                }
+
             }
         }
     }

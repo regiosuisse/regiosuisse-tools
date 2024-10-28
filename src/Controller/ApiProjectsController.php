@@ -172,7 +172,7 @@ class ApiProjectsController extends AbstractController
         $qb = $em->createQueryBuilder();
         
         $qb
-            ->select('p')
+            ->select('DISTINCT p')
             ->from(Project::class, 'p')
         ;
         
@@ -393,7 +393,7 @@ class ApiProjectsController extends AbstractController
 
             foreach($request->get('orderBy') as $key => $orderBy) {
 
-                if(!in_array($orderBy, ['id', 'createdAt', 'updatedAt'])) {
+                if(!in_array($orderBy, ['id', 'createdAt', 'updatedAt', 'startDate', 'endDate'])) {
                     continue;
                 }
 

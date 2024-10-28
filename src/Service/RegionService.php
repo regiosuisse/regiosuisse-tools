@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\City;
 use App\Entity\Contact;
 use App\Entity\Region;
+use App\Entity\Tag;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -43,6 +44,7 @@ class RegionService {
             'description',
             'cities',
             'contacts',
+            'tags',
             'translations',
         ])) !== true) {
             return $errors;
@@ -96,6 +98,7 @@ class RegionService {
             ->setDescription($payload['description'])
             ->setCities(new ArrayCollection())
             ->setContacts(new ArrayCollection())
+            ->setTags(new ArrayCollection())
             ->setTranslations($payload['translations'] ?: [])
         ;
 
@@ -118,12 +121,22 @@ class RegionService {
             if(array_key_exists('id', $item) && $item['id']) {
                 $entity = $this->em->getRepository(Contact::class)->find($item['id']);
             }
-            /*if(!$entity && array_key_exists('name', $item)) {
-                $entity = $this->em->getRepository(Contact::class)
-                    ->findOneBy(['name' => $item['name']]);
-            }*/
             if($entity) {
                 $region->addContact($entity);
+            }
+        }
+
+        foreach($payload['tags'] as $item) {
+            $entity = null;
+            if(array_key_exists('id', $item) && $item['id']) {
+                $entity = $this->em->getRepository(Tag::class)->find($item['id']);
+            }
+            if(!$entity && array_key_exists('name', $item)) {
+                $entity = $this->em->getRepository(Tag::class)
+                    ->findOneBy(['name' => $item['name']]);
+            }
+            if($entity) {
+                $region->addTag($entity);
             }
         }
 

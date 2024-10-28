@@ -167,6 +167,10 @@ export const filterEvents = (events, filters, term) => {
 
 export const translateField = (object, field, locale) => {
 
+    if(!object || Array.isArray(object)) {
+        return null;
+    }
+
     let result = object[field];
 
     if(!locale) {

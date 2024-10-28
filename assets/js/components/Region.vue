@@ -95,6 +95,14 @@
                         </div>
                     </div>
 
+                    <div class="row" v-if="region.type === 'energy'">
+                        <div class="col-md-8">
+                            <label for="cities">Tags</label>
+                            <tag-selector id="cities" :model="region.tags"
+                                          :options="tags.filter(tag => !tag.context || tag.context === 'region')" :searchType="'select'"></tag-selector>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -138,6 +146,7 @@ export default {
                 description: null,
                 cities: [],
                 contacts: [],
+                tags: [],
                 translations: {
                     fr: {},
                     it: {},
@@ -194,6 +203,7 @@ export default {
             selectedRegion: state => state.regions.region,
             cities: state => state.cities.all,
             contacts: state => state.contacts.all,
+            tags: state => state.tags.all,
         }),
     },
     methods: {

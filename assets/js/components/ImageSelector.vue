@@ -96,6 +96,10 @@
                             return alert('Die ausgewählte Datei "'+file.name+'" überschreitet das Uploadlimit von 20 MB.');
                         }
 
+                        if(!['image/jpeg', 'image/gif'].includes(file.type)) {
+                            return alert('Der Dateityp "'+file.type+'" von "'+file.name+'" ist nicht erlaubt.');
+                        }
+
                         let item = {
                             name: file.name,
                             description: '',

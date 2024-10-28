@@ -503,6 +503,10 @@ export default {
             params.offset = this.offset;
             params.randomize = 1;
 
+            if(this.$clientOptions?.middleware?.modifyQueryParams) {
+                params = this.$clientOptions.middleware.modifyQueryParams(params);
+            }
+
             return params;
 
         },

@@ -77,7 +77,7 @@ class ApiPostsController extends AbstractController
         $qb = $em->createQueryBuilder();
 
         $qb
-            ->select('e')
+            ->select('DISTINCT e')
             ->from(Post::class, 'e')
         ;
 
