@@ -130,7 +130,7 @@
 
                     <div class="embed-events-list-item-content">
 
-                        <h3 class="embed-events-list-item-content-title">
+                        <h3 class="embed-events-list-item-content-title" :style="event.type !== 'external' && event.color ? 'color:'+event.color : null">
                             {{ translateField(event, 'title', locale) }}
                         </h3>
 
