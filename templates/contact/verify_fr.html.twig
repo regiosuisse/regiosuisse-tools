@@ -178,28 +178,27 @@
 		</footer>
 	</div>
 
-	<script>
-		// Same JavaScript function as in verify_de.html.twig to handle locale switching
-function changeLocale(locale, field, event) {
-if (event) {
-event.preventDefault();
-}
-document.getElementById(field + '-de').style.display = 'none';
-document.getElementById(field + '-fr').style.display = 'none';
-document.getElementById(field + '-it').style.display = 'none';
+<script>
+    function changeLocale(locale, field, event) {
+        if (event) {
+            event.preventDefault();
+        }
+        document.getElementById(field + '-de').style.display = 'none';
+        document.getElementById(field + '-fr').style.display = 'none';
+        document.getElementById(field + '-it').style.display = 'none';
 
-document.getElementById(field + '-label-de').style.display = 'none';
-document.getElementById(field + '-label-fr').style.display = 'none';
-document.getElementById(field + '-label-it').style.display = 'none';
+        document.getElementById(field + '-label-de').style.display = 'none';
+        document.getElementById(field + '-label-fr').style.display = 'none';
+        document.getElementById(field + '-label-it').style.display = 'none';
 
-document.getElementById(field + '-' + locale).style.display = 'block';
-document.getElementById(field + '-label-' + locale).style.display = 'block';
-}
+        document.getElementById(field + '-' + locale).style.display = 'block';
+        document.getElementById(field + '-label-' + locale).style.display = 'block';
+        }
 
-document.addEventListener("DOMContentLoaded", function () {
-changeLocale('fr', 'website');
-changeLocale('fr', 'city');
-changeLocale('fr', 'description');
-});
-	</script>
+        document.addEventListener("DOMContentLoaded", function () {
+        changeLocale('fr', 'website');
+        changeLocale('fr', 'city');
+        changeLocale('fr', 'description');
+    });
+</script>
 {% endblock %}

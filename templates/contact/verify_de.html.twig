@@ -15,7 +15,7 @@
 			<div class="container">
 				<p style="color: black">Bitte überprüfen Sie Ihre Kontaktinformationen und aktualisieren Sie diese bei Bedarf. Wenn sie aus unserer Datenbank gelöscht werden wollen, aktivieren Sie die  Checkbox unten und speichern sie Ihre Informationen.</p>
 			</div>
-            <div class="container verification-header-seperator"></div>
+			<div class="container verification-header-seperator"></div>
 		</header>
 
 		<!-- Form Section -->
@@ -138,11 +138,10 @@
 							</div>
 						{% endfor %}
 					</div>
-					<div class="verification-form-group">
-					</div>
+					<div class="verification-form-group"></div>
 				</div>
 
-                <div class="verification-form-row">
+				<div class="verification-form-row">
 					<div class="verification-form-group">
 						<div>
 							<h2>Abmelden</h2>
@@ -152,15 +151,12 @@
 							</div>
 						</div>
 					</div>
-                    <div class="verification-form-group">
-					</div>
-
+					<div class="verification-form-group"></div>
 				</div>
 
-
-					<div class="form-actions">
-						<button class="btn btn-primary">Speichern</button>
-					</div>
+				<div class="form-actions">
+					<button class="btn btn-primary">Speichern</button>
+				</div>
 				{{ form_end(form) }}
 			</div>
 
@@ -177,31 +173,29 @@
 			</footer>
 		</div>
 
-		<!-- JavaScript to handle switching between language inputs -->
-		<script>
-			function changeLocale(locale, field, event) {
-if (event) {
-event.preventDefault();
-}
-// Hide all input fields for the current field (website, city, description)
-document.getElementById(field + '-de').style.display = 'none';
-document.getElementById(field + '-fr').style.display = 'none';
-document.getElementById(field + '-it').style.display = 'none';
+<script>
+	function changeLocale(locale, field, event) {
+		if (event) {
+			event.preventDefault();
+		}
+		// Hide all input fields for the current field (website, city, description)
+		document.getElementById(field + '-de').style.display = 'none';
+		document.getElementById(field + '-fr').style.display = 'none';
+		document.getElementById(field + '-it').style.display = 'none';
 
-document.getElementById(field + '-label-de').style.display = 'none';
-document.getElementById(field + '-label-fr').style.display = 'none';
-document.getElementById(field + '-label-it').style.display = 'none';
+		document.getElementById(field + '-label-de').style.display = 'none';
+		document.getElementById(field + '-label-fr').style.display = 'none';
+		document.getElementById(field + '-label-it').style.display = 'none';
 
-// Show the selected language input field
-document.getElementById(field + '-' + locale).style.display = 'block';
-document.getElementById(field + '-label-' + locale).style.display = 'block';
-}
+		// Show the selected language input field
+		document.getElementById(field + '-' + locale).style.display = 'block';
+		document.getElementById(field + '-label-' + locale).style.display = 'block';
+		}
 
-// Initialize all DE fields as visible by default on page load
-document.addEventListener("DOMContentLoaded", function () {
-changeLocale('de', 'website');
-changeLocale('de', 'city');
-changeLocale('de', 'description');
-});
-		</script>
-	{% endblock %}
+		document.addEventListener("DOMContentLoaded", function () {
+		changeLocale('de', 'website');
+		changeLocale('de', 'city');
+		changeLocale('de', 'description');
+	});
+</script>
+{% endblock %}

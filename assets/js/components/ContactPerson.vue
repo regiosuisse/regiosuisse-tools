@@ -31,7 +31,12 @@
           <a class="button error" @click="clickDelete()" v-if="contact.id">Löschen</a>
           <a class="button warning" @click="clickCancel()">Abbrechen</a>
           <a class="button primary" @click="clickSave()">Speichern</a>
-          <a class="button primary" @click="mergeAll(locale)">Alle Daten übernehmen</a>
+          <a
+            v-if="!$route.fullPath.includes('/edit')"
+            class="button primary"
+            @click="mergeAll(locale)"
+            >Alle Daten übernehmen</a
+          >
         </div>
       </div>
 
