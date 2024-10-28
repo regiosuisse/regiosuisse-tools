@@ -1550,4 +1550,170 @@ th, td {
 
 }
 
+/* Variables (adjust these to match your project's variables) */
+$white: #ffffff;
+$black: #000000;
+
+/* General Styles */
+.verification-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: white;
+}
+
+/* Header Styles */
+.verification-header {
+  // background-color: $theme-color-1;
+  color: $theme-color-1;
+  padding: 1em 0;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .logo {
+      height: 50px;
+      margin-right: 1em;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+  }
+}
+
+.verification-header-seperator {
+  border-bottom: solid 1px $theme-color-1;
+}
+
+/* Form Styles */
+.verification-form {
+  flex: 1;
+  padding: 2em 0;
+
+  .verification-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2em;
+  }
+
+  .verification-form-group {
+    flex: 1 1 48%;
+    padding: 0 1%;
+    box-sizing: border-box;
+
+    .employment-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    .locale-btn {
+      margin-left: 0.5em;
+      padding: 0.3em 0.6em;
+      background-color: $white;
+      color: $color-regiosuisse;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $color-regiosuisse;
+        color: $white;
+      }
+    }
+
+
+    .form-control {
+      width: 100%;
+      margin-bottom: 1em;
+    }
+  }
+
+  .form-actions {
+    text-align: center;
+
+    .btn {
+      padding: 0.7em 1.5em;
+      background-color: $theme-color-1;
+      color: $white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $color-blw;
+      }
+    }
+  }
+}
+
+/* Footer Styles */
+.verification-footer {
+  background-color: $theme-color-1;
+  color: $white;
+  padding: 1em 0;
+  text-align: center;
+
+  a {
+    color: $white;
+    text-decoration: underline;
+
+    &:hover {
+      color: lighten($white, 20%);
+    }
+  }
+}
+
+/* Container Class */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1em;
+  box-sizing: border-box;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .verification-form-group {
+    flex: 1 1 100%;
+    padding: 0;
+  }
+
+  .verification-header .container {
+    flex-direction: column;
+    align-items: center;
+
+    .logo {
+      margin-bottom: 0.5em;
+    }
+  }
+}
+.field-changed {
+  border-color: red;
+}
+
+// .contact-component-form-section {
+//   .contact-component-form-section {
+//     padding: 0;
+//   }
+// }
+
 @import '../custom/styles/custom';
