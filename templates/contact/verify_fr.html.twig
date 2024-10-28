@@ -8,7 +8,7 @@
 
 		<header class="verification-header">
 			<div class="container">
-				<img src="https://regiosuisse.ch/themes/contrib/regiosuisse_theme/logo.svg" alt="Logo" class="logo">
+				<img src="{{ app.request.schemeAndHttpHost }}{{ asset('build/images/regiosuisse-logo.svg') }}" alt="Logo" class="logo">
 			</div>
 			<div class="container">
 				<h1>Vérifier les informations de contact</h1>
@@ -170,7 +170,7 @@
 			<div class="container">
 				<p>©
 					{{ "now"|date("Y") }}
-					regiosuisse - Votre adresse de contact pour le développement régional</p>
+					regiosuisse - La plate-forme du développement régional en Suisse</p>
 				<p>
 					<a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
 				</p>

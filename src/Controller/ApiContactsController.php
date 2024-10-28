@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -871,7 +872,9 @@ class ApiContactsController extends AbstractController
 
                 $entityManager->persist($contact);
 
-                $verificationLink = 'http://localhost/api/v1/contacts/verify/' . $oneTimeCode;
+                $verificationLink = $this->generateUrl('api_contacts_contact_verify', [
+                    'code' => $oneTimeCode,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
                 $language = $contact->getLanguage() ? $contact->getLanguage()->getContext() : 'de';
                 $template = match ($language) {
                     'fr' => 'emails/verify_contact_fr.html.twig',
@@ -888,7 +891,7 @@ class ApiContactsController extends AbstractController
                         $this->renderView(
                             $template,
                             [
-                                'name' => $contact->getFirstName(),
+                                'name' => $contact->getName(),
                                 'verificationLink' => $verificationLink,
                             ]
                         )
