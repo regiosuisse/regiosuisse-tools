@@ -1063,6 +1063,7 @@ class ApiContactsController extends AbstractController
                     $diffData[$field] = $newData[$field];
                 }
             }
+            
             if($newData['language']) {
                 if($originalData['language']->getId() != $newData['language']) {
                     $diffData['language'] = $newData['language'];
@@ -1073,10 +1074,6 @@ class ApiContactsController extends AbstractController
                 if($originalData['country']->getId() != $newData['country']) {
                     $diffData['country'] = $newData['country'];
                 }
-            }
-
-            if($newData['country']) {
-                $diffData['country'] = $newData['country'];
             }
 
             foreach (['de', 'fr', 'it'] as $locale) {
@@ -1099,11 +1096,13 @@ class ApiContactsController extends AbstractController
             $inbox->setData([
                 'changes' => $diffData,
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
+                'delete' => $request->request->all('delete') ?? false,
             ]);
 
             $inbox->setNormalizedData([
                 'changes' => $diffData,
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
+                'delete' => $request->request->all('delete') ?? false,
             ]);
             $inbox->setCreatedAt(new \DateTime());
 

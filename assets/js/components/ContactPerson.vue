@@ -575,7 +575,7 @@
                   id="descriptionDiff"
                   :editor="editor"
                   :config="editorConfig"
-                  :value="getDiffValue('description', locale)"
+                  v-model="diff.translations[locale].description"
                   readonly
                 ></ckeditor>
               </div>
@@ -786,7 +786,6 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedContact: (state) => state.contacts.contact,
       contacts: (state) => state.contacts.filtered,
       contactGroups: (state) => state.contactGroups.all,
       countries: (state) => state.countries.all,
@@ -995,12 +994,13 @@ export default {
     },
     getDiffValue(field, locale = null) {
       if (!this.diff) return "";
-      if (locale) {
+      if (locale && this.diff.translations && this.diff.translations[locale]) {
         return this.diff.translations[locale][field] || "";
       } else {
         return this.diff[field] || "";
       }
     },
+
     isFieldChanged(field, locale = null) {
       if (!this.diff) return false;
 
@@ -1015,7 +1015,9 @@ export default {
       }
     },
     mergeField(field, locale = null) {
-      if (locale && (field !== "country" || field !== "language")) {
+      const multilingualFields = ["website", "description", "city"];
+
+      if (locale && multilingualFields.includes(field)) {
         if (!this.contact.translations[locale]) {
           this.contact.translations[locale] = {};
         }
@@ -1024,62 +1026,49 @@ export default {
             field
           ];
         }
-      } else if (field !== "country" || field !== "language") {
+        if (locale === "de") {
+          this.contact[field] = this.diff.translations[locale][field];
+        }
+      } else if (multilingualFields.includes(field)) {
+        this.contact[field] = this.diff[field];
+      } else {
         this.contact[field] = this.diff[field];
       }
 
       if (field === "language") {
-        this.contact[field] = this.getLanguageById(this.diff[field]) || null;
-      }
-
-      if (field === "country") {
-        this.contact[field] = this.getCountryById(this.diff[field]) || null;
+        this.contact.language = this.getLanguageById(this.diff.language) || null;
+      } else if (field === "country") {
+        this.contact.country = this.getCountryById(this.diff.country) || null;
       }
     },
 
-    mergeAll(locale = null) {
-      if (this.isFieldChanged("academicTitle")) {
-        this.mergeField("academicTitle");
-      }
-      if (this.isFieldChanged("city")) {
-        this.mergeField("city");
-      }
-      if (this.isFieldChanged("country")) {
-        this.mergeField("country");
-      }
-      if (this.isFieldChanged("state")) {
-        this.mergeField("state");
-      }
-      if (this.isFieldChanged("language")) {
-        this.mergeField("language");
-      }
-      if (this.isFieldChanged("website")) {
-        this.mergeField("website");
-      }
-      if (this.isFieldChanged("description")) {
-        this.mergeField("description");
-      }
-      if (this.isFieldChanged("gender")) {
-        this.mergeField("gender");
-      }
-      if (this.isFieldChanged("firstName")) {
-        this.mergeField("firstName");
-      }
-      if (this.isFieldChanged("lastName")) {
-        this.mergeField("lastName");
-      }
-      if (this.isFieldChanged("street")) {
-        this.mergeField("street");
-      }
-      if (this.isFieldChanged("zipCode")) {
-        this.mergeField("zipCode");
-      }
-      if (this.isFieldChanged("phone")) {
-        this.mergeField("phone");
-      }
-      if (this.isFieldChanged("email")) {
-        this.mergeField("email");
-      }
+    mergeAll() {
+      const fields = [
+        "academicTitle",
+        "city",
+        "country",
+        "state",
+        "language",
+        "website",
+        "description",
+        "gender",
+        "firstName",
+        "lastName",
+        "street",
+        "zipCode",
+        "phone",
+        "email",
+      ];
+
+      const locales = ["de", "fr", "it"];
+
+      fields.forEach((field) => {
+        locales.forEach((locale) => {
+          if (this.isFieldChanged(field, locale === "de" ? null : locale)) {
+            this.mergeField(field, locale === "de" ? null : locale);
+          }
+        });
+      });
     },
   },
   created() {
