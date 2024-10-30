@@ -234,9 +234,9 @@
                 </p>
                 <p>[Verifizierungslink]</p>
                 <p>Mit freundlichen Grüßen,</p>
-                <p>Ihr Unternehmen</p>
+                <p>Ihr regiosuisse Team</p>
               </div>
-              <table>
+              <table id="send-email-table">
                 <th>Empfänger</th>
                 <th>Name</th>
                 <th>Zuletzt gesendet</th>
@@ -281,15 +281,10 @@
             </div>
 
             <div class="modal-footer">
-              <p>
-                Möchten Sie diese E-Mail wirklich and
-                <span style="font-weight: 700">{{
-                  emailModalData.receivers.length
-                }}</span>
-                Empfänger senden?
-              </p>
-
-              <button class="button success modal-default-button" @click="sendEmails">
+              <button
+                class="button success modal-default-button"
+                @click="openConfirmationModal"
+              >
                 E-Mails senden
               </button>
               <button class="button error modal-default-button" @click="closeEmailModal">
@@ -301,6 +296,41 @@
       </div>
     </transition>
     <!-- End of Email Modal -->
+
+    <!-- Confirmation Modal -->
+    <transition name="modal">
+      <div class="modal-mask" v-if="isConfirmationModalOpen">
+        <div class="modal-wrapper">
+          <div class="modal-container">
+            <div class="modal-header">
+              <h3>Bestätigung der E-Mail-Sendung</h3>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                Möchten Sie diese E-Mail wirklich an
+                <span style="font-weight: 700">{{
+                  emailModalData.receivers.length
+                }}</span>
+                Empfänger senden?
+              </p>
+            </div>
+
+            <div class="modal-footer">
+              <button class="button success modal-default-button" @click="sendEmails">
+                Bestätigen
+              </button>
+              <button
+                class="button error modal-default-button"
+                @click="closeConfirmationModal"
+              >
+                Abbrechen
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -321,6 +351,7 @@ export default {
       sortChangeProgress: 0,
       contactGroupsElements: [],
       isEmailModalOpen: false,
+      isConfirmationModalOpen: false,
       emailModalData: {
         groupId: null,
         receivers: [],
@@ -555,6 +586,16 @@ export default {
       this.emailModalData.receivers = this.getSelectedReceivers(groupId);
       this.isEmailModalOpen = true;
     },
+    // Open the confirmation modal when the "E-Mails senden" button is clicked
+    openConfirmationModal() {
+      this.isConfirmationModalOpen = true;
+    },
+
+    // Close the confirmation modal
+    closeConfirmationModal() {
+      this.isConfirmationModalOpen = false;
+    },
+
     getSelectedReceivers(groupId) {
       let receivers = [];
       for (let element of this.selectedElements[groupId]) {
@@ -592,6 +633,7 @@ export default {
         .then((response) => {
           alert("E-Mails wurden erfolgreich gesendet.");
           this.closeEmailModal();
+          this.closeConfirmationModal();
         })
         .catch((error) => {
           alert("Beim Senden der E-Mails ist ein Fehler aufgetreten.");

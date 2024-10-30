@@ -1739,4 +1739,14 @@ $black: #000000;
   pointer-events: none;
 }
 
+#send-email-table {
+  th {
+    padding: 0.5em;
+  }
+  td {
+    padding: 0.2em;
+    margin-left: 0.1em;
+  }
+}
+
 @import '../custom/styles/custom';

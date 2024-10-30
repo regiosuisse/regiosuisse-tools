@@ -110,13 +110,13 @@
                             </span>
                         </div>
                         <div id="description-de" class="locale-input" style="display:none;">
-                            {{ form_row(form.description, { label: false, attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.description, { label: false, attr: { class: 'form-control' }, value: form.description.vars.value|striptags }) }}
                         </div>
                         <div id="description-fr" class="locale-input" style="display:none;">
-                            {{ form_row(form.translations_fr_description, { label: false, attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.translations_fr_description, { label: false, attr: { class: 'form-control' },  value: form.translations_fr_description.vars.value|striptags }) }}
                         </div>
                         <div id="description-it" class="locale-input">
-                            {{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' },  value: form.translations_it_description.vars.value|striptags }) }}
                         </div>
                     </div>
                 </div>

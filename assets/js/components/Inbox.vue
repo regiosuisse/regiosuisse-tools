@@ -10,12 +10,8 @@
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'project')"
-          :item="item"
-          @click="clickProject(item.id)"
-          @onDismiss="clickDismiss(item)"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'project')" :item="item" @click="clickProject(item.id)"
+          @onDismiss="clickDismiss(item)"></inbox-card>
       </div>
     </div>
 
@@ -25,10 +21,7 @@
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'topic')"
-          :item="item"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'topic')" :item="item"></inbox-card>
       </div>
     </div>
 
@@ -38,10 +31,7 @@
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'state')"
-          :item="item"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'state')" :item="item"></inbox-card>
       </div>
     </div>
 
@@ -51,10 +41,7 @@
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'program')"
-          :item="item"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'program')" :item="item"></inbox-card>
       </div>
     </div>
 
@@ -62,17 +49,12 @@
     <!-- New Contact Update Item here -->
     <div class="inbox-component-section">
       <div class="inbox-component-section-title">
-        <h2>Kontakt-Updates</h2>
+        <h2>Kontakte</h2>
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'contact_update')"
-          :key="item.id"
-          :item="item"
-          @click="clickContactUpdate(item.internalId, item.id)"
-          @onDismiss="clickDismiss(item)"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'contact_update')" :key="item.id" :item="item"
+          @click="clickContactUpdate(item.internalId, item.id)" @onDismiss="clickDismiss(item)"></inbox-card>
       </div>
     </div>
 
@@ -96,10 +78,7 @@
       </div>
 
       <div class="inbox-component-section-content">
-        <inbox-card
-          v-for="item in filterInboxItemsByType(inbox, 'businessSector')"
-          :item="item"
-        ></inbox-card>
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'businessSector')" :item="item"></inbox-card>
       </div>
     </div>
   </div>
@@ -129,13 +108,24 @@ export default {
   },
   methods: {
     filterInboxItemsByType(items, type) {
-      let result = [];
+      let result = items.filter(item => item.type === type);
 
-      items.forEach((item) => {
-        if (item.type === type) {
-          result.push(item);
-        }
-      });
+      // Sort contact_update items by error-tag (delete) first, then update-tag (changes)
+      if (type === 'contact_update') {
+        result.sort((a, b) => {
+          // Error-tag items (delete) come first
+          const aIsError = a.data?.delete ? 1 : 0;
+          const bIsError = b.data?.delete ? 1 : 0;
+
+          if (aIsError !== bIsError) return bIsError - aIsError;
+
+          // Update-tag items (changes) come next if delete is not present
+          const aIsUpdate = a.data?.changes ? 1 : 0;
+          const bIsUpdate = b.data?.changes ? 1 : 0;
+
+          return bIsUpdate - aIsUpdate;
+        });
+      }
 
       return result;
     },

@@ -935,7 +935,7 @@ class ApiContactsController extends AbstractController
         if (!$contact) {
             $this->addFlash(
                 'message',
-                'Ihre Anfrage wurde bereits verarbeitet. Sollten Sie weitere Änderungen vornehmen wollen, kontaktieren Sie uns bitte unter <a href="mailto:web@regiosuisse.ch">web@regiosuiesse.ch</a>.'
+                'Ihre Anfrage wurde bereits verarbeitet. Sollten Sie weitere Änderungen vornehmen wollen, kontaktieren Sie uns bitte unter web@regiosuiesse.ch.'
             );
 
             return $this->render('contact/update_success.html.twig');
