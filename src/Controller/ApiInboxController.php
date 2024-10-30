@@ -117,11 +117,14 @@ class ApiInboxController extends AbstractController
     public function delete(Request $request, EntityManagerInterface $em,
                            NormalizerInterface $normalizer): JsonResponse
     {
-        $inboxItem = $em->getRepository(Inbox::class)
+        if($request->get('id')) {
+            $inboxItem = $em->getRepository(Inbox::class)
             ->find($request->get('id'));
         
         $em->remove($inboxItem);
-        $em->flush();
+        $em->flush(); $this->json([]);
+        }
+
 
         return $this->json([]);
     }

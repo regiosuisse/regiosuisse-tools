@@ -120,82 +120,158 @@
 							{{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' } }) }}
 						</div>
 					</div>
-
 				</div>
-				<!-- Employment Details -->
-				<div class="verification-form-row">
-					<div class="verification-form-group">
-						<h2>Aktuelle Anstellungen</h2>
-						{% for employment in employments %}
-							<div class="employment-item">
-								<label>{{ employment.companyName }}</label>
-								<p>Funktion:
-									{{ employment.role }}</p>
-								<div>
-									<input type="checkbox" name="removeEmploymentIds[]" value="{{ employment.id }}">
-									<span>Ich arbeite nicht mehr hier.</span>
+				<div class="verification-form-row verification-form-group">
+					<h2 style="margin-bottom: 0">Verknüpfte Unternehmen</h2>
+				</div>
+				<div class="verification-form-row ">
+					{% for employment in employments %}
+						<div class="verification-form-group col-md-6" id="employment-group-{{ employment.id }}">
+							<div style="display: flex; flex-direction: row; justify-content: space-between;">
+								<label style="text-decoration: underline;">{{ employment.companyName }}
+								</label>
+								<div class="idontworkhere-checkbox-container">
+								<input 
+								type="checkbox" 
+								name="removeEmploymentIds[]" 
+								value="{{ employment.id }}" 
+								id="employment-checkbox-{{ employment.id }}"
+								onchange="toggleDisabledState({{ employment.id }})"><span>Ich arbeite nicht mehr hier.</span>
 								</div>
 							</div>
-						{% endfor %}
-					</div>
-					<div class="verification-form-group"></div>
-				</div>
 
-				<div class="verification-form-row">
-					<div class="verification-form-group">
-						<div>
-							<h2>Abmelden</h2>
-							<div style="display: flex; flex-direction: row; margin-top: 40px; align-content: center;">
-								<input type="checkbox" name="delete" value="1">
-								<span style="margin-left: 5px; color: black">Ich möchte aus der Datenbank gelöscht werden.</span>
+							<!-- Locale Switch Buttons for Role -->
+							<div class="role" style="display: flex; flex-direction: row;">
+								<label id="role-label-{{ employment.id }}-de">Funktion (DE)</label>
+								<label id="role-label-{{ employment.id }}-fr" style="display:none;">Funktion (FR)</label>
+								<label id="role-label-{{ employment.id }}-it" style="display:none;">Funktion (IT)</label>
+								<span>
+									<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'de', event)">DE</a>
+									<span>|</span>
+									<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'fr', event)">FR</a>
+									<span>|</span>
+									<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'it', event)">IT</a>
+								</span>
 							</div>
+
+							<!-- Input Fields for Role -->
+							<div id="role-{{ employment.id }}-de" class="locale-input">
+								<input type="text" name="employments[{{ employment.id }}][role]" value="{{ employment.role }}" class="form-control"></input>
 						</div>
+						<div id="role-{{ employment.id }}-fr" class="locale-input" style="display:none;">
+							<input type="text" name="employments[{{ employment.id }}][translations][fr][role]" value="{{ employment.translations['fr']['role'] ?? '' }}" class="form-control"></input>
 					</div>
-					<div class="verification-form-group"></div>
+					<div id="role-{{ employment.id }}-it" class="locale-input" style="display:none;">
+						<input type="text" name="employments[{{ employment.id }}][translations][it][role]" value="{{ employment.translations['it']['role'] ?? '' }}" class="form-control"></input>
 				</div>
 
-				<div class="form-actions">
-					<button class="btn btn-primary">Speichern</button>
-				</div>
-				{{ form_end(form) }}
+
 			</div>
 
-			<!-- Footer Section -->
-			<footer class="verification-footer">
-				<div class="container">
-					<p>©
-						{{ "now"|date("Y") }}
-						regiosuisse - Die Plattform für Regionalentwicklung in der Schweiz</p>
-					<p>
-						<a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
-					</p>
+		{% endfor %}
+
+		{% if employments|length % 2 != 0 %}
+			<div class="employment-item verification-form-group col-md-6"></div>
+		{% endif %}
+	</div>
+
+	<div class="verification-form-row">
+		<div class="verification-form-group">
+			<div>
+				<h2>Abmelden</h2>
+				<div style="display: flex; flex-direction: row; margin-top: 40px; align-content: center;">
+					<input type="checkbox" name="delete" value="1">
+					<span style="margin-left: 5px; color: black">Ich möchte aus der Datenbank gelöscht werden.</span>
 				</div>
-			</footer>
+			</div>
 		</div>
+		<div class="verification-form-group"></div>
+	</div>
 
+	<div class="form-actions">
+		<button class="btn btn-primary">Speichern</button>
+	</div>
+	{{ form_end(form) }}
+</div>
+
+<!-- Footer Section -->
+<footer class="verification-footer">
+	<div class="container">
+		<p>©
+			{{ "now"|date("Y") }}
+			regiosuisse - Die Plattform für Regionalentwicklung in der Schweiz</p>
+		<p>
+			<a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
+			<span>Bei Fragen oder Problemen wenden Sie sich bitte an
+				<a href="mailto:web@regiosuisse.ch">web@regiosuisse.ch</a>
+			</span</p>
+		</p>
+	</div>
+</footer></div>
 <script>
-	function changeLocale(locale, field, event) {
-		if (event) {
-			event.preventDefault();
-		}
-		// Hide all input fields for the current field (website, city, description)
-		document.getElementById(field + '-de').style.display = 'none';
-		document.getElementById(field + '-fr').style.display = 'none';
-		document.getElementById(field + '-it').style.display = 'none';
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize locale for other fields
+  changeLocale('de', 'website');
+  changeLocale('de', 'city');
+  changeLocale('de', 'description');
+});
 
-		document.getElementById(field + '-label-de').style.display = 'none';
-		document.getElementById(field + '-label-fr').style.display = 'none';
-		document.getElementById(field + '-label-it').style.display = 'none';
+function changeLocale(locale, field, event) {
+	event.preventDefault();
+    document.getElementById(field + '-de').style.display = 'none';
+    document.getElementById(field + '-fr').style.display = 'none';
+    document.getElementById(field + '-it').style.display = 'none';
 
-		// Show the selected language input field
-		document.getElementById(field + '-' + locale).style.display = 'block';
-		document.getElementById(field + '-label-' + locale).style.display = 'block';
-		}
+    document.getElementById(field + '-label-de').style.display = 'none';
+    document.getElementById(field + '-label-fr').style.display = 'none';
+    document.getElementById(field + '-label-it').style.display = 'none';
 
-		document.addEventListener("DOMContentLoaded", function () {
-		changeLocale('de', 'website');
-		changeLocale('de', 'city');
-		changeLocale('de', 'description');
-	});
+    // Show the selected language input field
+    document.getElementById(field + '-' + locale).style.display = 'block';
+    document.getElementById(field + '-label-' + locale).style.display = 'block';
+
+}
+
+function changeEmploymentLocale(employmentId, locale, event) {
+  if (event) {
+    event.preventDefault();
+  }
+  // Hide all input fields for the current employment's role
+  document.getElementById('role-' + employmentId + '-de').style.display = 'none';
+  document.getElementById('role-' + employmentId + '-fr').style.display = 'none';
+  document.getElementById('role-' + employmentId + '-it').style.display = 'none';
+
+  document.getElementById('role-label-' + employmentId + '-de').style.display = 'none';
+  document.getElementById('role-label-' + employmentId + '-fr').style.display = 'none';
+  document.getElementById('role-label-' + employmentId + '-it').style.display = 'none';
+
+  // Show the selected language input field
+  document.getElementById('role-' + employmentId + '-' + locale).style.display = 'block';
+  document.getElementById('role-label-' + employmentId + '-' + locale).style.display = 'block';
+}
+function toggleDisabledState(employmentId) {
+   const employmentGroup = document.getElementById(`employment-group-${employmentId}`);
+   const inputs = employmentGroup.querySelectorAll('input[type="text"], select, textarea');
+
+   // Toggle the disabled class and pointer-events on all fields except the checkbox
+   inputs.forEach(input => {
+      input.disabled = document.getElementById(`employment-checkbox-${employmentId}`).checked;
+   });
+   
+   // Update opacity styling
+   if (document.getElementById(`employment-checkbox-${employmentId}`).checked) {
+      employmentGroup.classList.add("disabled-fields");
+   } else {
+      employmentGroup.classList.remove("disabled-fields");
+   }
+}
+
+
+// Initialize the locale to 'de' for each employment
+document.addEventListener("DOMContentLoaded", function () {
+  {% for employment in employments %}
+    changeEmploymentLocale('{{ employment.id }}', 'de');
+  {% endfor %}
+});
 </script>
 {% endblock %}

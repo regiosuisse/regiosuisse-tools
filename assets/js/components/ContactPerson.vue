@@ -2,62 +2,48 @@
   <div class="contact-component">
     <div class="contact-component-form">
       <div class="contact-component-form-header">
-        <h3 v-if="contact.id">Eintrag bearbeiten</h3>
-        <h3 v-else>Eintrag erstellen</h3>
-
-        <div class="contact-component-form-header-actions">
-          <a class="button" @click="showPreview = true">Vorschau</a>
-          <a
-            class="button warning"
-            @click="contact.isPublic = true"
-            v-if="!contact.isPublic"
-            >Privat</a
-          >
-          <a
-            class="button success"
-            @click="contact.isPublic = false"
-            v-if="contact.isPublic"
-            >Öffentlich</a
-          >
-          <a @click="locale = 'de'" class="button" :class="{ primary: locale === 'de' }"
-            >DE</a
-          >
-          <a @click="locale = 'fr'" class="button" :class="{ primary: locale === 'fr' }"
-            >FR</a
-          >
-          <a @click="locale = 'it'" class="button" :class="{ primary: locale === 'it' }"
-            >IT</a
-          >
-          <a class="button error" @click="clickDelete()" v-if="contact.id">Löschen</a>
-          <a class="button warning" @click="clickCancel()">Abbrechen</a>
-          <a class="button primary" @click="clickSave()">Speichern</a>
-          <a
-            v-if="!$route.fullPath.includes('/edit')"
-            class="button primary"
-            @click="mergeAll(locale)"
-            >Alle Daten übernehmen</a
-          >
+        <div class="contact-component-form-header-actions-new">
+          <h3 v-if="contact.id">Eintrag bearbeiten</h3>
+          <h3 v-else>Eintrag erstellen</h3>
+          <a class="button" @click="showPreview = true"><span class="material-icons">visibility</span></a>
+          <a class="button warning" @click="contact.isPublic = true" v-if="!contact.isPublic">Privat</a>
+          <a class="button success" @click="contact.isPublic = false" v-if="contact.isPublic">Öffentlich</a>
+          <a @click="locale = 'de'" class="button" :class="{ primary: locale === 'de' }">DE</a>
+          <a @click="locale = 'fr'" class="button" :class="{ primary: locale === 'fr' }">FR</a>
+          <a @click="locale = 'it'" class="button" :class="{ primary: locale === 'it' }">IT</a>
+          <a class="button error" @click="clickDelete()" v-if="contact.id" title="Löschen"><span
+              class="material-icons">delete</span></a>
+          <a class="button warning" @click="clickCancel()" title="Abbrechen">
+            <span class="material-icons">close</span>
+          </a>
+          <a class="button primary" @click="clickSave()" title="Speichern">Speichern</a>
         </div>
+        <div class="contact-component-form-header-actions-new diff-header" v-if="diff && !isDeleteRequest">
+          <h3>Externe Kontaktdaten</h3>
+          <a v-if="!$route.fullPath.includes('/edit') && !isDeleteRequest" class="button error"
+            @click="discardAll">Änderungen verwerfen</a>
+          <a v-if="!$route.fullPath.includes('/edit') && !isDeleteRequest" class="button primary"
+            @click="mergeAll(locale)">Alle Daten übernehmen</a>
+        </div>
+        <div v-else class="contact-component-form-header-actions-new diff-header"></div>
       </div>
 
       <div class="contact-component-form-section" v-if="formErrors.length">
         <ul class="errors">
-          <li class="error" v-for="error in formErrors">{{ error.message }}</li>
+          <li class="error" v-for="error in formErrors">
+            {{ error.message }}
+          </li>
         </ul>
       </div>
 
-      <div class="contact-component-form-section">
+      <div style="padding-top: 0px" class="contact-component-form-section">
         <div class="contact-component-form-row">
           <div class="contact-component-form-section">
             <div class="row">
               <div class="col-md-2">
                 <label for="gender">Anrede</label>
                 <div class="select-wrapper">
-                  <select
-                    class="form-control"
-                    v-model="contact.gender"
-                    :class="{ 'field-changed': isFieldChanged('gender') }"
-                  >
+                  <select class="form-control" v-model="contact.gender">
                     <option value="male">Herr</option>
                     <option value="female">Frau</option>
                     <option value="other">Keine Angabe</option>
@@ -66,49 +52,39 @@
               </div>
               <div class="col-md-4">
                 <label for="academicTitle">Titel</label>
-                <input
-                  id="academicTitle"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.academicTitle"
-                  :class="{ 'field-changed': isFieldChanged('academicTitle') }"
-                />
+                <input id="academicTitle" type="text" class="form-control" v-model="contact.academicTitle" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-2" v-if="isFieldChanged('gender')">
+            <span class="error" v-if="isDeleteRequest">Dieser Kontakt wurde gelöscht. Für Endgültige Löschung auf den
+              Papierkorb klicken.
+            </span>
+
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-2" :class="{ disabled: !isFieldChanged('gender') }">
                 <label for="genderDiff">
-                  <span class="material-icons" @click="mergeField('gender')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('gender')" class="material-icons"
+                    @click="mergeField('gender')">keyboard_backspace</span>
                   Anrede
                 </label>
-                <select
-                  id="genderDiff"
-                  class="form-control"
-                  v-model="diff.gender"
-                  readonly
-                >
+                <select id="genderDiff" class="form-control" :value="isFieldChanged('gender')
+                  ? diff.gender
+                  : contact.gender || null
+                  " readonly>
                   <option value="male">Herr</option>
                   <option value="female">Frau</option>
                   <option value="other">Keine Angabe</option>
                 </select>
               </div>
-              <div class="col-md-4" v-if="isFieldChanged('academicTitle')">
+              <div class="col-md-4" :class="{ disabled: !isFieldChanged('academicTitle') }">
                 <label for="academicTitleDiff">
-                  <span class="material-icons" @click="mergeField('academicTitle')"
-                    >keyboard_backspace</span
-                  >Titel</label
-                >
-                <input
-                  id="academicTitleDiff"
-                  type="text"
-                  class="form-control"
-                  v-model="diff.academicTitle"
-                  :class="{ 'field-changed': isFieldChanged('academicTitle') }"
-                />
+                  <span v-if="isFieldChanged('academicTitle')" class="material-icons"
+                    @click="mergeField('academicTitle')">keyboard_backspace</span>Titel</label>
+                <input id="academicTitleDiff" type="text" class="form-control" :value="isFieldChanged('academicTitle')
+                  ? diff.academicTitle
+                  : contact.academicTitle || ''
+                  " :class="{ 'field-changed': isFieldChanged('academicTitle') }" />
               </div>
             </div>
           </div>
@@ -119,56 +95,36 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="firstName">Vorname</label>
-                <input
-                  id="firstName"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.firstName"
-                  :class="{ 'field-changed': isFieldChanged('firstName') }"
-                />
+                <input id="firstName" type="text" class="form-control" v-model="contact.firstName"
+                  :class="{ 'field-changed': isFieldChanged('firstName') }" />
               </div>
               <div class="col-md-6">
                 <label for="lastName">Nachname</label>
-                <input
-                  id="lastName"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.lastName"
-                  :class="{ 'field-changed': isFieldChanged('firstName') }"
-                />
+                <input id="lastName" type="text" class="form-control" v-model="contact.lastName"
+                  :class="{ 'field-changed': isFieldChanged('firstName') }" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-6" v-if="isFieldChanged('firstName')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('firstName') }">
                 <label for="firstNameDiff">
-                  <span class="material-icons" @click="mergeField('firstName')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('firstName')" class="material-icons"
+                    @click="mergeField('firstName')">keyboard_backspace</span>
                   Vorname
                 </label>
-                <input
-                  id="firstNameDiff"
-                  type="text"
-                  class="form-control"
-                  :value="diff.firstName"
-                  readonly
-                />
+                <input id="firstNameDiff" type="text" class="form-control" :value="isFieldChanged('firstName')
+                  ? diff.firstName
+                  : contact.firstName || ''
+                  " readonly />
               </div>
-              <div class="col-md-6" v-if="isFieldChanged('lastName')">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('lastName') }">
                 <label for="lastName">
-                  <span class="material-icons" @click="mergeField('lastName')"
-                    >keyboard_backspace</span
-                  >Nachname</label
-                >
-                <input
-                  id="lastName"
-                  type="text"
-                  class="form-control"
-                  v-model="diff.lastName"
-                  readonly
-                />
+                  <span class="material-icons" @click="mergeField('lastName')">keyboard_backspace</span>Nachname</label>
+                <input id="lastName" type="text" class="form-control" :value="isFieldChanged('lastName')
+                  ? diff.lastName
+                  : contact.lastName || ''
+                  " readonly />
               </div>
             </div>
           </div>
@@ -180,32 +136,22 @@
             <div class="row">
               <div class="col-md-12">
                 <label for="street">Strasse</label>
-                <input
-                  id="street"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.street"
-                  :class="{ 'field-changed': isFieldChanged('street') }"
-                />
+                <input id="street" type="text" class="form-control" v-model="contact.street" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-12" v-if="isFieldChanged('street')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-12" :class="{ disabled: !isFieldChanged('street') }">
                 <label for="streetDiff">
-                  <span class="material-icons" @click="mergeField('street')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('street')" class="material-icons"
+                    @click="mergeField('street')">keyboard_backspace</span>
                   Strasse
                 </label>
-                <input
-                  id="streetDiff"
-                  type="text"
-                  class="form-control"
-                  :value="diff.street"
-                  readonly
-                />
+                <input id="streetDiff" type="text" class="form-control" :value="isFieldChanged('street')
+                  ? diff.street
+                  : contact.street || ''
+                  " readonly />
               </div>
             </div>
           </div>
@@ -217,68 +163,39 @@
             <div class="row">
               <div class="col-md-4">
                 <label for="zipCode">PLZ</label>
-                <input
-                  id="zipCode"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.zipCode"
-                  :class="{ 'field-changed': isFieldChanged('zipCode') }"
-                />
+                <input id="zipCode" type="text" class="form-control" v-model="contact.zipCode" />
               </div>
               <div class="col-md-8" v-if="locale === 'de'">
                 <label for="city">Ort</label>
-                <input
-                  id="city"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.city"
-                  :class="{ 'field-changed': isFieldChanged('city') }"
-                />
+                <input id="city" type="text" class="form-control" v-model="contact.city" />
               </div>
               <div class="col-md-8" v-else>
                 <label for="city">Ort (Übersetzung {{ locale.toUpperCase() }})</label>
-                <input
-                  id="city"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.translations[locale].city"
-                  :class="{ 'field-changed': isFieldChanged('city', locale) }"
-                />
+                <input id="city" type="text" class="form-control" v-model="contact.translations[locale].city" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-4" v-if="isFieldChanged('zipCode')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-4" :class="{ disabled: !isFieldChanged('zipCode') }">
                 <label for="zipCodeDiff">
-                  <span class="material-icons" @click="mergeField('zipCode')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('zipCode')" class="material-icons"
+                    @click="mergeField('zipCode')">keyboard_backspace</span>
                   PLZ
                 </label>
-                <input
-                  id="zipCodeDiff"
-                  type="text"
-                  class="form-control"
-                  :value="diff.zipCode"
-                  readonly
-                />
+                <input id="zipCodeDiff" type="text" class="form-control" :value="isFieldChanged('zipCode')
+                  ? diff.zipCode
+                  : contact.zipCode || ''
+                  " readonly />
               </div>
               <!-- Diff Section for City -->
-              <div class="col-md-8" v-if="isFieldChanged('city', locale)">
+              <div class="col-md-8" :class="{ disabled: !isFieldChanged('city', locale) }">
                 <label for="cityDiff">
-                  <span class="material-icons" @click="mergeField('city', locale)"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('city', locale)" class="material-icons"
+                    @click="mergeField('city', locale)">keyboard_backspace</span>
                   Ort
                 </label>
-                <input
-                  id="cityDiff"
-                  type="text"
-                  class="form-control"
-                  :value="getDiffValue('city', locale)"
-                  readonly
-                />
+                <input id="cityDiff" type="text" class="form-control" :value="getDiffValue('city', locale)" readonly />
               </div>
             </div>
           </div>
@@ -291,16 +208,11 @@
               <div class="col-md-6">
                 <label for="country">Land</label>
                 <div class="select-wrapper">
-                  <select
-                    class="form-control"
-                    @change="
-                      contact.country =
-                        getCountryById(parseInt($event.target.value)) || null;
-                      contact.state = null;
-                    "
-                    :value="contact.country?.id"
-                    :class="{ 'field-changed': isFieldChanged('country') }"
-                  >
+                  <select class="form-control" @change="
+                    contact.country =
+                    getCountryById(parseInt($event.target.value)) || null;
+                  contact.state = null;
+                  " :value="contact.country?.id">
                     <option :value="null"></option>
                     <option v-for="country in countries" :value="country.id">
                       {{ country.name }}
@@ -311,14 +223,10 @@
               <div class="col-md-6" v-if="contact.country?.id === 1">
                 <label for="province">Kanton</label>
                 <div class="select-wrapper">
-                  <select
-                    class="form-control"
-                    @change="
-                      contact.state = getStateById(parseInt($event.target.value)) || null
-                    "
-                    :value="contact.state?.id"
-                    :class="{ 'field-changed': isFieldChanged('state') }"
-                  >
+                  <select class="form-control" @change="
+                    contact.state =
+                    getStateById(parseInt($event.target.value)) || null
+                    " :value="contact.state?.id">
                     <option :value="null"></option>
                     <option v-for="state in states" :value="state.id">
                       {{ state.name }}
@@ -330,21 +238,17 @@
           </div>
 
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-6" v-if="isFieldChanged('country')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('country') }">
                 <label for="countryDiff">
-                  <span class="material-icons" @click="mergeField('country')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('country')" class="material-icons"
+                    @click="mergeField('country')">keyboard_backspace</span>
                   Land
                 </label>
-                <select
-                  id="countryDiff"
-                  class="form-control"
-                  :value="diff.country"
-                  :class="{ 'field-changed': isFieldChanged('country') }"
-                  readonly
-                >
+                <select id="countryDiff" class="form-control" :value="isFieldChanged('country')
+                  ? diff.country
+                  : contact.country?.id || null
+                  " readonly>
                   <option :value="null"></option>
                   <option v-for="country in countries" :value="country.id">
                     {{ country.name }}
@@ -353,18 +257,14 @@
               </div>
               <div class="col-md-6" v-if="isFieldChanged('state')">
                 <label for="stateDiff">
-                  <span class="material-icons" @click="mergeField('state')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('state')" class="material-icons"
+                    @click="mergeField('state')">keyboard_backspace</span>
                   Kanton
                 </label>
-                <input
-                  id="stateDiff"
-                  type="text"
-                  class="form-control"
-                  :value="diff.state?.name"
-                  readonly
-                />
+                <input id="stateDiff" type="text" class="form-control" :value="isFieldChanged('state')
+                  ? diff.state?.name
+                  : contact.state?.name || null
+                  " readonly />
               </div>
             </div>
           </div>
@@ -377,15 +277,10 @@
               <div class="col-md-6">
                 <label for="language">Sprache</label>
                 <div class="select-wrapper">
-                  <select
-                    class="form-control"
-                    @change="
-                      contact.language =
-                        getLanguageById(parseInt($event.target.value)) || null
-                    "
-                    :value="contact.language?.id"
-                    :class="{ 'field-changed': isFieldChanged('language') }"
-                  >
+                  <select class="form-control" @change="
+                    contact.language =
+                    getLanguageById(parseInt($event.target.value)) || null
+                    " :value="contact.language?.id">
                     <option :value="null"></option>
                     <option v-for="language in languages" :value="language.id">
                       {{ language.name }}
@@ -396,21 +291,17 @@
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-6" v-if="isFieldChanged('language')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('language') }">
                 <label for="languageDiff">
-                  <span class="material-icons" @click="mergeField('language')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('language')" class="material-icons"
+                    @click="mergeField('language')">keyboard_backspace</span>
                   Sprache
                 </label>
-                <select
-                  id="languageDiff"
-                  class="form-control"
-                  :value="diff.language"
-                  :class="{ 'field-changed': isFieldChanged('language') }"
-                  readonly
-                >
+                <select id="languageDiff" class="form-control" :value="isFieldChanged('language')
+                  ? diff.language
+                  : contact.language?.id || null
+                  " :class="{ 'field-changed': isFieldChanged('language') }" readonly>
                   <option :value="null"></option>
                   <option v-for="language in languages" :value="language.id">
                     {{ language.name }}
@@ -427,57 +318,33 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="email">E-Mail</label>
-                <input
-                  id="email"
-                  type="email"
-                  class="form-control"
-                  v-model="contact.email"
-                  :class="{ 'field-changed': isFieldChanged('email') }"
-                />
+                <input id="email" type="email" class="form-control" v-model="contact.email" />
               </div>
               <div class="col-md-6">
                 <label for="phone">Telefon</label>
-                <input
-                  id="phone"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.phone"
-                  :class="{ 'field-changed': isFieldChanged('phone') }"
-                />
+                <input id="phone" type="text" class="form-control" v-model="contact.phone" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
-              <div class="col-md-6" v-if="isFieldChanged('email')">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('email') }">
                 <label for="emailDiff">
-                  <span class="material-icons" @click="mergeField('email')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('email')" class="material-icons"
+                    @click="mergeField('email')">keyboard_backspace</span>
                   E-Mail
                 </label>
-                <input
-                  id="emailDiff"
-                  type="email"
-                  class="form-control"
-                  :value="diff.email"
-                  readonly
-                />
+                <input id="emailDiff" type="email" class="form-control" :value="isFieldChanged('email') ? diff.email : contact.email || ''
+                  " readonly />
               </div>
-              <div class="col-md-6" v-if="isFieldChanged('phone')">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('phone') }">
                 <label for="phoneDiff">
-                  <span class="material-icons" @click="mergeField('phone')"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('phone')" class="material-icons"
+                    @click="mergeField('phone')">keyboard_backspace</span>
                   Telefon
                 </label>
-                <input
-                  id="phoneDiff"
-                  type="text"
-                  class="form-control"
-                  :value="diff.phone"
-                  readonly
-                />
+                <input id="phoneDiff" type="text" class="form-control" :value="isFieldChanged('phone') ? diff.phone : contact.phone || ''
+                  " readonly />
               </div>
             </div>
           </div>
@@ -489,45 +356,27 @@
             <div class="row">
               <div class="col-md-6" v-if="locale === 'de'">
                 <label for="website">Website</label>
-                <input
-                  id="website"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.website"
-                  :class="{ 'field-changed': isFieldChanged('website') }"
-                />
+                <input id="website" type="text" class="form-control" v-model="contact.website" />
               </div>
               <div class="col-md-6" v-else>
-                <label for="website"
-                  >Website (Übersetzung {{ locale.toUpperCase() }})</label
-                >
-                <input
-                  id="website"
-                  type="text"
-                  class="form-control"
-                  v-model="contact.translations[locale].website"
-                  :class="{ 'field-changed': isFieldChanged('website', locale) }"
-                />
+                <label for="website">Website (Übersetzung {{ locale.toUpperCase() }})</label>
+                <input id="website" type="text" class="form-control" v-model="contact.translations[locale].website" />
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
+            <div v-if="diff && !isDeleteRequest" class="row">
               <!-- Diff Section for Website -->
-              <div class="col-md-6" v-if="isFieldChanged('website', locale)">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('website', locale) }">
                 <label for="websiteDiff">
-                  <span class="material-icons" @click="mergeField('website', locale)"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('website', locale)" class="material-icons"
+                    @click="mergeField('website', locale)">keyboard_backspace</span>
                   Website
                 </label>
-                <input
-                  id="websiteDiff"
-                  type="text"
-                  class="form-control"
-                  :value="getDiffValue('website', locale)"
-                  readonly
-                />
+                <input id="websiteDiff" type="text" class="form-control" :value="isFieldChanged('website', locale)
+                  ? getDiffValue('website', locale)
+                  : contact.website || ''
+                  " readonly />
               </div>
             </div>
           </div>
@@ -539,145 +388,176 @@
             <div class="row">
               <div class="col-md-12" v-if="locale === 'de'">
                 <label for="description">Beschreibung</label>
-                <ckeditor
-                  id="description"
-                  :editor="editor"
-                  :config="editorConfig"
-                  v-model="contact.description"
-                  :class="{ 'field-changed': isFieldChanged('description') }"
-                ></ckeditor>
+                <ckeditor id="description" :editor="editor" :config="editorConfig" v-model="contact.description">
+                </ckeditor>
               </div>
               <div class="col-md-12" v-else>
-                <label for="description"
-                  >Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label
-                >
-                <ckeditor
-                  id="description"
-                  :editor="editor"
-                  :config="editorConfig"
-                  v-model="contact.translations[locale].description"
-                  :class="{ 'field-changed': isFieldChanged('description', locale) }"
-                ></ckeditor>
+                <label for="description">Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label>
+                <ckeditor id="description" :editor="editor" :config="editorConfig"
+                  v-model="contact.translations[locale].description"></ckeditor>
               </div>
             </div>
           </div>
           <div class="contact-component-form-section">
-            <div class="row">
+            <div v-if="diff && !isDeleteRequest" class="row">
               <!-- Diff Section for Description -->
-              <div class="col-md-12" v-if="isFieldChanged('description', locale)">
+              <div class="col-md-12" :class="{ disabled: !isFieldChanged('description', locale) }">
                 <label for="descriptionDiff">
-                  <span class="material-icons" @click="mergeField('description', locale)"
-                    >keyboard_backspace</span
-                  >
+                  <span v-if="isFieldChanged('description', locale)" class="material-icons"
+                    @click="mergeField('description', locale)">keyboard_backspace</span>
                   Beschreibung
                 </label>
-                <ckeditor
-                  id="descriptionDiff"
-                  :editor="editor"
-                  :config="editorConfig"
-                  v-model="diff.translations[locale].description"
-                  readonly
-                ></ckeditor>
+                <ckeditor id="descriptionDiff" :editor="editor" :config="editorConfig" v-model="descriptionDiffValue"
+                  readonly></ckeditor>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="contact-component-form-section-group">
+        <div class="contact-component-form-section-group contact-group-component-form-section-group-transparent-bg">
           <div class="row">
             <div class="col-md-6">
               <label for="topics">Kontakt Themen</label>
-              <tag-selector
-                v-if="contact && contact.topics !== undefined"
-                id="topics"
-                :model="contact.topics"
-                :options="
-                  topics.filter((topic) => !topic.context || topic.context === 'contact')
-                "
-                :searchType="'select'"
-              ></tag-selector>
+              <tag-selector v-if="contact && contact.topics !== undefined" id="topics" :model="contact.topics" :options="topics.filter(
+                (topic) => !topic.context || topic.context === 'contact'
+              )
+                " :searchType="'select'"></tag-selector>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6">
               <label for="contactGroups">Kontaktgruppen</label>
-              <tag-selector
-                id="contactGroups"
-                :model="contact.contactGroups"
-                @change="addContactGroups($event)"
-                :options="contactGroupOptions"
-                :searchType="'select'"
-                :isOptGroup="true"
-              ></tag-selector>
+              <tag-selector id="contactGroups" :model="contact.contactGroups" @change="addContactGroups($event)"
+                :options="contactGroupOptions" :searchType="'select'" :isOptGroup="true"></tag-selector>
             </div>
           </div>
         </div>
-        <div class="contact-component-form-section-group">
-          <div class="row">
+
+        <div class="contact-component-form-row">
+          <div class="contact-component-form-section">
             <div class="col-md-12">
               <label>Anstellungen</label>
               <div
-                class="contact-group-component-form-section-group"
-                v-for="(employment, index) in contact.employments"
-              >
+                class="contact-group-component-form-section-group contact-group-component-form-section-group-transparent-bg"
+                v-for="(employment, index) in contact.employments" :key="employment.id">
+                <!-- Employment Editing Section -->
                 <div class="row">
-                  <div class="col-md-3">
-                    <label for="company">Organisation</label>
-                    <single-selector
-                      id="company"
-                      :value="employment.company"
-                      @update="employment.company = $event || {}"
-                      :options="contacts"
-                    ></single-selector>
-                  </div>
-                  <div class="col-md-2" v-if="locale === 'de'">
-                    <label for="employment">Funktion</label>
-                    <input
-                      id="employment"
-                      type="text"
-                      class="form-control"
-                      v-model="employment.role"
-                      :placeholder="translate('role', contact)"
-                    />
-                  </div>
-                  <div class="col-md-2" v-else>
-                    <label for="employment"
-                      >Funktion (Übersetzung {{ locale.toUpperCase() }})</label
-                    >
-                    <input
-                      id="employment"
-                      type="text"
-                      class="form-control"
-                      v-model="employment.translations[locale].role"
-                      :placeholder="translate('role', contact)"
-                    />
-                  </div>
-                  <div class="col-md-1">
-                    <label>Hauptadresse</label>
-                    <input
-                      id="officialAddress"
-                      :name="'official-address-' + index"
-                      type="checkbox"
-                      :checked="contact.officialEmployment === employment || false"
-                      :true-value="employment"
-                      v-model="contact.officialEmployment"
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <label>&nbsp;</label>
-                    <div
-                      class="button warning"
-                      @click="clickRemoveEmployment(employment.id, index)"
-                    >
-                      Anstellung entfernen
+                  <!-- Left Column: Current Employment Fields -->
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label for="company">Organisation</label>
+                        <single-selector id="company" :value="employment.company"
+                          @update="employment.company = $event || {}" :options="contacts"></single-selector>
+                      </div>
+
+                      <!-- Role Field -->
+                      <div class="col-md-3" v-if="locale === 'de'">
+                        <label for="employment">Funktion</label>
+                        <input id="employment" type="text" class="form-control" v-model="employment.role" :class="{
+                          'field-changed': isEmploymentFieldChanged(
+                            'role',
+                            employment.id
+                          ),
+                        }" :placeholder="translate('role', contact)" />
+                      </div>
+                      <div class="col-md-3" v-else>
+                        <label for="employment">Funktion (Übersetzung
+                          {{ locale.toUpperCase() }})</label>
+                        <input id="employment" type="text" class="form-control"
+                          v-model="employment.translations[locale].role" :class="{
+                            'field-changed': isEmploymentFieldChanged(
+                              'role',
+                              employment.id,
+                              locale
+                            ),
+                          }" :placeholder="translate('role', contact)" />
+                      </div>
+
+                      <!-- Official Address Checkbox -->
+                      <div class="col-md-2">
+                        <label>Hauptadresse</label>
+                        <input id="officialAddress" :name="'official-address-' + index" type="checkbox" :checked="contact.officialEmployment === employment || false
+                          " :true-value="employment" v-model="contact.officialEmployment" />
+                      </div>
+
+                      <!-- Remove Employment Button -->
+                      <div class="col-md-1">
+                        <label>&nbsp;</label>
+                        <div class="button error" @click="clickRemoveEmployment(employment.id, index)">
+                          <span title="Anstellung Entfernen" class="material-icons">delete</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="contact-group-component-form-section-group">
+
+              <!-- Add Employment Button -->
+              <div
+                class="contact-group-component-form-section-group contact-group-component-form-section-group-transparent-bg">
                 <div class="button success" @click="clickAddEmployment()">
                   Anstellung hinzufügen
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="contact-component-form-section">
+            <div class="row" v-if="diff && !isDeleteRequest">
+
+              <!-- Right Column: Diff Employment Fields -->
+              <label :class="{
+                disabled:
+                  isEmploymentLabelHidden
+              }">Anstellungen</label>
+
+              <div v-for="(employment, index) in contact.employments" :key="'employmentDiff' + employment.id"
+                class="col-md-12 diff-section contact-group-component-form-section-group contact-group-component-form-section-group-transparent-bg">
+                <div class="row">
+                  <!-- Role Diff Field -->
+                  <div class="col-md-12" :class="{
+                    disabled:
+                      !isEmploymentRemoved(employment.id) && (
+                        !employment?.id ||
+                        !isEmploymentFieldChanged(
+                          'role',
+                          employment.id,
+                          locale
+                        ))
+                  }">
+                    <label for="employmentDiff">
+                      <span v-if="
+                        !isDeleted(employment.id) &&
+                        (!employment?.id ||
+                          isEmploymentFieldChanged(
+                            'role',
+                            employment.id,
+                            locale
+                          ))
+                      " class="material-icons"
+                        @click="mergeField('role', locale, employment.id)">keyboard_backspace</span>
+                      {{ isEmploymentRemoved(employment.id) ? 'Entfernt' : 'Funktion' }}
+                    </label>
+                    <div style="display: flex" class="col-md-12">
+                      <div style="display: flex; align-items: center" class="col-md-12">
+                        <input v-if="!isDeleted(employment.id)" id="employmentDiff" type="text"
+                          class="form-control col-md-5" :value="employment?.id
+                            ? getEmploymentDiffValue(
+                              'role',
+                              employment.id,
+                              locale
+                            )
+                            : ''
+                            " readonly />
+                        <p style="margin: 0" v-if="isDeleted(employment.id)" class="error">
+                          Dieser Kontakt arbeitet nicht mehr hier. Bitte löschen
+                          oder Alle Übernehmen klicken und speichern.
+                        </p>
+                        <p v-else></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -686,18 +566,9 @@
       </div>
     </div>
 
-    <div
-      class="contact-component-overlay"
-      v-if="showPreview"
-      @click="showPreview = false"
-    >
-      <EmbedContactsView
-        @click.stop
-        @clickClose="showPreview = false"
-        :contact="contact"
-        :officialEmployment="contact.officialEmployment || null"
-        :locale="locale"
-      ></EmbedContactsView>
+    <div class="contact-component-overlay" v-if="showPreview" @click="showPreview = false">
+      <EmbedContactsView @click.stop @clickClose="showPreview = false" :contact="contact"
+        :officialEmployment="contact.officialEmployment || null" :locale="locale"></EmbedContactsView>
     </div>
 
     <transition name="fade">
@@ -819,6 +690,31 @@ export default {
 
       return contactGroupOptions;
     },
+    descriptionDiffValue: {
+      get() {
+        if (this.isFieldChanged("description", this.locale)) {
+          return this.getDiffValue("description", this.locale);
+        } else {
+          return this.locale !== "de"
+            ? this.contact.translations[this.locale]?.description || ""
+            : this.contact.description || "";
+        }
+      },
+    },
+    isDeleteRequest() {
+      return this.selectedInboxItem?.data?.delete ?? false;
+    },
+    isEmploymentLabelHidden() {
+      () => {
+        if (this.selectedInboxItem?.data?.removeEmploymentIds?.length) {
+          return false;
+        }
+
+        return this.contact.employments.some((employment) =>
+          this.isEmploymentFieldChanged('role', employment.id, this.locale)
+        );
+      }
+    },
   },
   methods: {
     clickDelete() {
@@ -831,9 +727,17 @@ export default {
             label: "Endgültig löschen",
             class: "error",
             onClick: () => {
-              this.$store.dispatch("contacts/delete", this.contact.id).then(() => {
-                this.$router.push("/contacts/person");
-              });
+              this.$store
+                .dispatch("contacts/delete", this.contact.id)
+                .then(() => {
+                  this.$router.push("/contacts/person");
+                });
+              if (this.selectedInboxItem && this.selectedInboxItem.id) {
+                this.$store.dispatch(
+                  "inbox/delete",
+                  this.selectedInboxItem.id
+                );
+              }
             },
           },
           {
@@ -852,7 +756,6 @@ export default {
     async clickSave() {
       let contact = { ...this.contact };
 
-      console.log(this.contact);
       // this somehow fixes the bug that translations wont be saved despite being set
       this.contact.translations = {
         fr: {
@@ -874,7 +777,11 @@ export default {
         officialEmployment.employee = contact;
 
         for (let contactGroup of contact.contactGroups) {
-          if (this.newContactGroups.find((group) => group.id === contactGroup.id)) {
+          if (
+            this.newContactGroups.find(
+              (group) => group.id === contactGroup.id
+            )
+          ) {
             let group = this.contact.contactGroups.find(
               (group) => group.id === contactGroup.id
             );
@@ -924,7 +831,9 @@ export default {
     },
     clickSetOfficialEmployment(event) {
       if (event.target.checked) {
-        this.contact.officialEmployment = this.getEmploymentById(event.target.value);
+        this.contact.officialEmployment = this.getEmploymentById(
+          event.target.value
+        );
       } else {
         this.contact.officialEmployment = null;
       }
@@ -934,10 +843,13 @@ export default {
         this.$store.commit("contacts/set", {});
         this.$store.commit("inbox/set", {});
 
-        let contactsData = await this.$store.dispatch("contactsData/loadFiltered", {
-          contactType: "employee",
-          params: { ids: [this.$route.params.id] },
-        });
+        let contactsData = await this.$store.dispatch(
+          "contactsData/loadFiltered",
+          {
+            contactType: "employee",
+            params: { ids: [this.$route.params.id] },
+          }
+        );
 
         this.contact = { ...contactsData.contacts[0] };
 
@@ -947,7 +859,8 @@ export default {
 
         this.contact.officialEmployment =
           this.contact.employments.find(
-            (employment) => employment.id === this.contact.officialEmployment?.id
+            (employment) =>
+              employment.id === this.contact.officialEmployment?.id
           ) || null;
 
         const inboxId = this.$route.params.inbox_id;
@@ -955,7 +868,6 @@ export default {
         if (inboxId) {
           // Load the inbox item using the store
           await this.$store.dispatch("inbox/load", inboxId);
-          this.selectedInboxItem = this.$store.state.inbox.item;
           this.diff = this.selectedInboxItem.data.changes;
         }
       }
@@ -994,54 +906,174 @@ export default {
     },
     getDiffValue(field, locale = null) {
       if (!this.diff) return "";
-      if (locale && this.diff.translations && this.diff.translations[locale]) {
-        return this.diff.translations[locale][field] || "";
+
+      const multilingualFields = ["website", "description", "city"];
+
+      let diffValue, contactValue;
+
+      if (multilingualFields.includes(field)) {
+        if (locale && locale !== "de") {
+          diffValue = this.diff.translations?.[locale]?.[field];
+          contactValue = this.contact.translations?.[locale]?.[field];
+        } else {
+          diffValue = this.diff.translations?.de?.[field] || this.diff[field];
+          contactValue = this.contact[field];
+        }
       } else {
-        return this.diff[field] || "";
+        if (locale && locale !== "de") {
+          diffValue = this.diff.translations?.[locale]?.[field];
+          contactValue = this.contact.translations?.[locale]?.[field];
+        } else {
+          diffValue = this.diff[field];
+          contactValue = this.contact[field];
+        }
+      }
+
+      // Only return diffValue if it differs from contactValue
+      if (diffValue !== undefined && diffValue !== contactValue) {
+        return diffValue;
+      } else {
+        return contactValue;
       }
     },
+    isEmploymentFieldChanged(field, employmentId, locale = "de") {
+      const employmentDiff = this.diff?.employments?.find(
+        (e) => e.id === employmentId
+      );
+      if (!employmentDiff) return false;
 
+      if (locale === "de") {
+        return (
+          employmentDiff[field] !== undefined &&
+          employmentDiff[field] !==
+          this.contact.employments.find((e) => e.id === employmentId)[field]
+        );
+      } else {
+        return (
+          employmentDiff.translations?.[locale]?.[field] !== undefined &&
+          employmentDiff.translations[locale][field] !==
+          this.contact.employments.find((e) => e.id === employmentId)
+            ?.translations?.[locale]?.[field]
+        );
+      }
+    },
+    getEmploymentDiffValue(field, employmentId, locale = "de") {
+      const employmentDiff = this.diff?.employments?.find(
+        (e) => e.id === employmentId
+      );
+      if (!employmentDiff) return "";
+
+      if (locale === "de") {
+        return employmentDiff[field] !== undefined
+          ? employmentDiff[field]
+          : this.contact.employments.find((e) => e.id === employmentId)[
+          field
+          ];
+      } else {
+        return employmentDiff.translations?.[locale]?.[field] !== undefined
+          ? employmentDiff.translations[locale][field]
+          : this.contact.employments.find((e) => e.id === employmentId)
+            ?.translations?.[locale]?.[field];
+      }
+    },
+    isEmploymentRemoved(employmentId) {
+      // i did it like this because the employmentId is a string and it would take to long to refactor it
+      let parsedId = parseInt(employmentId);
+      let isRemoved = false;
+
+      this.selectedInboxItem?.data?.removeEmploymentIds.forEach((element) => {
+        if (parseInt(element) === parsedId) {
+          isRemoved = true;
+        }
+      });
+
+      return isRemoved;
+    },
     isFieldChanged(field, locale = null) {
       if (!this.diff) return false;
 
-      if (locale) {
-        return (
-          this.diff.translations &&
-          this.diff.translations[locale] &&
-          this.diff.translations[locale][field] !== undefined
-        );
-      } else {
-        return this.diff[field] !== undefined;
-      }
-    },
-    mergeField(field, locale = null) {
       const multilingualFields = ["website", "description", "city"];
+      let diffValue, contactValue;
 
-      if (locale && multilingualFields.includes(field)) {
-        if (!this.contact.translations[locale]) {
-          this.contact.translations[locale] = {};
+      if (multilingualFields.includes(field)) {
+        if (locale && locale !== "de") {
+          diffValue = this.diff.translations?.[locale]?.[field];
+          contactValue = this.contact.translations?.[locale]?.[field];
+        } else {
+          diffValue = this.diff.translations?.de?.[field] || this.diff[field];
+          contactValue = this.contact[field];
         }
-        if (this.diff.translations && this.diff.translations[locale]) {
-          this.contact.translations[locale][field] = this.diff.translations[locale][
-            field
-          ];
-        }
-        if (locale === "de") {
-          this.contact[field] = this.diff.translations[locale][field];
-        }
-      } else if (multilingualFields.includes(field)) {
-        this.contact[field] = this.diff[field];
       } else {
-        this.contact[field] = this.diff[field];
+        if (locale && locale !== "de") {
+          diffValue = this.diff.translations?.[locale]?.[field];
+          contactValue = this.contact.translations?.[locale]?.[field];
+        } else {
+          diffValue = this.diff[field];
+          contactValue = this.contact[field];
+        }
       }
 
-      if (field === "language") {
-        this.contact.language = this.getLanguageById(this.diff.language) || null;
-      } else if (field === "country") {
-        this.contact.country = this.getCountryById(this.diff.country) || null;
-      }
+      return diffValue !== undefined && diffValue !== contactValue;
     },
 
+    mergeField(field, locale = null, employmentId = null) {
+      if (employmentId) {
+        const employment = this.contact.employments.find(
+          (e) => e.id === employmentId
+        );
+        if (!employment) return;
+
+        // Apply locale check for translated fields
+        if (locale && locale !== "de") {
+          if (!employment.translations[locale]) {
+            employment.translations[locale] = {};
+          }
+          employment.translations[locale][field] = this.diff.employments.find(
+            (e) => e.id === employmentId
+          )?.translations[locale]?.[field];
+        } else {
+          employment[field] = this.diff.employments.find(
+            (e) => e.id === employmentId
+          )?.[field];
+        }
+      } else {
+        const multilingualFields = ["website", "description", "city"];
+
+        if (multilingualFields.includes(field)) {
+          if (locale && locale !== "de") {
+            if (!this.contact.translations[locale]) {
+              this.contact.translations[locale] = {};
+            }
+            if (this.diff.translations && this.diff.translations[locale]) {
+              this.contact.translations[locale][field] =
+                this.diff.translations[locale][field];
+            }
+          } else {
+            this.contact[field] = this.diff[field];
+          }
+        } else {
+          if (locale && locale !== "de") {
+            if (!this.contact.translations[locale]) {
+              this.contact.translations[locale] = {};
+            }
+            if (this.diff.translations && this.diff.translations[locale]) {
+              this.contact.translations[locale][field] =
+                this.diff.translations[locale][field];
+            }
+          } else {
+            this.contact[field] = this.diff[field];
+          }
+        }
+
+        if (field === "language") {
+          this.contact.language =
+            this.getLanguageById(this.diff.language) || null;
+        } else if (field === "country") {
+          this.contact.country =
+            this.getCountryById(this.diff.country) || null;
+        }
+      }
+    },
     mergeAll() {
       const fields = [
         "academicTitle",
@@ -1069,6 +1101,27 @@ export default {
           }
         });
       });
+
+      this.contact.employments = this.contact.employments.filter(
+        (employment) => this.isDeleted(employment.id) === false
+      );
+    },
+    async discardAll() {
+      if (this.selectedInboxItem && this.selectedInboxItem.id) {
+        await this.$store.dispatch("inbox/delete", this.selectedInboxItem.id);
+        this.$router.push("/inbox");
+      } else {
+        this.$router.push("/contacts/person");
+      }
+    },
+    isDeleted(id) {
+      let deleted = false;
+      this.selectedInboxItem?.data?.removeEmploymentIds.forEach((element) => {
+        if (parseInt(element) === id) {
+          deleted = true;
+        }
+      });
+      return deleted;
     },
   },
   created() {

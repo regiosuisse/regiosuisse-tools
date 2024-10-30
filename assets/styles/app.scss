@@ -967,6 +967,10 @@ label {
           color: $theme-color-2;
           margin-bottom: 1em;
         }
+
+        &-transparent-bg {
+          background-color: transparent;
+        }
       }
     }
   }
@@ -1605,13 +1609,6 @@ $black: #000000;
     padding: 0 1%;
     box-sizing: border-box;
 
-    .employment-item {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
-
     h2 {
       font-size: 1.5em;
       margin-bottom: 1em;
@@ -1706,14 +1703,40 @@ $black: #000000;
     }
   }
 }
-.field-changed {
-  border-color: red;
+
+.contact-component-form-header {
+  display: flex;
+
+
 }
 
-// .contact-component-form-section {
-//   .contact-component-form-section {
-//     padding: 0;
-//   }
-// }
+.contact-component-form-header-actions-new {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  padding: 0 1em 0 1em;
+}
+
+.diff-header {
+  padding-left: 0!important;
+}
+
+.diff-section {
+  height: 8em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+
+.idontworkhere-checkbox-container {
+  margin-bottom: 1em;
+}
+
+.disabled-fields {
+  opacity: 0.5;
+}
+
+.disabled-fields input:not([type="checkbox"]) {
+  pointer-events: none;
+}
 
 @import '../custom/styles/custom';

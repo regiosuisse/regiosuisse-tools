@@ -272,7 +272,9 @@
                     </span>
                   </td>
                   <td>
-                    <button class="button error" @click="removeReceiver(index)">Entfernen</button>
+                    <button class="button error" @click="removeReceiver(index)">
+                      Entfernen
+                    </button>
                   </td>
                 </tr>
               </table>
@@ -675,7 +677,7 @@ export default {
 }
 
 .modal-footer::after {
-  content: '';
+  content: "";
   clear: both;
   display: block;
 }

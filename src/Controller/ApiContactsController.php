@@ -935,7 +935,7 @@ class ApiContactsController extends AbstractController
         if (!$contact) {
             $this->addFlash(
                 'message',
-                'Ihre Anfrage wurde bereits verarbeitet. Sollten Sie weitere Änderungen vornehmen wollen, kontaktieren Sie uns bitte unter info@regiosuiesse.ch.'
+                'Ihre Anfrage wurde bereits verarbeitet. Sollten Sie weitere Änderungen vornehmen wollen, kontaktieren Sie uns bitte unter <a href="mailto:web@regiosuisse.ch">web@regiosuiesse.ch</a>.'
             );
 
             return $this->render('contact/update_success.html.twig');
@@ -954,7 +954,7 @@ class ApiContactsController extends AbstractController
 
         if ($contact->getType() === 'person') {
             $form = $this->createForm(ContactTypePerson::class, $contact, [
-                'employments' => $employments,  
+                'employments' => $employments,
             ]);
         } else {
             $form = $this->createForm(ContactTypeCompany::class, $contact);
@@ -980,37 +980,59 @@ class ApiContactsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $contact->setOneTimeCode(null);
-            $removeEmploymentIds = $request->request->all('removeEmploymentIds') ?? [];
+            $employmentData = $request->request->all('employments');
+            $employmentChanges = [];
+            $diffData = [];
 
-            // TODO: Remove employments & Contact if user wish so
-            // foreach ($removeEmploymentIds as $employmentId) {
-            //     $employment = $entityManager
-            //         ->getRepository(Employment::class)
-            //         ->find($employmentId);
-            //     if ($employment && $employment->getEmployee()->getId() === $contact->getId()) {
-            //         // Remove employment if it belongs to the contact
-            //         $entityManager->remove($employment);
-            //     }
-            // }
-            // $contact->setTranslations([
-            //     'de' => [
-            //         'website' => $form->get('website')->getData(),
-            //         'city' => $form->get('city')->getData(),
-            //         'description' => $form->get('description')->getData(),
-            //     ],
-            //     'fr' => [
-            //         'website' => $form->get('translations_fr_website')->getData(),
-            //         'city' => $form->get('translations_fr_city')->getData(),
-            //         'description' => $form->get('translations_fr_description')->getData(),
-            //     ],
-            //     'it' => [
-            //         'website' => $form->get('translations_it_website')->getData(),
-            //         'city' => $form->get('translations_it_city')->getData(),
-            //         'description' => $form->get('translations_it_description')->getData(),
-            //     ],
-            // ]);
-            // $entityManager->persist($contact);
-            // $entityManager->flush();
+            if (is_array($employmentData)) {
+                foreach ($employmentData as $employmentId => $employmentFields) {
+                    // Find the Employment entity
+                    $employment = $entityManager->getRepository(Employment::class)->find($employmentId);
+                    if ($employment && $employment->getEmployee()->getId() === $contact->getId()) {
+                        // Collect original data
+                        $originalRole = $employment->getRole() ?? '';
+                        $originalTranslations = $employment->getTranslations() ?? [];
+
+                        // Get new data from form submission
+                        $newRole = $employmentFields['role'] ?? '';
+                        $newTranslations = $employmentFields['translations'] ?? [];
+
+                        // Compare and collect changes
+                        $roleChanged = $newRole !== $originalRole;
+
+                        $translationsChanged = [];
+
+                        foreach (['fr', 'it'] as $locale) {
+                            $originalTranslation = $originalTranslations[$locale]['role'] ?? '';
+                            $newTranslation = $newTranslations[$locale]['role'] ?? '';
+
+                            if ($newTranslation !== $originalTranslation) {
+                                $translationsChanged[$locale]['role'] = $newTranslation;
+                            }
+                        }
+
+                        // If there are changes, add them to the employmentChanges array
+                        if ($roleChanged || !empty($translationsChanged)) {
+                            $employmentChange = ['id' => $employmentId];
+
+                            if ($roleChanged) {
+                                $employmentChange['role'] = $newRole;
+                            }
+
+                            if (!empty($translationsChanged)) {
+                                $employmentChange['translations'] = $translationsChanged;
+                            }
+
+                            $employmentChanges[] = $employmentChange;
+                        }
+                    }
+                }
+
+                // Include employment changes in the diffData
+                if (!empty($employmentChanges)) {
+                    $diffData['employments'] = $employmentChanges;
+                }
+            }
 
             $form->getData();
 
@@ -1051,58 +1073,58 @@ class ApiContactsController extends AbstractController
                 'description' => $form->get('description')->getData(),
                 'street' => $form->get('street')->getData(),
                 'zipCode' => $form->get('zipCode')->getData(),
-                'country' => $form->get('country')->getData()->getId(),
-                'language' => $form->get('language')->getData()->getId(),
+                'country' => $form->get('country')->getData() ? $form->get('country')->getData()->getId() : null,
+                'language' => $form->get('language')->getData() ? $form->get('language')->getData()->getId() : null,
                 'gender' => $form->get('gender')->getData(),
             ];
 
-            $diffData = [];
 
             foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender'] as $field) {
                 if ($originalData[$field] != $newData[$field]) {
                     $diffData[$field] = $newData[$field];
                 }
             }
-            
-            if($newData['language']) {
-                if($originalData['language']->getId() != $newData['language']) {
+
+            if ($newData['language']) {
+                if ($originalData['language']->getId() != $newData['language']) {
                     $diffData['language'] = $newData['language'];
                 }
             }
 
-            if($newData['country']) {
-                if($originalData['country']->getId() != $newData['country']) {
+            if ($newData['country']) {
+                if ($originalData['country']->getId() != $newData['country']) {
                     $diffData['country'] = $newData['country'];
                 }
             }
 
             foreach (['de', 'fr', 'it'] as $locale) {
                 foreach (['website', 'city', 'description'] as $field) {
-                    if($locale === 'de') {
+                    if ($locale === 'de') {
                         $originalValue = $originalData[$field] ?? '';
                         $newValue = $newData[$field] ?? '';
-                        $diffData[$field] = $newValue;
+                        if ($originalValue != $newValue) {
+                            $diffData[$field] = $newValue;
+                        }
                     } else {
                         $originalValue = $originalData['translations'][$locale][$field] ?? '';
                         $newValue = $newData['translations'][$locale][$field] ?? '';
-                    }
-
-                    if ($originalValue != $newValue) {
-                        $diffData['translations'][$locale][$field] = $newValue;
+                        if ($originalValue != $newValue) {
+                            $diffData['translations'][$locale][$field] = $newValue;
+                        }
                     }
                 }
             }
-
+            
             $inbox->setData([
                 'changes' => $diffData,
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
-                'delete' => $request->request->all('delete') ?? false,
+                'delete' => $request->request->get('delete') ?? 0,
             ]);
 
             $inbox->setNormalizedData([
                 'changes' => $diffData,
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
-                'delete' => $request->request->all('delete') ?? false,
+                'delete' => $request->request->get('delete') ?? 0,
             ]);
             $inbox->setCreatedAt(new \DateTime());
 
