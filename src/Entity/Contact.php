@@ -152,7 +152,7 @@ class Contact
     #[Groups(['contact'])]
     private $verificationEmailSentDate;
 
-    #[ORM\ManyToMany(targetEntity: Topic::class, cascade: ['persist'])]
+    #[ORM\ManyToMany(targetEntity: Topic::class)]
     #[ORM\JoinTable(name: 'pv_contact_topic')]
     #[Groups(['contact'])]
     private Collection $topics;

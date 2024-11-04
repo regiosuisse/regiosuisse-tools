@@ -623,7 +623,11 @@ export default {
     },
     sendEmails() {
       let receiverEmails = [
-        ...new Set(this.emailModalData.receivers.map((receiver) => receiver.id)),
+        ...new Set(
+          this.emailModalData.receivers
+            .filter((receiver) => receiver.email)
+            .map((receiver) => receiver.id)
+        ),
       ];
 
       axios
@@ -637,7 +641,6 @@ export default {
         })
         .catch((error) => {
           alert("Beim Senden der E-Mails ist ein Fehler aufgetreten.");
-          console.log(error);
         });
     },
     getDaysAgo(date) {

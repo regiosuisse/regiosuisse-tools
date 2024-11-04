@@ -1,4 +1,26 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            {% block title %}
+                {{ env.INSTANCE_NAME }}
+            {% endblock %}
+        </title>
+        <link rel="icon" href="{{ asset('build/'~env.THEME_ICON) }}">
+        <meta name="theme-color" content="{{ env.THEME_COLOR_1 }}">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app', null, 'app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app', null, 'app') }}
+        {% endblock %}
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+        <script src="https://cdn.tiny.cloud/1/px9j0kj5p6lvpu6pws5k0zegh9b38uk1w3svi2tnqxb9q9xh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    </head>
 
 {% block body %}
     <div class="verification-page">
@@ -86,10 +108,11 @@
                             {{ form_row(form.translations_fr_city, { label: false, attr: { class: 'form-control' } }) }}
                         </div>
                         <div id="city-it" class="locale-input">
-                            {{ form_row(form.translations_it_city, { label: false , attr: { class: 'form-control' }}) }}
+                            {{ form_row(form.translations_it_city, { label: false , attr: { class: 'form-control' } }) }}
                         </div>
 
                         {{ form_row(form.country, { label: 'Paese', attr: { class: 'form-control' } }) }}
+                        {{ form_row(form.state, { label: 'Canton', attr: { class: 'form-control' } }) }}
                     </div>
 
                     <div class="verification-form-group">
@@ -109,6 +132,7 @@
                                 <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'description', event)">IT</a>
                             </span>
                         </div>
+                        <p style="margin-top: 0; color: gray; font-style: italic;">Vogliate indicare i vostri temi di lavoro o di ricerca specifici.</p>
                         <div id="description-de" class="locale-input" style="display:none;">
                             {{ form_row(form.description, { label: false, attr: { class: 'form-control' }, value: form.description.vars.value|striptags }) }}
                         </div>
@@ -120,6 +144,16 @@
                         </div>
                     </div>
                 </div>
+
+
+						<!-- Topics Field -->
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<h2>Argomenti</h2>
+								<p style="margin-top: 0; color: gray; font-style: italic;">Quali sono i temi principali di cui vi occupate? (più risposte possibili)</p>
+								{{ form_row(form.topics, { label: false, attr: { class: 'form-control select2' } }) }}
+							</div>
+						</div>
 
                 <div class="verification-form-row verification-form-group">
                     <h2 style="margin-bottom: 0">Posizioni attuali</h2>
@@ -272,5 +306,64 @@
                 changeEmploymentLocale('{{ employment.id }}', 'it');
             {% endfor %}
         });
+
+        document.addEventListener("DOMContentLoaded", function () { // Locate the generated ID for the topics dropdown dynamically
+            const topicsDropdown = document.querySelector('[id^="contact_type_person_topics"]');
+            const dropdownId = topicsDropdown ? topicsDropdown.id : null;
+
+            if (dropdownId) { // Initialize Select2 with a placeholder and ensure values are set
+                $('#' + dropdownId).select2({placeholder: "Seleziona argomenti", width: '100%'});
+
+                // Get preselected values from the server-side data
+                const preselectedValues = {{ form.topics.vars.data|map(v => v.id)|json_encode|raw }};
+
+                // Set the preselected values and trigger change event
+                $('#' + dropdownId).val(preselectedValues).trigger('change');
+
+                // Listen for changes in the selection
+                $('#' + dropdownId).on('change', function () {
+                    const selectedValues = $(this).val() || []; // Ensure array format
+                    updateSelectedTags(selectedValues);
+                });
+
+                function updateSelectedTags(selectedValues) {
+                    const tagContainer = document.getElementById('selected-topics-tags');
+                    tagContainer.innerHTML = ''; // Clear current tags
+
+                    selectedValues.forEach(value => {
+                        const tag = document.createElement('span');
+                        tag.className = 'topic-tag';
+                        tag.innerText = getTopicLabel(value);
+
+                        // Add a remove button for each tag
+                        const removeButton = document.createElement('span');
+                        removeButton.className = 'remove-tag';
+                        removeButton.innerHTML = '&times;';
+                        removeButton.onclick = () => removeTag(value);
+
+                        tag.appendChild(removeButton);
+                        tagContainer.appendChild(tag);
+                    });
+                }
+
+                function removeTag(value) {
+                    let currentValues = $('#' + dropdownId).val() || [];
+                    currentValues = currentValues.filter(v => v !== value);
+                    $('#' + dropdownId).val(currentValues).trigger('change');
+                }
+
+                function getTopicLabel(value) {
+                    return $('#' + dropdownId + ' option[value="' + value + '"]').text();
+                }
+            } else {
+                console.error("Dropdown ID for topics not found.");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            tinymce.init({selector: '#description-de .form-control, #description-fr .form-control, #description-it .form-control', menubar: false, toolbar: 'bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent', branding: false});
+        });
     </script>
 {% endblock %}
+    </body>
+</html>

@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Contact;
 use App\Entity\Country;
 use App\Entity\Language;
+use App\Entity\Topic;
+use App\Entity\State;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 // Form types
@@ -16,11 +18,22 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\Entity;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactTypePerson extends AbstractType
-{
+{    
+    private TranslatorInterface $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $locale = $options['locale'];
+
         // Personal Information
         $builder
             ->add('firstName', TextType::class, [
@@ -37,11 +50,11 @@ class ContactTypePerson extends AbstractType
             ])
             ->add('gender', ChoiceType::class, [
                 'label' => 'Geschlecht',
+                'placeholder' => $this->translator->trans('form.gender_placeholder', [], 'messages+intl-icu', $locale),
                 'choices' => [
-                    'Männlich' => 'male',
-                    'Weiblich' => 'female',
-                    'Divers' => 'diverse',
-                ],
+                    $this->translator->trans('form.gender_male', [], 'messages+intl-icu', $locale) => 'male',
+                    $this->translator->trans('form.gender_female', [], 'messages+intl-icu', $locale) => 'female',
+                    $this->translator->trans('form.gender_diverse', [], 'messages+intl-icu', $locale) => 'diverse',                ],
                 'mapped' => false,
                 'required' => false,
                 'data' => $options['data']->getGender(),
@@ -96,8 +109,17 @@ class ContactTypePerson extends AbstractType
                 'label' => 'Land',
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => 'Wählen Sie ein Land',
+                'placeholder' => $this->translator->trans('form.country_placeholder', [], 'messages+intl-icu', $locale),
                 'data' => $options['data']->getCountry(),
+            ])
+            ->add('state' , EntityType::class, [
+                'class' => State::class,
+                'choice_label' => 'name',
+                'label' => 'Kanton',
+                'mapped' => false,
+                'required' => false,
+                'placeholder' => $this->translator->trans('form.state_placeholder', [], 'messages+intl-icu', $locale),
+                'data' => $options['data']->getState(),
             ])
             // Additional Information
             ->add('language', EntityType::class, [
@@ -106,7 +128,7 @@ class ContactTypePerson extends AbstractType
                 'label' => 'Sprache',
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => 'Wählen Sie eine Sprache',
+                'placeholder' => $this->translator->trans('form.language_placeholder', [], 'messages+intl-icu', $locale),
                 'data' => $options['data']->getLanguage(),
             ])
             ->add('description', TextareaType::class, [
@@ -155,13 +177,27 @@ class ContactTypePerson extends AbstractType
             'required' => false,
             'data' => $options['data']->getTranslations()['it']['description'] ?? '',
         ]);
+        $builder->add('topics', EntityType::class, [
+            'label' => 'Themen',
+            'class' => Topic::class,
+            'multiple' => true,
+            'expanded' => false,
+            'choices' => $options['topics'],
+            'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
+            'choice_label' => function (Topic $topic) {
+                return $topic->getName();
+            },
+            'mapped' => false,
+        ]);
+
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Contact::class,
-            'employments' => [], // Set default empty array for employments
-
+            'employments' => [],
+            'topics' => [],
+            'locale' => 'de',
         ]);
     }
 }

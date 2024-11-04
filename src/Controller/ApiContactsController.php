@@ -28,6 +28,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Entity\Inbox;
+use App\Entity\Topic;
 
 
 #[Route(path: '/api/v1/contacts', name: 'api_contacts_')]
@@ -856,7 +857,6 @@ class ApiContactsController extends AbstractController
     ) {
         $data = json_decode($request->getContent(), true);
         $emails = $data['emails'] ?? [];
-        error_log(print_r($emails, true));
 
         foreach ($emails as $email) {
             // Find the contact by email
@@ -941,6 +941,17 @@ class ApiContactsController extends AbstractController
             return $this->render('contact/update_success.html.twig');
         }
 
+        $locale = $contact->getLanguage() ? $contact->getLanguage()->getContext() : 'de';
+
+        $topics = $entityManager
+            ->getRepository(Topic::class)
+            ->findAll();
+
+        $filteredTopics = array_filter($topics, function ($topic) {
+            return strpos($topic->getContext(), 'project') === false;
+        });
+        $filteredTopics = is_array($filteredTopics) ? $filteredTopics : iterator_to_array($filteredTopics);
+
         $employments = $entityManager
             ->getRepository(Employment::class)
             ->findBy(['employee' => $contact]);
@@ -955,9 +966,15 @@ class ApiContactsController extends AbstractController
         if ($contact->getType() === 'person') {
             $form = $this->createForm(ContactTypePerson::class, $contact, [
                 'employments' => $employments,
+                'topics' => $filteredTopics,
+                'locale' => $locale,
             ]);
         } else {
-            $form = $this->createForm(ContactTypeCompany::class, $contact);
+            $form = $this->createForm(ContactTypeCompany::class, $contact, [
+                'employments' => $employments,
+                'topics' => $filteredTopics,
+                'locale' => $locale,
+            ]);
         }
         // Create and handle the form
         $originalData = [
@@ -975,11 +992,24 @@ class ApiContactsController extends AbstractController
             'description' => $contact->getDescription(),
             'translations' => $contact->getTranslations() ?: [],
             'gender' => $contact->getGender(),
+            'topics' => $contact->getTopics() ?: [],
+            'state' => $contact->getState(),
         ];
-        $form->handleRequest($request);
 
+
+        $originalTopics = $originalData['topics'];
+        $originalTopicsArray = [];
+        
+        
+        foreach ($originalTopics as $topic) {
+            $originalTopicsArray[] = $topic->getId();
+        }
+
+        $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            $contact->setOneTimeCode(null);
+
+            //$contact->setOneTimeCode(null);
             $employmentData = $request->request->all('employments');
             $employmentChanges = [];
             $diffData = [];
@@ -1034,6 +1064,8 @@ class ApiContactsController extends AbstractController
                 }
             }
 
+
+
             $form->getData();
 
             $inbox = new Inbox();
@@ -1044,6 +1076,12 @@ class ApiContactsController extends AbstractController
             $inbox->setStatus('pending');
             $inbox->setInternalId($contact->getId());
             $inbox->setTitle($contact->getName());
+
+            $newTopics = $form->get('topics')->getData();
+            $topicsArray = [];
+            foreach ($newTopics as $topic) {
+                $topicsArray[] = ['id' => $topic->getId()];
+            }
 
             $newData = [
                 'academicTitle' => $form->get('academicTitle')->getData(),
@@ -1076,7 +1114,10 @@ class ApiContactsController extends AbstractController
                 'country' => $form->get('country')->getData() ? $form->get('country')->getData()->getId() : null,
                 'language' => $form->get('language')->getData() ? $form->get('language')->getData()->getId() : null,
                 'gender' => $form->get('gender')->getData(),
+                'topics' => $topicsArray,
+                'state' => $form->get('state')->getData()->getId(),
             ];
+
 
 
             foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender'] as $field) {
@@ -1084,6 +1125,11 @@ class ApiContactsController extends AbstractController
                     $diffData[$field] = $newData[$field];
                 }
             }
+
+            if ($originalTopicsArray != $topicsArray) {
+                $diffData['topics'] = $topicsArray;
+            }
+
 
             if ($newData['language']) {
                 if ($originalData['language']->getId() != $newData['language']) {
@@ -1094,6 +1140,13 @@ class ApiContactsController extends AbstractController
             if ($newData['country']) {
                 if ($originalData['country']->getId() != $newData['country']) {
                     $diffData['country'] = $newData['country'];
+                }
+            }
+
+            if ($newData['state']) {
+
+                if ($originalData['state']?->getId() != $newData['state']) {
+                    $diffData['state'] = $newData['state'];
                 }
             }
 
@@ -1114,7 +1167,7 @@ class ApiContactsController extends AbstractController
                     }
                 }
             }
-            
+
             $inbox->setData([
                 'changes' => $diffData,
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
@@ -1126,6 +1179,7 @@ class ApiContactsController extends AbstractController
                 'removeEmploymentIds' => $request->request->all('removeEmploymentIds') ?? [],
                 'delete' => $request->request->get('delete') ?? 0,
             ]);
+
             $inbox->setCreatedAt(new \DateTime());
 
             $entityManager->persist($inbox);
@@ -1151,7 +1205,8 @@ class ApiContactsController extends AbstractController
         return $this->render($contactFormTemplate, [
             'form' => $form->createView(),
             'locale' => $languageCode,
-            'employments' => $employments
+            'employments' => $employments,
+            'topics' => $filteredTopics,
         ]);
     }
 
