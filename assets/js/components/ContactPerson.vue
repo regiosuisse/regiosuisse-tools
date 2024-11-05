@@ -665,6 +665,40 @@
           </div>
         </div>
 
+        <div class="contact-component-form-row">
+          <div class="contact-component-form-section">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="userComment" class="contact-component-form-section-label"
+                  >Kommentar</label
+                >
+                <textarea
+                  id="userComment"
+                  class="form-control"
+                  v-model="contact.userComment"
+                ></textarea>
+              </div>
+              <div v-if="diff" class="col-md-6">
+                <div :class="{ disabled: !isFieldChanged('userComment') }">
+                  <label for="userComment" class="contact-component-form-section-label"
+                    ><span
+                      v-if="isFieldChanged('userComment')"
+                      class="material-icons"
+                      @click="mergeField('userComment')"
+                      >keyboard_backspace</span
+                    >Kommentar</label
+                  >
+                  <textarea
+                    id="userCommentDiff"
+                    class="form-control"
+                    v-model="diff.userComment"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div
           class="contact-component-form-section-group contact-group-component-form-section-group-transparent-bg"
         >
@@ -681,7 +715,11 @@
                 :searchType="'select'"
               ></tag-selector>
             </div>
-            <div :class="{ disabled: !isFieldChanged('topics') }" class="col-md-6">
+            <div
+              v-if="diff && isFieldChanged('topics')"
+              :class="{ disabled: !isFieldChanged('topics') }"
+              class="col-md-6"
+            >
               <label for="topicsDiff">
                 <span
                   v-if="isFieldChanged('topics', locale)"
@@ -729,7 +767,6 @@
               >
                 <!-- Employment Editing Section -->
                 <div class="row">
-                  <!-- Left Column: Current Employment Fields -->
                   <div class="col-md-12">
                     <div class="row">
                       <div class="col-md-6">
@@ -741,8 +778,6 @@
                           :options="contacts"
                         ></single-selector>
                       </div>
-
-                      <!-- Role Field -->
                       <div class="col-md-3" v-if="locale === 'de'">
                         <label for="employment">Funktion</label>
                         <input
@@ -779,7 +814,6 @@
                         />
                       </div>
 
-                      <!-- Official Address Checkbox -->
                       <div class="col-md-2">
                         <label>Hauptadresse</label>
                         <input
@@ -792,7 +826,6 @@
                         />
                       </div>
 
-                      <!-- Remove Employment Button -->
                       <div class="col-md-1">
                         <label>&nbsp;</label>
                         <div
@@ -809,7 +842,6 @@
                 </div>
               </div>
 
-              <!-- Add Employment Button -->
               <div
                 class="contact-group-component-form-section-group contact-group-component-form-section-group-transparent-bg"
               >
@@ -821,7 +853,6 @@
           </div>
           <div class="contact-component-form-section">
             <div class="row" v-if="diff && !isDeleteRequest">
-              <!-- Right Column: Diff Employment Fields -->
               <label
                 :class="{
                   disabled: isEmploymentLabelHidden,
@@ -835,7 +866,6 @@
                 class="col-md-12 diff-section contact-group-component-form-section-group contact-group-component-form-section-group-transparent-bg"
               >
                 <div class="row">
-                  <!-- Role Diff Field -->
                   <div
                     class="col-md-12"
                     :class="{
@@ -956,6 +986,7 @@ export default {
           it: {},
         },
         isPublic: false,
+        userComment: "",
       },
       originalContactGroups: [],
       newContactGroups: [],
@@ -999,6 +1030,7 @@ export default {
       languages: (state) => state.languages.all,
       topics: (state) => state.topics.all,
       selectedInboxItem: (state) => state.inbox.item,
+      inbox: (state) => state.inbox.all,
     }),
     ...mapGetters({
       getContactById: "contacts/getById",
@@ -1086,7 +1118,6 @@ export default {
     async clickSave() {
       let contact = { ...this.contact };
 
-      // this somehow fixes the bug that translations wont be saved despite being set
       this.contact.translations = {
         fr: {
           ...this.contact.translations.fr,
@@ -1189,8 +1220,47 @@ export default {
           // Load the inbox item using the store
           await this.$store.dispatch("inbox/load", inboxId);
           this.diff = this.selectedInboxItem.data.changes;
+        } else {
+          this.warnIfInboxItemExists();
         }
       }
+    },
+    warnIfInboxItemExists() {
+      let inboxItem = this.inbox.find(
+        (inboxItem) =>
+          inboxItem.type === "contact_update" &&
+          inboxItem.internalId &&
+          parseInt(inboxItem.internalId) === this.contact.id
+      );
+
+      if (!inboxItem) {
+        return;
+      }
+
+      this.modal = {
+        title: "Veraltete Daten",
+        description:
+          "Achtung: Sie betrachten einen Kontakt für welches bereits Änderungen im Posteingang vorliegen. Möchten Sie stattdessen zum Eintrag im Posteingang wechseln?",
+        actions: [
+          {
+            label: "Zum Eintrag im Posteingang",
+            class: "success",
+            onClick: () => {
+              this.$router.push(
+                "/inbox/contacts/person/" + this.contact.id + "/" + inboxItem.id
+              );
+              this.modal = null;
+            },
+          },
+          {
+            label: "Trotzdem fortfahren",
+            class: "warning",
+            onClick: () => {
+              this.modal = null;
+            },
+          },
+        ],
+      };
     },
     translate(property, context) {
       if (this.locale === "de") {
@@ -1249,7 +1319,6 @@ export default {
         }
       }
 
-      // Only return diffValue if it differs from contactValue
       if (diffValue !== undefined && diffValue !== contactValue) {
         return diffValue;
       } else {
@@ -1293,7 +1362,6 @@ export default {
       }
     },
     isEmploymentRemoved(employmentId) {
-      // i did it like this because the employmentId is a string and it would take to long to refactor it
       let parsedId = parseInt(employmentId);
       let isRemoved = false;
 
@@ -1388,10 +1456,12 @@ export default {
               ];
             }
           } else {
+            // Default
             this.contact[field] = this.diff[field];
           }
         }
       }
+
       if (field === "language") {
         this.contact.language = this.getLanguageById(this.diff.language) || null;
       }
@@ -1427,6 +1497,7 @@ export default {
         "email",
         "topics",
         "state",
+        "userComment",
       ];
 
       const locales = ["de", "fr", "it"];

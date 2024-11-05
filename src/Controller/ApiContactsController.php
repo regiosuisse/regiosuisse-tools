@@ -863,6 +863,7 @@ class ApiContactsController extends AbstractController
             $contact = $entityManager
                 ->getRepository(Contact::class)
                 ->findOneBy(['id' => $email]);
+                
 
             if ($contact) {
                 // Generate a one-time code
@@ -879,14 +880,13 @@ class ApiContactsController extends AbstractController
                 $template = match ($language) {
                     'fr' => 'emails/verify_contact_fr.html.twig',
                     'it' => 'emails/verify_contact_it.html.twig',
-                    default => 'emails/verify_contact.html.twig', // Default to German
+                    default => 'emails/verify_contact.html.twig',
                 };
 
-                // Send email
                 $emailMessage = (new Email())
                     ->from('no-reply@regiosuisse.ch')
                     ->to($contact->getEmail())
-                    ->subject('Verifizieren Sie Ihre Kontaktdaten')
+                    ->subject($language === 'fr' ? 'Confirmez vos coordonnées' : ($language === 'it' ? 'Conferma i tuoi dati di contatto' : 'Bestätigen Sie Ihre Kontaktdaten'))
                     ->html(
                         $this->renderView(
                             $template,
@@ -963,19 +963,13 @@ class ApiContactsController extends AbstractController
             }
         }
 
-        if ($contact->getType() === 'person') {
-            $form = $this->createForm(ContactTypePerson::class, $contact, [
-                'employments' => $employments,
-                'topics' => $filteredTopics,
-                'locale' => $locale,
-            ]);
-        } else {
-            $form = $this->createForm(ContactTypeCompany::class, $contact, [
-                'employments' => $employments,
-                'topics' => $filteredTopics,
-                'locale' => $locale,
-            ]);
-        }
+
+        $form = $this->createForm(ContactTypePerson::class, $contact, [
+            'employments' => $employments,
+            'topics' => $filteredTopics,
+            'locale' => $locale,
+        ]);
+
         // Create and handle the form
         $originalData = [
             'academicTitle' => $contact->getAcademicTitle(),
@@ -994,6 +988,7 @@ class ApiContactsController extends AbstractController
             'gender' => $contact->getGender(),
             'topics' => $contact->getTopics() ?: [],
             'state' => $contact->getState(),
+            'userComment' => $contact->getUserComment(),
         ];
 
 
@@ -1115,12 +1110,13 @@ class ApiContactsController extends AbstractController
                 'language' => $form->get('language')->getData() ? $form->get('language')->getData()->getId() : null,
                 'gender' => $form->get('gender')->getData(),
                 'topics' => $topicsArray,
-                'state' => $form->get('state')->getData()->getId(),
+                'state' => $form->get('state')->getData() ? $form->get('state')->getData()->getId() : null,
+                'userComment' => $form->get('userComment')->getData(),
             ];
 
 
 
-            foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender'] as $field) {
+            foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender', 'userComment'] as $field) {
                 if ($originalData[$field] != $newData[$field]) {
                     $diffData[$field] = $newData[$field];
                 }

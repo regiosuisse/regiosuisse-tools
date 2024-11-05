@@ -1,362 +1,400 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>
-            {% block title %}
-                {{ env.INSTANCE_NAME }}
-            {% endblock %}
-        </title>
-        <link rel="icon" href="{{ asset('build/'~env.THEME_ICON) }}">
-        <meta name="theme-color" content="{{ env.THEME_COLOR_1 }}">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app', null, 'app') }}
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            {{ env.INSTANCE_NAME }}
         {% endblock %}
+    </title>
+    <link rel="icon" href="{{ asset('build/'~env.THEME_ICON) }}">
+    <meta name="theme-color" content="{{ env.THEME_COLOR_1 }}">
+    
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app', null, 'app') }}
+    {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app', null, 'app') }}
-        {% endblock %}
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-		<script src="https://cdn.tiny.cloud/1/px9j0kj5p6lvpu6pws5k0zegh9b38uk1w3svi2tnqxb9q9xh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    </head>
-    <body>
-        {% block body %}
-            <div class="verification-page">
-
-                <!-- Header Section -->
-                <header class="verification-header">
-                    <div class="container">
-                        <p><img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="Logo" class="logo"></p>
-                    </div>
-                    <div class="container">
-                        <h1>Vos informations de contact</h1>
-                    </div>
-                    <div class="container">
-                        <p style="color: black">Veuillez vérifier vos informations de contact et les mettre à jour si nécessaire. Si vous souhaitez être supprimé de notre base de données, cochez la case ci-dessous et enregistrez vos informations.</p>
-                    </div>
-                    <div class="container verification-header-seperator"></div>
-                </header>
-
-                <!-- Form Section -->
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app', null, 'app') }}
+    {% endblock %}
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/px9j0kj5p6lvpu6pws5k0zegh9b38uk1w3svi2tnqxb9q9xh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+    {% block body %}
+        <div class="verification-page">
+            <!-- Header Section -->
+            <header class="verification-header">
                 <div class="container">
-                    {{ form_start(form) }}
-                    <div class="verification-form">
-                        <div class="verification-form-row">
-                            <div class="verification-form-group">
-                                <h2>Informations personnelles</h2>
-                                {{ form_row(form.academicTitle, { label: 'Titre académique', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.firstName, { label: 'Prénom', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.lastName, { label: 'Nom de famille', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.gender, { label: 'Genre', attr: { class: 'form-control' } }) }}
-                            </div>
-
-                            <div class="verification-form-group">
-                                <h2>Informations de contact</h2>
-                                {{ form_row(form.email, { label: 'E-mail', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.phone, { label: 'Téléphone', attr: { class: 'form-control' } }) }}
-
-                                <!-- Multilingual Website field with locale switch buttons -->
-                                <div class="website" style="display: flex; flex-direction: row;">
-                                    <label id="website-label-de" style="display:none;">Site Web (DE)</label>
-                                    <label id="website-label-fr">Site Web (FR)</label>
-                                    <label id="website-label-it" style="display:none;">Site Web (IT)</label>
-                                    <span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'website', event)">DE</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'website', event)">FR</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'website', event)">IT</a>
-                                    </span>
-                                </div>
-                                <div id="website-de" class="locale-input" style="display:none;">
-                                    {{ form_row(form.website, { label: false , attr: { class: 'form-control' }}) }}
-                                </div>
-                                <div id="website-fr" class="locale-input">
-                                    {{ form_row(form.translations_fr_website, { label: false, attr: { class: 'form-control' } }) }}
-                                </div>
-                                <div id="website-it" class="locale-input" style="display:none;">
-                                    {{ form_row(form.translations_it_website, { label: false, attr: { class: 'form-control' } }) }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="verification-form-row">
-                            <div class="verification-form-group">
-                                <h2>Adresse</h2>
-                                {{ form_row(form.street, { label: 'Rue', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.zipCode, { label: 'Code postal', attr: { class: 'form-control' } }) }}
-
-                                <!-- Multilingual City field with locale switch buttons -->
-                                <div class="city" style="display: flex; flex-direction: row;">
-                                    <label id="city-label-de" style="display:none;">Ville (DE)</label>
-                                    <label id="city-label-fr">Ville (FR)</label>
-                                    <label id="city-label-it" style="display:none;">Ville (IT)</label>
-                                    <span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'city', event)">DE</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'city', event)">FR</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'city', event)">IT</a>
-                                    </span>
-                                </div>
-                                <div id="city-de" class="locale-input" style="display:none;">
-                                    {{ form_row(form.city, { label: false, attr: { class: 'form-control' } }) }}
-                                </div>
-                                <div id="city-fr" class="locale-input">
-                                    {{ form_row(form.translations_fr_city, { label: false, attr: { class: 'form-control' } }) }}
-                                </div>
-                                <div id="city-it" class="locale-input" style="display:none;">
-                                    {{ form_row(form.translations_it_city, { label: false , attr: { class: 'form-control' } }) }}
-                                </div>
-
-                                {{ form_row(form.country, { label: 'Pays', attr: { class: 'form-control' } }) }}
-                                {{ form_row(form.state, { label: 'Canton', attr: { class: 'form-control' } }) }}
-                            </div>
-
-                            <div class="verification-form-group">
-                                <h2>Informations supplémentaires</h2>
-                                {{ form_row(form.language, { label: 'Langue', attr: { class: 'form-control' } }) }}
-
-                                <!-- Multilingual Description field with locale switch buttons -->
-                                <div class="description" style="display: flex; flex-direction: row;">
-                                    <label id="description-label-de" style="display:none;">Description (DE)</label>
-                                    <label id="description-label-fr">Description (FR)</label>
-                                    <label id="description-label-it" style="display:none;">Description (IT)</label>
-                                    <span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'description', event)">DE</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'description', event)">FR</a>
-                                        <span>|</span>
-                                        <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'description', event)">IT</a>
-                                    </span>
-                                </div>
-                                <p style="margin-top: 0; color: gray; font-style: italic;">Veuillez indiquer vos sujets de travail ou de recherche spécifiques.</p>
-                                <div id="description-de" class="locale-input" style="display:none;">
-                                    {{ form_row(form.description, { label: false, attr: { class: 'form-control' }, value: form.description.vars.value|raw }) }}
-                                </div>
-                                <div id="description-fr" class="locale-input">
-                                    {{ form_row(form.translations_fr_description, { label: false, attr: { class: 'form-control' }, value: form.translations_fr_description.vars.value|raw }) }}
-                                </div>
-                                <div id="description-it" class="locale-input" style="display:none;">
-                                    {{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' }, value: form.translations_it_description.vars.value|raw }) }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Topics Field -->
-                        <div class="verification-form-row">
-                            <div class="verification-form-group">
-                                <h2>Sujets</h2>
-								<p style="margin-top: 0; color: gray; font-style: italic;">Quels sont les thèmes qui sont au cœur de votre activité ? (plusieurs choix possibles)</p>
-                                {{ form_row(form.topics, { label: false, attr: { class: 'form-control select2' } }) }}
-
-                            </div>
-                        </div>
-
-                        <div class="verification-form-row verification-form-group">
-                            <h2 style="margin-bottom: 0">Entreprises associées</h2>
-                        </div>
-                        <div class="verification-form-row ">
-                            {% for employment in employments %}
-                                <div class="verification-form-group col-md-6" id="employment-group-{{ employment.id }}">
-                                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                                        <label style="text-decoration: underline;">{{ employment.companyName }}</label>
-                                        <div class="idontworkhere-checkbox-container">
-                                            <input type="checkbox" name="removeEmploymentIds[]" value="{{ employment.id }}" id="employment-checkbox-{{ employment.id }}" onchange="toggleDisabledState({{ employment.id }})"><span>Je ne travaille plus ici.</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Locale Switch Buttons for Role -->
-                                    <div class="role" style="display: flex; flex-direction: row;">
-                                        <label id="role-label-{{ employment.id }}-de" style="display:none;">Fonction (DE)</label>
-                                        <label id="role-label-{{ employment.id }}-fr">Fonction (FR)</label>
-                                        <label id="role-label-{{ employment.id }}-it" style="display:none;">Fonction (IT)</label>
-                                        <span>
-                                            <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'de', event)">DE</a>
-                                            <span>|</span>
-                                            <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'fr', event)">FR</a>
-                                            <span>|</span>
-                                            <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'it', event)">IT</a>
-                                        </span>
-                                    </div>
-
-                                    <!-- Input Fields for Role -->
-                                    <div id="role-{{ employment.id }}-de" class="locale-input" style="display:none;">
-                                        <input type="text" name="employments[{{ employment.id }}][role]" value="{{ employment.role }}" class="form-control"></input>
-                                    </div>
-                                    <div id="role-{{ employment.id }}-fr" class="locale-input">
-                                        <input type="text" name="employments[{{ employment.id }}][translations][fr][role]" value="{{ employment.translations['fr']['role'] ?? '' }}" class="form-control"></input>
-                                    </div>
-                                    <div id="role-{{ employment.id }}-it" class="locale-input" style="display:none;">
-                                        <input type="text" name="employments[{{ employment.id }}][translations][it][role]" value="{{ employment.translations['it']['role'] ?? '' }}" class="form-control"></input>
-                                    </div>
-                                </div>
-                            {% endfor %}
-
-                            {% if employments|length % 2 != 0 %}
-                                <div class="employment-item verification-form-group col-md-6"></div>
-                            {% endif %}
-                        </div>
-
-                        <div class="verification-form-row">
-                            <div class="verification-form-group">
-                                <div>
-                                    <h2>Se désinscrire</h2>
-                                    <div style="display: flex; flex-direction: row; margin-top: 40px; align-content: center;">
-                                        <input type="checkbox" name="delete" value="1">
-                                        <span style="margin-left: 5px; color: black">Je souhaite être supprimé de la base de données.</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="verification-form-group"></div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-primary">Enregistrer</button>
-                        </div>
-                    </div>
-                    {{ form_end(form) }}
+                    <p>
+                        <img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="Logo" class="logo">
+                    </p>
                 </div>
+                <div class="container">
+                    <h1>Vos informations de contact</h1>
+                </div>
+                <div class="container">
+                    <p style="color: black">
+                        Veuillez vérifier vos informations de contact et les mettre à jour si nécessaire. Si vous souhaitez être supprimé de notre base de données, cochez la case ci-dessous et enregistrez vos informations.
+                    </p>
+                </div>
+                <div class="container verification-header-seperator"></div>
+            </header>
 
-                <!-- Footer Section -->
-                <footer class="verification-footer">
-                    <div class="container">
-                        <p>©
-                            {{ "now"|date("Y") }}
-                            regiosuisse - La plateforme pour le développement régional en Suisse</p>
-                        <p>
-                            <a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
-                            <span>En cas de questions ou de problèmes, veuillez contacter
-                                <a href="mailto:web@regiosuisse.ch">web@regiosuisse.ch</a>
-                            </span>
-                        </p>
+            <!-- Form Section -->
+            <div class="container">
+                {{ form_start(form) }}
+                <div class="verification-form">
+                    <!-- Personal Information & Contact Information -->
+                    <div class="verification-form-row">
+                        <div class="verification-form-group">
+                            <h2>Informations personnelles</h2>
+                            {{ form_row(form.academicTitle, { label: 'Titre académique', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.firstName, { label: 'Prénom', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.lastName, { label: 'Nom de famille', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.gender, { label: 'Sexe', attr: { class: 'form-control' } }) }}
+                        </div>
+
+                        <div class="verification-form-group">
+                            <h2>Informations de contact</h2>
+                            {{ form_row(form.email, { label: 'E-mail', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.phone, { label: 'Téléphone', attr: { class: 'form-control' } }) }}
+
+                            <!-- Multilingual Website field with locale switch buttons -->
+                            <div class="website" style="display: flex; flex-direction: row; margin-top: 10px;">
+                                <label id="website-label-de">Site web (DE)</label>
+                                <label id="website-label-fr" style="display:none;">Site web (FR)</label>
+                                <label id="website-label-it" style="display:none;">Site web (IT)</label>
+                                <span style="margin-left: 10px;">
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'website', event)">DE</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'website', event)">FR</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'website', event)">IT</a>
+                                </span>
+                            </div>
+                            <div id="website-de" class="locale-input">
+                                {{ form_row(form.website, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+                            <div id="website-fr" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_fr_website, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+                            <div id="website-it" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_it_website, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+                        </div>
                     </div>
-                </footer>
+
+                    <!-- Address & Additional Information -->
+                    <div class="verification-form-row">
+                        <div class="verification-form-group">
+                            <h2>Adresse</h2>
+                            {{ form_row(form.street, { label: 'Rue', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.zipCode, { label: 'Code postal', attr: { class: 'form-control' } }) }}
+
+                            <!-- Multilingual City field with locale switch buttons -->
+                            <div class="city" style="display: flex; flex-direction: row; margin-top: 10px;">
+                                <label id="city-label-de">Ville (DE)</label>
+                                <label id="city-label-fr" style="display:none;">Ville (FR)</label>
+                                <label id="city-label-it" style="display:none;">Ville (IT)</label>
+                                <span style="margin-left: 10px;">
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'city', event)">DE</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'city', event)">FR</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'city', event)">IT</a>
+                                </span>
+                            </div>
+                            <div id="city-de" class="locale-input">
+                                {{ form_row(form.city, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+                            <div id="city-fr" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_fr_city, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+                            <div id="city-it" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_it_city, { label: false, attr: { class: 'form-control' } }) }}
+                            </div>
+
+                            {{ form_row(form.country, { label: 'Pays', attr: { class: 'form-control' } }) }}
+                            {{ form_row(form.state, { label: 'Canton', attr: { class: 'form-control' } }) }}
+                        </div>
+
+                        <div class="verification-form-group">
+                            <h2>Informations supplémentaires</h2>
+                            {{ form_row(form.language, { label: 'Langue', attr: { class: 'form-control' } }) }}
+
+                            <!-- Multilingual Description field with locale switch buttons -->
+                            <div class="description" style="display: flex; flex-direction: row; margin-top: 10px;">
+                                <label id="description-label-de">Description (DE)</label>
+                                <label id="description-label-fr" style="display:none;">Description (FR)</label>
+                                <label id="description-label-it" style="display:none;">Description (IT)</label>
+                                <span style="margin-left: 10px;">
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('de', 'description', event)">DE</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'description', event)">FR</a>
+                                    <span>|</span>
+                                    <a href="#" class="btn locale-btn" onclick="changeLocale('it', 'description', event)">IT</a>
+                                </span>
+                            </div>
+                            <p style="margin-top: 0; color: gray; font-style: italic;">
+                                Veuillez indiquer vos sujets de travail ou de recherche spécifiques.
+                            </p>
+                            <div id="description-de" class="locale-input">
+                                {{ form_row(form.description, { label: false, attr: { class: 'form-control' }, value: form.description.vars.value|raw }) }}
+                            </div>
+                            <div id="description-fr" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_fr_description, { label: false, attr: { class: 'form-control' }, value: form.translations_fr_description.vars.value|raw }) }}
+                            </div>
+                            <div id="description-it" class="locale-input" style="display:none;">
+                                {{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' }, value: form.translations_it_description.vars.value|raw }) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Topics Field -->
+                    <div class="verification-form-row">
+                        <div class="verification-form-group">
+                            <h2>Sujets</h2>
+                            <p style="margin-top: 0; color: gray; font-style: italic;">
+                                Quels sujets sont au cœur de votre activité ? (sélection multiple possible)
+                            </p>
+                            {{ form_row(form.topics, { label: false, attr: { class: 'form-control select2' } }) }}
+                        </div>
+                    </div>
+
+					<div class="verification-form-row">
+                        <div class="verification-form-group">
+                            <h2>Autres</h2>
+                            <p style="margin-top: 0; color: gray; font-style: italic;">
+                                Entrez vos commentaires / remarques ici. (facultatif)
+                            </p>
+                            {{ form_row(form.userComment, { label: false, attr: { class: 'form-control' } }) }}
+                        </div>
+                    </div>
+
+                    {% if employments|length > 0 %}
+                        <div class="verification-form-row verification-form-group">
+                            <h2 style="margin-bottom: 0">Entreprises liées</h2>
+                        </div>
+                    {% endif %}
+
+                    <!-- Linked Companies -->
+                    <div class="verification-form-row">
+                        {% for employment in employments %}
+                            <div class="verification-form-group col-md-6" id="employment-group-{{ employment.id }}">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="text-decoration: underline;">{{ employment.companyName }}</label>
+                                    <div class="idontworkhere-checkbox-container">
+                                        <input type="checkbox" name="removeEmploymentIds[]" value="{{ employment.id }}" id="employment-checkbox-{{ employment.id }}" onchange="toggleDisabledState({{ employment.id }})">
+                                        <span>Je ne travaille plus ici.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Locale Switch Buttons for Role -->
+                                <div class="role" style="display: flex; flex-direction: row; margin-top: 10px;">
+                                    <label id="role-label-{{ employment.id }}-de">Fonction (DE)</label>
+                                    <label id="role-label-{{ employment.id }}-fr" style="display:none;">Fonction (FR)</label>
+                                    <label id="role-label-{{ employment.id }}-it" style="display:none;">Fonction (IT)</label>
+                                    <span style="margin-left: 10px;">
+                                        <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'de', event)">DE</a>
+                                        <span>|</span>
+                                        <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'fr', event)">FR</a>
+                                        <span>|</span>
+                                        <a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'it', event)">IT</a>
+                                    </span>
+                                </div>
+
+                                <!-- Input Fields for Role -->
+                                <div id="role-{{ employment.id }}-de" class="locale-input">
+                                    <input type="text" name="employments[{{ employment.id }}][role]" value="{{ employment.role }}" class="form-control" />
+                                </div>
+                                <div id="role-{{ employment.id }}-fr" class="locale-input" style="display:none;">
+                                    <input type="text" name="employments[{{ employment.id }}][translations][fr][role]" value="{{ employment.translations['fr']['role'] ?? '' }}" class="form-control" />
+                                </div>
+                                <div id="role-{{ employment.id }}-it" class="locale-input" style="display:none;">
+                                    <input type="text" name="employments[{{ employment.id }}][translations][it][role]" value="{{ employment.translations['it']['role'] ?? '' }}" class="form-control" />
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% if employments|length is odd %}
+                            <div class="employment-item verification-form-group col-md-6"></div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Unsubscribe Section -->
+                    <div class="verification-form-row">
+                        <div class="verification-form-group">
+                            <div>
+                                <h2>Se désinscrire</h2>
+                                <div style="display: flex; align-items: center; margin-top: 40px;">
+                                    <input type="checkbox" name="delete" value="1">
+                                    <span style="margin-left: 5px; color: black;">Je souhaite être supprimé de la base de données.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="verification-form-group"></div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
             </div>
+        </div>
+    {% endblock %}
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function () { // Initialize locale for other fields
-                    changeLocale('fr', 'website');
-                    changeLocale('fr', 'city');
-                    changeLocale('fr', 'description');
-                });
-
-                function changeLocale(locale, field, event) {
-                    if (event) {
-                        event.preventDefault();
-                    }
-                    document.getElementById(field + '-de').style.display = 'none';
-                    document.getElementById(field + '-fr').style.display = 'none';
-                    document.getElementById(field + '-it').style.display = 'none';
-
-                    document.getElementById(field + '-label-de').style.display = 'none';
-                    document.getElementById(field + '-label-fr').style.display = 'none';
-                    document.getElementById(field + '-label-it').style.display = 'none';
-
-                    // Show the selected language input field
-                    document.getElementById(field + '-' + locale).style.display = 'block';
-                    document.getElementById(field + '-label-' + locale).style.display = 'block';
-                }
-
-                function changeEmploymentLocale(employmentId, locale, event) {
-                    if (event) {
-                        event.preventDefault();
-                    }
-                    // Hide all input fields for the current employment's role
-                    document.getElementById('role-' + employmentId + '-de').style.display = 'none';
-                    document.getElementById('role-' + employmentId + '-fr').style.display = 'none';
-                    document.getElementById('role-' + employmentId + '-it').style.display = 'none';
-
-                    document.getElementById('role-label-' + employmentId + '-de').style.display = 'none';
-                    document.getElementById('role-label-' + employmentId + '-fr').style.display = 'none';
-                    document.getElementById('role-label-' + employmentId + '-it').style.display = 'none';
-
-                    // Show the selected language input field
-                    document.getElementById('role-' + employmentId + '-' + locale).style.display = 'block';
-                    document.getElementById('role-label-' + employmentId + '-' + locale).style.display = 'block';
-                }
-                function toggleDisabledState(employmentId) {
-                    const employmentGroup = document.getElementById(`employment-group-${employmentId}`);
-                    const inputs = employmentGroup.querySelectorAll('input[type="text"], select, textarea');
-
-                    // Toggle the disabled class and pointer-events on all fields except the checkbox
-                    inputs.forEach(input => {
-                        input.disabled = document.getElementById(`employment-checkbox-${employmentId}`).checked;
-                    });
-
-                    // Update opacity styling
-                    if (document.getElementById(`employment-checkbox-${employmentId}`).checked) {
-                        employmentGroup.classList.add("disabled-fields");
-                    } else {
-                        employmentGroup.classList.remove("disabled-fields");
-                    }
-                }
-
-
-                // Initialize the locale to 'fr' for each employment
-                document.addEventListener("DOMContentLoaded", function (){
-                    {% for employment in employments %}changeEmploymentLocale('{{ employment.id }}', 'fr');{% endfor %}
-                });
-
-                document.addEventListener("DOMContentLoaded", function () { // Locate the generated ID for the topics dropdown dynamically
-                    const topicsDropdown = document.querySelector('[id^="contact_type_person_topics"]');
-                    const dropdownId = topicsDropdown ? topicsDropdown.id : null;
-
-                    if (dropdownId) { // Initialize Select2 with a placeholder and ensure values are set
-                        $('#' + dropdownId).select2({placeholder: "Sélectionnez des sujets", width: '100%'});
-
-                        // Get preselected values from the server-side data
-                        const preselectedValues = {{ form.topics.vars.data|map(v => v.id)|json_encode|raw }};
-
-                        // Set the preselected values and trigger change event
-                        $('#' + dropdownId).val(preselectedValues).trigger('change');
-
-                        // Listen for changes in the selection
-                        $('#' + dropdownId).on('change', function () {
-                            const selectedValues = $(this).val() || []; // Ensure array format
-                            updateSelectedTags(selectedValues);
-                        });
-
-                        function updateSelectedTags(selectedValues) {
-                            const tagContainer = document.getElementById('selected-topics-tags');
-                            tagContainer.innerHTML = ''; // Clear current tags
-
-                            selectedValues.forEach(value => {
-                                const tag = document.createElement('span');
-                                tag.className = 'topic-tag';
-                                tag.innerText = getTopicLabel(value);
-
-                                // Add a remove button for each tag
-                                const removeButton = document.createElement('span');
-                                removeButton.className = 'remove-tag';
-                                removeButton.innerHTML = '&times;';
-                                removeButton.onclick = () => removeTag(value);
-
-                                tag.appendChild(removeButton);
-                                tagContainer.appendChild(tag);
-                            });
-                        }
-
-                        function removeTag(value) {
-                            let currentValues = $('#' + dropdownId).val() || [];
-                            currentValues = currentValues.filter(v => v !== value);
-                            $('#' + dropdownId).val(currentValues).trigger('change');
-                        }
-
-                        function getTopicLabel(value) {
-                            return $('#' + dropdownId + ' option[value="' + value + '"]').text();
-                        }
-                    } else {
-                        console.error("Dropdown ID for topics not found.");
-                    }
-                });
-
-                document.addEventListener("DOMContentLoaded", function () {
-                    tinymce.init({selector: '#description-de .form-control, #description-fr .form-control, #description-it .form-control', menubar: false, toolbar: 'bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent', branding: false});
-                });
-            </script>
-        {% endblock %}
-    </body>
+    <!-- Footer Section -->
+    <footer class="verification-footer">
+        <div class="container">
+            <p>
+                &copy; {{ "now"|date("Y") }} regiosuisse - La plateforme pour le développement régional en Suisse
+            </p>
+            <p>
+                <a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
+                <span>
+                    En cas de questions ou de problèmes, veuillez contacter
+                    <a href="mailto:web@regiosuisse.ch">web@regiosuisse.ch</a>
+                </span>
+            </p>
+        </div>
+    </footer>
+</body>
 </html>
+
+<!-- JavaScript Section -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize locale for other fields
+        changeLocale('de', 'website');
+        changeLocale('de', 'city');
+        changeLocale('de', 'description');
+
+        {% for employment in employments %}
+            changeEmploymentLocale('{{ employment.id }}', 'de');
+        {% endfor %}
+    });
+
+    function changeLocale(locale, field, event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        // Hide all locale inputs and labels
+        ['de', 'fr', 'it'].forEach(function(lang) {
+            document.getElementById(`${field}-${lang}`).style.display = 'none';
+            document.getElementById(`${field}-label-${lang}`).style.display = 'none';
+        });
+
+        // Show the selected locale input and label
+        document.getElementById(`${field}-${locale}`).style.display = 'block';
+        document.getElementById(`${field}-label-${locale}`).style.display = 'block';
+    }
+
+    function changeEmploymentLocale(employmentId, locale, event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        // Hide all locale inputs and labels for the role
+        ['de', 'fr', 'it'].forEach(function(lang) {
+            document.getElementById(`role-${employmentId}-${lang}`).style.display = 'none';
+            document.getElementById(`role-label-${employmentId}-${lang}`).style.display = 'none';
+        });
+
+        // Show the selected locale input and label
+        document.getElementById(`role-${employmentId}-${locale}`).style.display = 'block';
+        document.getElementById(`role-label-${employmentId}-${locale}`).style.display = 'block';
+    }
+
+    function toggleDisabledState(employmentId) {
+        const employmentGroup = document.getElementById(`employment-group-${employmentId}`);
+        const inputs = employmentGroup.querySelectorAll('input[type="text"], select, textarea');
+
+        const isChecked = document.getElementById(`employment-checkbox-${employmentId}`).checked;
+
+        inputs.forEach(input => {
+            input.disabled = isChecked;
+        });
+
+        if (isChecked) {
+            employmentGroup.classList.add("disabled-fields");
+        } else {
+            employmentGroup.classList.remove("disabled-fields");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Locate the generated ID for the topics dropdown dynamically
+        const topicsDropdown = document.querySelector('[id^="contact_type_person_topics"]');
+        const dropdownId = topicsDropdown ? topicsDropdown.id : null;
+
+        if (dropdownId) {
+            // Initialize Select2 with a placeholder and ensure values are set
+            $('#' + dropdownId).select2({
+                placeholder: "Sélectionnez des sujets",
+                width: '100%'
+            });
+
+            // Get preselected values from the server-side data
+            const preselectedValues = {{ form.topics.vars.data|map(v => v.id)|json_encode|raw }};
+
+            // Set the preselected values and trigger change event
+            $('#' + dropdownId).val(preselectedValues).trigger('change');
+
+            // Listen for changes in the selection
+            $('#' + dropdownId).on('change', function () {
+                const selectedValues = $(this).val() || []; // Ensure array format
+                updateSelectedTags(selectedValues);
+            });
+
+            function updateSelectedTags(selectedValues) {
+                const tagContainer = document.getElementById('selected-topics-tags');
+                if (!tagContainer) return;
+
+                tagContainer.innerHTML = ''; // Clear current tags
+
+                selectedValues.forEach(value => {
+                    const tag = document.createElement('span');
+                    tag.className = 'topic-tag';
+                    tag.innerText = getTopicLabel(value);
+
+                    // Add a remove button for each tag
+                    const removeButton = document.createElement('span');
+                    removeButton.className = 'remove-tag';
+                    removeButton.innerHTML = '&times;';
+                    removeButton.onclick = () => removeTag(value);
+
+                    tag.appendChild(removeButton);
+                    tagContainer.appendChild(tag);
+                });
+            }
+
+            function removeTag(value) {
+                let currentValues = $('#' + dropdownId).val() || [];
+                currentValues = currentValues.filter(v => v !== value);
+                $('#' + dropdownId).val(currentValues).trigger('change');
+            }
+
+            function getTopicLabel(value) {
+                return $('#' + dropdownId + ' option[value="' + value + '"]').text();
+            }
+        } else {
+            console.error("Dropdown ID for topics not found.");
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        tinymce.init({
+            selector: '#description-de .form-control, #description-fr .form-control, #description-it .form-control',
+            menubar: false,
+            toolbar: 'bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent',
+            branding: false
+        });
+    });
+</script>

@@ -195,6 +195,7 @@ class ContactService {
             ->setParent(null)
             ->setTranslations($payload['translations'] ?: [])
             ->setTopics(new ArrayCollection())
+            ->setUserComment($payload['userComment'])
         ;
 
         if($payload['country']) {

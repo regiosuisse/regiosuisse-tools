@@ -226,15 +226,27 @@
             </div>
 
             <div class="modal-body">
-              <div class="email-preview">
-                <p>Sehr geehrte/r [Name],</p>
-                <p>
-                  Bitte verifizieren Sie Ihre Kontaktdaten, indem Sie auf den folgenden
-                  Link klicken.
-                </p>
-                <p>[Verifizierungslink]</p>
-                <p>Mit freundlichen Grüßen,</p>
-                <p>Ihr regiosuisse Team</p>
+              <div class="email-container">
+                <div class="email-header">
+                    <p>
+                        LOGO
+                    </p>
+                    <p><h3>Aktualisierung Ihrer Daten in unserer regiosuisse-Expertinnen-Datenbank</h3></p>
+                </div>
+
+                <!-- Email content -->
+                <div class="email-content">
+                    <p>Sehr geehrte Expertin, sehr geehrter Experte,</p>
+                    <p>Wir möchten sicherstellen, dass die Informationen in unserer regiosuisse-Expertinnen-Datenbank aktuell und korrekt sind. Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten über folgenden Link zu überprüfen und gegebenenfalls anzupassen: <a href="#">Meine Kontaktdaten überprüfen und aktualisieren</a></p>
+                    <p>Sollten Sie wünschen, dass Ihre Daten aus unserer Datenbank gelöscht werden, können Sie dies ebenfalls über den oben genannten Link veranlassen.</p>
+                    <p>Vielen Dank für Ihre Mithilfe!</p>
+                </div>
+
+                <!-- Footer -->
+                <div class="email-footer">
+                    <p>Herzliche Grüsse,</p>
+                    <p>Ihr regiosuisse-Team</p>
+                </div>
               </div>
               <table id="send-email-table">
                 <th>Empfänger</th>
@@ -403,7 +415,6 @@ export default {
     },
     reloadContactGroups() {
       this.isSortChanged = false;
-
       this.$store
         .dispatch("contactGroups/loadFiltered", this.getFilterParams())
         .then((contactGroups) => {
@@ -429,25 +440,19 @@ export default {
     },
     clickToggleSelected(event, element, groupIndex, subgroupIndex) {
       let isSelected = event.target.checked;
-
       delete element.activeContactGroup;
 
       if (!this.selectedElements[groupIndex]) {
         this.selectedElements[groupIndex] = [];
       }
-
       if (!isSelected) {
         let elementIndex = this.selectedElements[groupIndex].indexOf(element);
-
         if (elementIndex !== null) {
           this.selectedElements[groupIndex].splice(elementIndex, 1);
         }
-
         return;
       }
-
       element.activeContactGroup = subgroupIndex;
-
       this.selectedElements[groupIndex].push(element);
     },
     validateSelectedElements(groupIndex) {
@@ -455,7 +460,6 @@ export default {
         alert("Wählen Sie eine oder mehrere Kontaktgruppen zur weiteren Bearbeitung.");
         return false;
       }
-
       return true;
     },
     clickContact(contact) {
@@ -490,7 +494,6 @@ export default {
           }
         }
       }
-
       return "/api/v1/contacts.xlsx/contact-groups?" + filterParams.join("&");
     },
     formatOneToMany(items, getter) {
@@ -498,7 +501,6 @@ export default {
       items.forEach((item) => {
         result.push(getter(item.id)?.name);
       });
-
       return result.join(", ");
     },
     formatDate(date, format = "DD.MM.YYYY") {
@@ -538,7 +540,6 @@ export default {
         JSON.stringify(this.filters)
       );
       window.sessionStorage.setItem("regiosuisse.contactGroups.term", this.term);
-
       this.selectedElements = {};
     },
     loadFilter() {
@@ -568,16 +569,13 @@ export default {
           this.sortChangeProgress++;
         }
       }
-
       this.isSortChanged = false;
-
       this.reloadContactGroups();
     },
     clickRestoreSort() {
       this.isSortChanged = false;
       this.reloadContactGroups();
     },
-    // New methods for email modal
     openEmailModal(groupId) {
       if (!this.validateSelectedElements(groupId)) {
         return;
@@ -586,33 +584,30 @@ export default {
       this.emailModalData.receivers = this.getSelectedReceivers(groupId);
       this.isEmailModalOpen = true;
     },
-    // Open the confirmation modal when the "E-Mails senden" button is clicked
     openConfirmationModal() {
       this.isConfirmationModalOpen = true;
     },
-
-    // Close the confirmation modal
     closeConfirmationModal() {
       this.isConfirmationModalOpen = false;
     },
-
     getSelectedReceivers(groupId) {
       let receivers = [];
       for (let element of this.selectedElements[groupId]) {
         if (element.contacts?.length) {
           for (let contact of element.contacts) {
             if (contact.id) {
-              receivers.push(contact);
+              let currentContact = this.getContactById(contact.id);
+              // only select persons not companies
+              if (currentContact.type === "person") {
+                receivers.push(currentContact);
+              }
             }
           }
         }
       }
-
-      // Filter out duplicate contacts by their email or ID
       const uniqueReceivers = Array.from(
         new Set(receivers.map((receiver) => receiver.id))
       ).map((id) => receivers.find((receiver) => receiver.id === id));
-
       return uniqueReceivers;
     },
     closeEmailModal() {
@@ -623,11 +618,7 @@ export default {
     },
     sendEmails() {
       let receiverEmails = [
-        ...new Set(
-          this.emailModalData.receivers
-            .filter((receiver) => receiver.email)
-            .map((receiver) => receiver.id)
-        ),
+        ...new Set(this.emailModalData.receivers.map((receiver) => receiver.id)),
       ];
 
       axios
@@ -647,8 +638,6 @@ export default {
       if (!date) return 0;
       return moment().diff(moment(date), "days");
     },
-
-    // Diese Methode prüft, ob das Datum innerhalb eines Monats zurückliegt
     showDaysAgo(date) {
       if (!date) return false;
       const daysAgo = this.getDaysAgo(date);
@@ -664,85 +653,96 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* Add styles for modal */
 .modal-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
   transition: opacity 0.3s ease;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 1000px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
+  background: #fff;
+  width: 90%;
+  max-width:50vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden; 
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
 }
 
-.modal-header h3 {
-  margin-top: 0;
-  color: #b4be00;
+.modal-header {
+  padding: 16px;
+  background: #f5f5f5;
+  flex: 0 0 auto; 
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  border-bottom: 1px solid #ddd;
+  flex-direction: column;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .modal-body {
-  margin: 20px 0;
-}
-
-.modal-default-button {
-  float: right;
-  margin-left: 10px;
-}
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
+  padding: 16px;
+  flex: 1 1 auto; 
+  overflow-y: auto; 
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-footer {
-  padding-bottom: 20px;
+  padding: 16px;
+  background: #f5f5f5;
+  flex: 0 0 auto;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
-.modal-footer::after {
-  content: "";
-  clear: both;
-  display: block;
+.modal-body::-webkit-scrollbar {
+  width: 8px;
 }
 
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  transform: scale(1.1);
+.modal-body::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 4px;
 }
 
-.email-preview {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: white;
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter, .modal-leave-to {
+  opacity: 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 table th,
@@ -773,5 +773,47 @@ table td {
 table th {
   background-color: #b4be00;
   color: white;
+}
+
+.email-container {
+    background-color: #ffffff;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.email-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 2em;
+}
+
+.email-content {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.email-content p {
+    margin-bottom: 15px;
+}
+
+.email-content a {
+    color: #B4BE00;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.email-footer {
+    font-size: 14px;
+    color: #666666;
+    margin-top: 20px;
+    text-align: center;
 }
 </style>

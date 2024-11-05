@@ -182,6 +182,7 @@ class ContactTypePerson extends AbstractType
             'class' => Topic::class,
             'multiple' => true,
             'expanded' => false,
+            'required' => false,
             'choices' => $options['topics'],
             'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
             'choice_label' => function (Topic $topic) {
@@ -189,7 +190,12 @@ class ContactTypePerson extends AbstractType
             },
             'mapped' => false,
         ]);
-
+        $builder->add('userComment', TextareaType::class, [
+            'label' => 'Kommentar',
+            'mapped' => false,
+            'required' => false,
+            'data' => $options['data']->getUserComment(),
+        ]);
     }
     public function configureOptions(OptionsResolver $resolver): void
     {

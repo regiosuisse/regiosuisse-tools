@@ -188,6 +188,10 @@ class Contact
     #[Groups(['contact'])]
     private $contactGroups;
 
+    #[ORM\Column(name: 'user_comment', type: 'text', nullable: true)]
+    #[Groups(['contact'])]
+    private $userComment;
+
     public function __construct()
     {
         $this->employments = new ArrayCollection();
@@ -1071,5 +1075,28 @@ class Contact
         return $this;
     }
 
+    /**
+     * Get userComment
+     *
+     * @return string|null
+     */
+    public function getUserComment(): ?string
+    {
+        return $this->userComment;
+    }
+
+    /**
+     * Set pvUserComment
+     *
+     * @param string|null $pvUserComment
+     *
+     * @return self
+     */
+    public function setUserComment(?string $userComment): self
+    {
+        $this->userComment = $userComment;
+
+        return $this;
+    }
 }
 
