@@ -1004,7 +1004,7 @@ class ApiContactsController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
 
-            //$contact->setOneTimeCode(null);
+            $contact->setOneTimeCode(null);
             $employmentData = $request->request->all('employments');
             $employmentChanges = [];
             $diffData = [];
