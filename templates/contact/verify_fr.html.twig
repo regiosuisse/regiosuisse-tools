@@ -272,7 +272,6 @@
 <!-- JavaScript Section -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Initialize locale for other fields
         changeLocale('de', 'website');
         changeLocale('de', 'city');
         changeLocale('de', 'description');
@@ -287,13 +286,11 @@
             event.preventDefault();
         }
 
-        // Hide all locale inputs and labels
         ['de', 'fr', 'it'].forEach(function(lang) {
             document.getElementById(`${field}-${lang}`).style.display = 'none';
             document.getElementById(`${field}-label-${lang}`).style.display = 'none';
         });
 
-        // Show the selected locale input and label
         document.getElementById(`${field}-${locale}`).style.display = 'block';
         document.getElementById(`${field}-label-${locale}`).style.display = 'block';
     }
@@ -303,13 +300,11 @@
             event.preventDefault();
         }
 
-        // Hide all locale inputs and labels for the role
         ['de', 'fr', 'it'].forEach(function(lang) {
             document.getElementById(`role-${employmentId}-${lang}`).style.display = 'none';
             document.getElementById(`role-label-${employmentId}-${lang}`).style.display = 'none';
         });
 
-        // Show the selected locale input and label
         document.getElementById(`role-${employmentId}-${locale}`).style.display = 'block';
         document.getElementById(`role-label-${employmentId}-${locale}`).style.display = 'block';
     }
@@ -332,26 +327,20 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Locate the generated ID for the topics dropdown dynamically
         const topicsDropdown = document.querySelector('[id^="contact_type_person_topics"]');
         const dropdownId = topicsDropdown ? topicsDropdown.id : null;
 
         if (dropdownId) {
-            // Initialize Select2 with a placeholder and ensure values are set
             $('#' + dropdownId).select2({
                 placeholder: "Sélectionnez des sujets",
                 width: '100%'
             });
 
-            // Get preselected values from the server-side data
             const preselectedValues = {{ form.topics.vars.data|map(v => v.id)|json_encode|raw }};
 
-            // Set the preselected values and trigger change event
             $('#' + dropdownId).val(preselectedValues).trigger('change');
-
-            // Listen for changes in the selection
             $('#' + dropdownId).on('change', function () {
-                const selectedValues = $(this).val() || []; // Ensure array format
+                const selectedValues = $(this).val() || []; 
                 updateSelectedTags(selectedValues);
             });
 
@@ -359,14 +348,13 @@
                 const tagContainer = document.getElementById('selected-topics-tags');
                 if (!tagContainer) return;
 
-                tagContainer.innerHTML = ''; // Clear current tags
+                tagContainer.innerHTML = ''; 
 
                 selectedValues.forEach(value => {
                     const tag = document.createElement('span');
                     tag.className = 'topic-tag';
                     tag.innerText = getTopicLabel(value);
 
-                    // Add a remove button for each tag
                     const removeButton = document.createElement('span');
                     removeButton.className = 'remove-tag';
                     removeButton.innerHTML = '&times;';
@@ -412,7 +400,6 @@
         const stateContainer = document.getElementById('state-container');
 
         function toggleStateField() {
-            // id 1 is for Switzerland
             const options = countrySelect.options;
             let isSwitzerland = false;
 

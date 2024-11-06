@@ -19,7 +19,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactTypePerson extends AbstractType
@@ -136,66 +135,62 @@ class ContactTypePerson extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'data' => $options['data']->getDescription(),
+            ])
+            ->add('translations_fr_website', UrlType::class, [
+                'label' => 'Website (FR)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['fr']['website'] ?? '',
+            ])
+            ->add('translations_fr_city', TextType::class, [
+                'label' => 'Stadt (FR)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['fr']['city'] ?? '',
+            ])
+            ->add('translations_fr_description', TextareaType::class, [
+                'label' => 'Beschreibung (FR)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['fr']['description'] ?? '',
+            ])
+            ->add('translations_it_website', UrlType::class, [
+                'label' => 'Website (IT)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['it']['website'] ?? '',
+            ])
+            ->add('translations_it_city', TextType::class, [
+                'label' => 'Stadt (IT)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['it']['city'] ?? '',
+            ])
+            ->add('translations_it_description', TextareaType::class, [
+                'label' => 'Beschreibung (IT)',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getTranslations()['it']['description'] ?? '',
+            ])
+            ->add('topics', EntityType::class, [
+                'label' => 'Themen',
+                'class' => Topic::class,
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'choices' => $options['topics'],
+                'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
+                'choice_label' => function (Topic $topic) {
+                    return $topic->getName();
+                },
+                'mapped' => false,
+            ])
+            ->add('userComment', TextareaType::class, [
+                'label' => 'Kommentar',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getUserComment(),
             ]);
-
-        // Bind translations for DE
-        $builder->add('translations_fr_website', UrlType::class, [
-            'label' => 'Website (FR)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['fr']['website'] ?? '',
-        ]);
-        $builder->add('translations_fr_city', TextType::class, [
-            'label' => 'Stadt (FR)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['fr']['city'] ?? '',
-        ]);
-        $builder->add('translations_fr_description', TextareaType::class, [
-            'label' => 'Beschreibung (FR)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['fr']['description'] ?? '',
-        ]);
-
-        // Bind translations for IT
-        $builder->add('translations_it_website', UrlType::class, [
-            'label' => 'Website (IT)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['it']['website'] ?? '',
-        ]);
-        $builder->add('translations_it_city', TextType::class, [
-            'label' => 'Stadt (IT)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['it']['city'] ?? '',
-        ]);
-        $builder->add('translations_it_description', TextareaType::class, [
-            'label' => 'Beschreibung (IT)',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getTranslations()['it']['description'] ?? '',
-        ]);
-        $builder->add('topics', EntityType::class, [
-            'label' => 'Themen',
-            'class' => Topic::class,
-            'multiple' => true,
-            'expanded' => false,
-            'required' => false,
-            'choices' => $options['topics'],
-            'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
-            'choice_label' => function (Topic $topic) {
-                return $topic->getName();
-            },
-            'mapped' => false,
-        ]);
-        $builder->add('userComment', TextareaType::class, [
-            'label' => 'Kommentar',
-            'mapped' => false,
-            'required' => false,
-            'data' => $options['data']->getUserComment(),
-        ]);
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
