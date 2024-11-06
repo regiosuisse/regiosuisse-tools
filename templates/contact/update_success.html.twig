@@ -1,17 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div style="display: flex; justify-content: center; height: 100%; flex-direction: column; align-items: center;">
-    <div style="min-width: 500px; min-height: 500px; padding: 2em; background-color: white; display: flex; justify-content: center; flex-direction: column; align-items: center; border-radius: 6px;">
-<img style="margin-bottom: 1em;" src="https://regiosuisse.ch/themes/contrib/regiosuisse_theme/logo.svg" alt="Logo" class="logo">
 
-    {% for message in app.flashes('message') %}
-        <div class="alert alert-success">
-            {{ message }}
+    <div style="display: flex; justify-content: center; height: 100%; flex-direction: column; align-items: center;">
+        <div style="min-width: 500px; min-height: 500px; padding: 2em; background-color: white; display: flex; justify-content: center; flex-direction: column; align-items: center; border-radius: 6px;">
+            <img style="margin-bottom: 1em;" src="https://regiosuisse.ch/themes/contrib/regiosuisse_theme/logo.svg" alt="Logo" class="logo">
+            {% for message in app.flashes('message') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
     </div>
-        
-</div>
 
 {% endblock %}

@@ -948,7 +948,7 @@ class ApiContactsController extends AbstractController
             ->findAll();
 
         $filteredTopics = array_filter($topics, function ($topic) {
-            return strpos($topic->getContext(), 'project') === false;
+            return $topic->getContext() === 'contact';
         });
         $filteredTopics = is_array($filteredTopics) ? $filteredTopics : iterator_to_array($filteredTopics);
 

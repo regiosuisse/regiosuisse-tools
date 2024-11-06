@@ -709,9 +709,7 @@
                 v-if="contact && contact.topics !== undefined"
                 id="topics"
                 :model="contact.topics"
-                :options="
-                  topics.filter((topic) => !topic.context || topic.context === 'contact')
-                "
+                :options="topics.filter((topic) => topic.context === 'contact')"
                 :searchType="'select'"
               ></tag-selector>
             </div>
@@ -732,9 +730,7 @@
                 v-if="diff && diff.topics !== undefined"
                 id="topicsDiff"
                 :model="diff.topics"
-                :options="
-                  topics.filter((topic) => !topic.context || topic.context === 'contact')
-                "
+                :options="topics.filter((topic) => topic.context === 'contact')"
                 :searchType="'select'"
                 :readonly="true"
               ></tag-selector>

@@ -7,7 +7,8 @@
 @import 'embed-config';
 @import 'embed-mixins';
 
-html, body {
+html,
+body {
   background: $theme-color-1;
   font-size: 1vw;
   margin: 0;
@@ -53,9 +54,9 @@ a {
 #app {
   position: absolute;
   top: 0;
-  left:0;
-  right:0;
-  bottom:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: auto;
   background: $white;
 }
@@ -93,7 +94,16 @@ a {
   color: $color-xls;
 }
 
-select.form-control, .ui-autocomplete-input, .uneditable-input, input[type=email], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=url], textarea {
+select.form-control,
+.ui-autocomplete-input,
+.uneditable-input,
+input[type=email],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=text],
+input[type=url],
+textarea {
   padding: .25em .5em;
   font: inherit;
   font-size: 1em;
@@ -111,7 +121,8 @@ select.form-control, .ui-autocomplete-input, .uneditable-input, input[type=email
   background: $white;
   box-sizing: border-box;
 
-  &[readonly], &[disabled] {
+  &[readonly],
+  &[disabled] {
     background: $white;
   }
 }
@@ -185,7 +196,8 @@ label {
   display: inline-flex;
   align-items: center;
 
-  &[disabled], &.disabled {
+  &[disabled],
+  &.disabled {
     pointer-events: none;
     opacity: .25;
   }
@@ -289,7 +301,7 @@ label {
     }
 
     &-logo {
-      display:block;
+      display: block;
       width: 50%;
       margin: 0 auto;
       margin-bottom: 2em;
@@ -352,7 +364,7 @@ label {
 
 .backend-component {
   display: flex;
-  height:100%;
+  height: 100%;
 
   &-loader {
     position: fixed;
@@ -460,11 +472,14 @@ label {
           white-space: nowrap;
           overflow: hidden;
 
-          &.router-link-active, &.router-link-parent-active, &:hover {
+          &.router-link-active,
+          &.router-link-parent-active,
+          &:hover {
             background: $theme-color-3;
           }
 
-          .material-icons, .label {
+          .material-icons,
+          .label {
             vertical-align: middle;
           }
 
@@ -492,14 +507,17 @@ label {
           border-bottom: 1px solid $color-5;
 
           a {
-            &.router-link-active, &.router-link-parent-active, &:hover {
+
+            &.router-link-active,
+            &.router-link-parent-active,
+            &:hover {
               background: $color-3;
               color: $theme-color-2;
             }
           }
         }
 
-        .router-link-parent-active + ul {
+        .router-link-parent-active+ul {
           display: block;
         }
       }
@@ -635,7 +653,8 @@ label {
       justify-content: space-between;
       text-transform: uppercase;
 
-      .status, .source {
+      .status,
+      .source {
         display: inline-block;
         border-radius: 1em;
         background: $white;
@@ -648,10 +667,16 @@ label {
   }
 }
 
-.projects-component, .events-component, .financial-supports-component,
-.educations-component, .jobs-component, .users-component, .contacts-component,
-.contact-groups-component, .regions-component, .posts-component
-{
+.projects-component,
+.events-component,
+.financial-supports-component,
+.educations-component,
+.jobs-component,
+.users-component,
+.contacts-component,
+.contact-groups-component,
+.regions-component,
+.posts-component {
   min-height: 100%;
 
   &-title {
@@ -732,7 +757,8 @@ label {
       a {
         cursor: pointer;
 
-        &:hover, &:active {
+        &:hover,
+        &:active {
           color: inherit;
         }
 
@@ -753,7 +779,8 @@ label {
       }
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       margin-bottom: 0;
     }
 
@@ -786,7 +813,7 @@ label {
 
     &-level-parent {
 
-      & > li {
+      &>li {
         background-color: rgba($color-regiosuisse, .05);
         padding: 1.5em 1em;
 
@@ -881,17 +908,32 @@ label {
   }
 }
 
-.embed-projects-view, .embed-events-view, .embed-educations-view, .embed-jobs-view, .embed-posts-view, .embed-contacts-view {
+.embed-projects-view,
+.embed-events-view,
+.embed-educations-view,
+.embed-jobs-view,
+.embed-posts-view,
+.embed-contacts-view {
   @include embed-base;
   @include embed-view;
 }
 
 .project-component,
-.project-collections-component, .project-collection-component,
-.event-collections-component, .event-collection-component,
-.interactive-graphics-component, .interactive-graphic-component,
-.event-component, .financial-support-component, .education-component,
-.job-component, .user-component, .contact-component, .contact-group-component, .region-component, .post-component {
+.project-collections-component,
+.project-collection-component,
+.event-collections-component,
+.event-collection-component,
+.interactive-graphics-component,
+.interactive-graphic-component,
+.event-component,
+.financial-support-component,
+.education-component,
+.job-component,
+.user-component,
+.contact-component,
+.contact-group-component,
+.region-component,
+.post-component {
   min-height: 100%;
   display: flex;
 
@@ -913,7 +955,7 @@ label {
 
     &-row {
       display: flex;
-      background: linear-gradient(90deg, rgba(255,255,255,1) 50%, rgba(250,250,250,1) 50%);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 1) 50%, rgba(250, 250, 250, 1) 50%);
     }
 
     &-header {
@@ -942,7 +984,7 @@ label {
       padding: 1em;
       flex: 1;
 
-      .row + .row {
+      .row+.row {
         padding-top: 1em;
       }
 
@@ -1003,7 +1045,8 @@ label {
       display: flex;
     }
 
-    &-main, &-aside {
+    &-main,
+    &-aside {
       flex: 1;
     }
 
@@ -1097,7 +1140,8 @@ label {
   }
 }
 
-th, td {
+th,
+td {
   text-align: left;
 }
 
@@ -1105,7 +1149,8 @@ th, td {
   width: 100%;
   border-collapse: collapse;
 
-  th, td {
+  th,
+  td {
     font-weight: bold;
     padding: .5em .5em;
     border-bottom: 1px solid $color-2;
@@ -1125,7 +1170,8 @@ th, td {
     cursor: pointer;
   }
 
-  .clickable:hover, .active {
+  .clickable:hover,
+  .active {
     background: rgba($color-2, .25);
   }
 
@@ -1245,7 +1291,8 @@ th, td {
   }
 }
 
-.image-selector-component, .file-selector-component {
+.image-selector-component,
+.file-selector-component {
   display: flex;
   flex-wrap: wrap;
 
@@ -1264,8 +1311,11 @@ th, td {
     box-shadow: 0 0 .25em rgba($black, .1);
 
     &:hover {
-      .image-selector-component-item-remove, .image-selector-component-item-move,
-      .file-selector-component-item-remove, .file-selector-component-item-move {
+
+      .image-selector-component-item-remove,
+      .image-selector-component-item-move,
+      .file-selector-component-item-remove,
+      .file-selector-component-item-move {
         display: block;
       }
     }
@@ -1279,7 +1329,8 @@ th, td {
       margin: 0 1em;
     }
 
-    &-move, &-remove {
+    &-move,
+    &-remove {
       display: none;
       position: absolute;
       left: -.5em;
@@ -1354,7 +1405,8 @@ th, td {
 
 }
 
-.image-selector-component-item, .image-selector-component-add {
+.image-selector-component-item,
+.image-selector-component-add {
   height: 12em;
 }
 
@@ -1378,11 +1430,13 @@ th, td {
     height: 100%;
     position: absolute;
     border: 0;
-    top:0;
+    top: 0;
   }
 }
 
-.project-collections-component, .interactive-graphics-component, .event-collections-component {
+.project-collections-component,
+.interactive-graphics-component,
+.event-collections-component {
   display: block;
 
   &-list {
@@ -1400,7 +1454,8 @@ th, td {
       cursor: pointer;
       box-sizing: border-box;
 
-      &:hover, &:active {
+      &:hover,
+      &:active {
         text-decoration: none;
       }
 
@@ -1422,7 +1477,8 @@ th, td {
         padding: 1em;
         background: $color-3;
 
-        svg, img {
+        svg,
+        img {
           width: 100%;
           height: auto;
         }
@@ -1451,7 +1507,9 @@ th, td {
   }
 }
 
-.project-collections-component, .interactive-graphics-component, .event-collections-component {
+.project-collections-component,
+.interactive-graphics-component,
+.event-collections-component {
 
   &-form {
 
@@ -1463,9 +1521,12 @@ th, td {
 
 }
 
-.project-collection-component, .interactive-graphic-component, .event-collection-component {
+.project-collection-component,
+.interactive-graphic-component,
+.event-collection-component {
 
-  .projects-component, .events-component {
+  .projects-component,
+  .events-component {
     min-height: 0;
     margin: 1em;
     padding: 1em;
@@ -1473,7 +1534,9 @@ th, td {
     border-radius: .25em;
 
     .table {
-      tr.active>td, tr.active>th {
+
+      tr.active>td,
+      tr.active>th {
         background: rgba($success, .75);
       }
     }
@@ -1568,6 +1631,27 @@ th, td {
     margin: 0 auto;
     padding: 0 1em;
     box-sizing: border-box;
+  }
+
+  .ck-label {
+    display: none!important;
+  }
+
+}
+@media screen and (min-width: 2000px) {
+  .verification-page {
+    .container {
+      max-width: 1440px;
+    }
+  }
+}
+
+
+@media screen and (min-width: 2560px) {
+  .verification-page {
+    .container {
+      max-width: 1920px;
+    }
   }
 }
 
@@ -1715,7 +1799,7 @@ th, td {
 }
 
 .diff-header {
-  padding-left: 0!important;
+  padding-left: 0 !important;
 }
 
 .diff-section {
@@ -1740,6 +1824,7 @@ th, td {
   th {
     padding: 0.5em;
   }
+
   td {
     padding: 0.2em;
     margin-left: 0.1em;
@@ -1766,6 +1851,20 @@ th, td {
   cursor: pointer;
   color: #fff;
   font-weight: bold;
+}
+
+.desc-editor {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 25em;
+
+  @media screen and (min-width: 768px) {
+    max-width: 36vw;
+  }
+
+  @media screen and (min-width: 1024px) {
+    max-width: 30vw;
+  }
 }
 /* end of verification form styles */
 

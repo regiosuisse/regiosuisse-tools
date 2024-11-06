@@ -10,6 +10,7 @@ import axios from 'axios';
 
 import Main from './components/Main';
 import CKEditor from '@ckeditor/ckeditor5-vue';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 axios.interceptors.response.use(
     (response) => {
@@ -34,3 +35,5 @@ app.use(store);
 app.use(CKEditor);
 
 app.mount('#app');
+
+window.ClassicEditor = ClassicEditor;
