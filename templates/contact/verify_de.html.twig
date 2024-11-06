@@ -383,9 +383,6 @@
             if (element) {
                 ClassicEditor
                     .create(element)
-                    .then(editor => {
-                        console.log(`CKEditor initialized for ${id}`);
-                    })
                     .catch(error => {
                         console.error(error);
                     });
