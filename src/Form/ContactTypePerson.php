@@ -24,14 +24,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ContactTypePerson extends AbstractType
 {    
     private TranslatorInterface $translator;
+    private string $locale;
 
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
+
+    /**
+     * Helper method to translate messages using the stored locale.
+     */
+    protected function trans(string $id, array $parameters = [], string $domain = 'messages+intl-icu'): string
+    {
+        return $this->translator->trans($id, $parameters, $domain, $this->locale);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $locale = $options['locale'];
+        $this->locale = $options['locale'];
 
         // Personal Information
         $builder
@@ -49,11 +59,12 @@ class ContactTypePerson extends AbstractType
             ])
             ->add('gender', ChoiceType::class, [
                 'label' => 'Geschlecht',
-                'placeholder' => $this->translator->trans('form.gender_placeholder', [], 'messages+intl-icu', $locale),
+                'placeholder' => $this->trans('form.gender_placeholder'),
                 'choices' => [
-                    $this->translator->trans('form.gender_male', [], 'messages+intl-icu', $locale) => 'male',
-                    $this->translator->trans('form.gender_female', [], 'messages+intl-icu', $locale) => 'female',
-                    $this->translator->trans('form.gender_diverse', [], 'messages+intl-icu', $locale) => 'diverse',                ],
+                    $this->trans('form.gender_male') => 'male',
+                    $this->trans('form.gender_female') => 'female',
+                    $this->trans('form.gender_diverse') => 'diverse',
+                ],
                 'mapped' => false,
                 'required' => false,
                 'data' => $options['data']->getGender(),
@@ -108,16 +119,16 @@ class ContactTypePerson extends AbstractType
                 'label' => 'Land',
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => $this->translator->trans('form.country_placeholder', [], 'messages+intl-icu', $locale),
+                'placeholder' => $this->trans('form.country_placeholder'),
                 'data' => $options['data']->getCountry(),
             ])
-            ->add('state' , EntityType::class, [
+            ->add('state', EntityType::class, [
                 'class' => State::class,
                 'choice_label' => 'name',
                 'label' => 'Kanton',
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => $this->translator->trans('form.state_placeholder', [], 'messages+intl-icu', $locale),
+                'placeholder' => $this->trans('form.state_placeholder'),
                 'data' => $options['data']->getState(),
             ])
             // Additional Information
@@ -127,7 +138,7 @@ class ContactTypePerson extends AbstractType
                 'label' => 'Sprache',
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => $this->translator->trans('form.language_placeholder', [], 'messages+intl-icu', $locale),
+                'placeholder' => $this->trans('form.language_placeholder'),
                 'data' => $options['data']->getLanguage(),
             ])
             ->add('description', TextareaType::class, [
@@ -136,6 +147,7 @@ class ContactTypePerson extends AbstractType
                 'required' => false,
                 'data' => $options['data']->getDescription(),
             ])
+            // French Translations
             ->add('translations_fr_website', UrlType::class, [
                 'label' => 'Website (FR)',
                 'mapped' => false,
@@ -154,6 +166,7 @@ class ContactTypePerson extends AbstractType
                 'required' => false,
                 'data' => $options['data']->getTranslations()['fr']['description'] ?? '',
             ])
+            // Italian Translations
             ->add('translations_it_website', UrlType::class, [
                 'label' => 'Website (IT)',
                 'mapped' => false,
@@ -192,6 +205,7 @@ class ContactTypePerson extends AbstractType
                 'data' => $options['data']->getUserComment(),
             ]);
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -202,4 +216,3 @@ class ContactTypePerson extends AbstractType
         ]);
     }
 }
-

@@ -876,8 +876,14 @@ class ApiContactsController extends AbstractController
                 $verificationLink = $this->generateUrl('api_contacts_contact_verify', [
                     'code' => $oneTimeCode,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
-                $language = $contact->getLanguage() ? $contact->getLanguage()->getContext() : 'de';
-                $template = match ($language) {
+
+                $locale = ($contact->getLanguage() && $contact->getLanguage()->getCode() !== null) ? $contact->getLanguage()->getCode() : 'de';
+                if ($locale !== 'de' && $locale !== 'fr' && $locale !== 'it') {
+                    // Default to German for other locales
+                    $locale = 'de';
+                }
+
+                $template = match ($locale) {
                     'fr' => 'emails/verify_contact_fr.html.twig',
                     'it' => 'emails/verify_contact_it.html.twig',
                     default => 'emails/verify_contact.html.twig',
@@ -886,7 +892,7 @@ class ApiContactsController extends AbstractController
                 $emailMessage = (new Email())
                     ->from('no-reply@regiosuisse.ch')
                     ->to($contact->getEmail())
-                    ->subject($language === 'fr' ? 'Confirmez vos coordonnées' : ($language === 'it' ? 'Conferma i tuoi dati di contatto' : 'Bestätigen Sie Ihre Kontaktdaten'))
+                    ->subject($locale === 'fr' ? 'Confirmez vos coordonnées' : ($locale === 'it' ? 'Conferma i tuoi dati di contatto' : 'Bestätigen Sie Ihre Kontaktdaten'))
                     ->html(
                         $this->renderView(
                             $template,
@@ -941,7 +947,11 @@ class ApiContactsController extends AbstractController
             return $this->render('contact/update_success.html.twig');
         }
 
-        $locale = $contact->getLanguage() ? $contact->getLanguage()->getContext() : 'de';
+        $locale = ($contact->getLanguage() && $contact->getLanguage()->getCode() !== null) ? $contact->getLanguage()->getCode() : 'de';
+        if ($locale !== 'de' && $locale !== 'fr' && $locale !== 'it') {
+            // Default to German for other locales
+            $locale = 'de';
+        }
 
         $topics = $entityManager
             ->getRepository(Topic::class)
@@ -1189,7 +1199,7 @@ class ApiContactsController extends AbstractController
             return $this->render('contact/update_success.html.twig');
         }
 
-        $languageCode = $contact->getLanguage() ? $contact->getLanguage()->getContext() : 'de';
+        $languageCode = ($contact->getLanguage() && $contact->getLanguage()->getCode() !== null) ? $contact->getLanguage()->getCode() : 'de';
 
         $contactFormTemplate = match ($languageCode) {
             'de' => 'contact/verify_de.html.twig',
