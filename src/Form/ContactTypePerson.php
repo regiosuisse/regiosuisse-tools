@@ -96,7 +96,7 @@ class ContactTypePerson extends AbstractType
             ])
             // Address Information
             ->add('street', TextType::class, [
-                'label' => 'Straße',
+                'label' => 'Strasse',
                 'mapped' => false,
                 'required' => false,
                 'data' => $options['data']->getStreet(),

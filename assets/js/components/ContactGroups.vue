@@ -231,13 +231,13 @@
                     <p>
                         LOGO
                     </p>
-                    <p><h3>Aktualisierung Ihrer Daten in unserer regiosuisse-Expertinnen-Datenbank</h3></p>
+                    <p><h3>Aktualisierung Ihrer Daten in unserer regiosuisse Expertinnen- und Expertendatenbank</h3></p>
                 </div>
 
                 <!-- Email content -->
                 <div class="email-content">
                     <p>Sehr geehrte Expertin, sehr geehrter Experte,</p>
-                    <p>Wir möchten sicherstellen, dass die Informationen in unserer regiosuisse-Expertinnen-Datenbank aktuell und korrekt sind. Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten über folgenden Link zu überprüfen und gegebenenfalls anzupassen: <a href="#">Meine Kontaktdaten überprüfen und aktualisieren</a></p>
+                    <p>Wir möchten sicherstellen, dass die Informationen in unserer regiosuisse Expertinnen- und Expertendatenbank aktuell und korrekt sind. Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten über folgenden Link zu überprüfen und gegebenenfalls anzupassen: <a href="#">Meine Kontaktdaten überprüfen und aktualisieren</a></p>
                     <p>Sollten Sie wünschen, dass Ihre Daten aus unserer Datenbank gelöscht werden, können Sie dies ebenfalls über den oben genannten Link veranlassen.</p>
                     <p>Vielen Dank für Ihre Mithilfe!</p>
                 </div>

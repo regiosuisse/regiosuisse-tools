@@ -223,6 +223,50 @@
                         {% endif %}
                     </div>
 
+
+                    <!-- Add this right after the existing employments section -->
+                    <div class="verification-form-row">
+                        <div class="verification-form-group col-md-6">
+                            <button type="button" class="btn btn-secondary" onclick="toggleNewEmploymentForm('show')" id="show-employment-form-btn">
+                                Aggiungi nuovo impiego
+                            </button>
+                            
+                            <div id="new-employment-form" style="display: none; margin-top: 20px;" class="col-md-6">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                    <h2 style="margin: 0;">Aggiungi nuovo impiego</h2>
+                                    <button type="button" class="btn btn-link" onclick="toggleNewEmploymentForm('hide')" style="color: #666; text-decoration: none; font-size: 20px;">×</button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Nome dell'azienda</label>
+                                    <input type="text" id="new-company-name" class="form-control">
+                                </div>
+                                
+                                <!-- Multilingual Role field -->
+                                <div class="role" style="display: flex; flex-direction: row; margin-top: 10px;">
+                                    <label id="new-role-label-de">Funzione (DE)</label>
+                                    <label id="new-role-label-fr" style="display:none;">Funzione (FR)</label>
+                                    <label id="new-role-label-it" style="display:none;">Funzione (IT)</label>
+                                    <span style="margin-left: 10px;">
+                                        <a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('de', event)">DE</a>
+                                        <span>|</span>
+                                        <a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('fr', event)">FR</a>
+                                        <span>|</span>
+                                        <a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('it', event)">IT</a>
+                                    </span>
+                                </div>
+                                <div id="new-role-de" class="locale-input">
+                                    <input type="text" id="new-role-de-input" class="form-control">
+                                </div>
+                                <div id="new-role-fr" class="locale-input" style="display:none;">
+                                    <input type="text" id="new-role-fr-input" class="form-control">
+                                </div>
+                                <div id="new-role-it" class="locale-input" style="display:none;">
+                                    <input type="text" id="new-role-it-input" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Unsubscribe Section -->
                     <div class="verification-form-row">
                         <div class="verification-form-group">
@@ -414,4 +458,62 @@
 
         countrySelect.addEventListener('change', toggleStateField);
     });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(e) {
+        const companyName = document.getElementById('new-company-name').value.trim();
+        const roleDe = document.getElementById('new-role-de-input').value.trim();
+        const roleFr = document.getElementById('new-role-fr-input').value.trim();
+        const roleIt = document.getElementById('new-role-it-input').value.trim();
+        
+        if (companyName || roleDe || roleFr || roleIt) {
+            const userCommentField = document.querySelector('[id$="_userComment"]');
+            const currentComment = userCommentField.value.trim();
+            
+            const newEmploymentText = `\n\nNuovo impiego:\nAzienda: ${companyName}\nFunzione (DE): ${roleDe}${roleFr ? '\nFunzione (FR): ' + roleFr : ''}${roleIt ? '\nFunzione (IT): ' + roleIt : ''}`;
+            
+            userCommentField.value = currentComment + newEmploymentText;
+        }
+    });
+});
+
+// Rest of the JavaScript functions remain the same as in the German version
+function toggleNewEmploymentForm(action) {
+    const form = document.getElementById('new-employment-form');
+    const showButton = document.getElementById('show-employment-form-btn');
+    
+    if (action === 'show') {
+        form.style.display = 'block';
+        showButton.style.display = 'none';
+        // Clear any existing values
+        document.getElementById('new-company-name').value = '';
+        document.getElementById('new-role-de-input').value = '';
+        document.getElementById('new-role-fr-input').value = '';
+        document.getElementById('new-role-it-input').value = '';
+    } else {
+        form.style.display = 'none';
+        showButton.style.display = 'block';
+    }
+}
+
+function changeNewEmploymentLocale(locale, event) {
+    if (event) {
+        event.preventDefault();
+    }
+
+    ['de', 'fr', 'it'].forEach(function(lang) {
+        document.getElementById(`new-role-${lang}`).style.display = 'none';
+        document.getElementById(`new-role-label-${lang}`).style.display = 'none';
+    });
+
+    document.getElementById(`new-role-${locale}`).style.display = 'block';
+    document.getElementById(`new-role-label-${locale}`).style.display = 'block';
+}
+
+// Initialize the new employment locale
+document.addEventListener("DOMContentLoaded", function() {
+    changeNewEmploymentLocale('de');
+});
 </script>
