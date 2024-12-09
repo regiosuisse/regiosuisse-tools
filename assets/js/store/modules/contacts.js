@@ -94,6 +94,16 @@ const actions = {
         });
     },
 
+    async getConnectedRegions({ commit }, contactId) {
+        const response = await api.contacts.getRegionByContact(contactId);
+        return response.data;
+    },
+    
+    async removeRegionConnections({ commit }, contactId) {
+        const response = await api.contacts.removeRegionConnections(contactId);
+        return response.data;
+    }
+
 };
 
 // mutations

@@ -1222,4 +1222,75 @@ class ApiContactsController extends AbstractController
     {
         return $this->render('contact/update_success.html.twig');
     }
+    
+    #[Route(path: '/{id}/regions', name: 'get_contact_regions', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns all regions containing this contact',
+        content: new OA\JsonContent(
+            type: 'array', 
+            items: new OA\Items(ref: new Model(type: \App\Entity\Region::class, groups: ['id', 'region']))
+        )
+    )]
+    #[OA\Tag(name: 'Contacts')]
+    public function getContactRegions(Request $request, EntityManagerInterface $em,
+                          NormalizerInterface $normalizer, int $id): JsonResponse
+    {
+        $qb = $em->createQueryBuilder();
+
+        $qb
+            ->select('r')
+            ->from(\App\Entity\Region::class, 'r')
+            ->leftJoin('r.contacts', 'c')
+            ->where('c.id = :contactId')
+            ->setParameter('contactId', $id);
+
+        $regions = $qb->getQuery()->getResult();
+
+        $result = $normalizer->normalize($regions, null, [
+            'groups' => ['id', 'region'],
+        ]);
+
+        return $this->json($result);
+    }
+
+    #[Route(path: '/{id}/regions', name: 'remove_contact', methods: ['DELETE'])]
+    #[IsGranted('ROLE_EDITOR')]
+    #[OA\Response(
+        response: 200,
+        description: 'Remove contact from all regions',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            default: []
+        )
+    )]
+    #[OA\Tag(name: 'Contacts')]
+    #[Security(name: 'cookieAuth')]
+    public function removeContact(Request $request, EntityManagerInterface $em, int $id): JsonResponse
+    {
+        $contact = $em->getRepository(Contact::class)->find($id);
+        
+        if (!$contact) {
+            return $this->json(['error' => 'Contact not found'], 404);
+        }
+        // Find all regions containing this contact
+        $regions = $em->getRepository(\App\Entity\Region::class)
+            ->createQueryBuilder('r')
+            ->leftJoin('r.contacts', 'c')
+            ->where('c.id = :contactId')
+            ->setParameter('contactId', $id)
+            ->getQuery()
+            ->getResult();
+
+        // Remove the contact from each region
+        foreach ($regions as $region) {
+            $region->removeContact($contact);
+            $em->persist($region);
+        }
+
+        $em->flush();
+
+        return $this->json([]);
+    }
 }

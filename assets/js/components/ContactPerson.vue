@@ -1080,34 +1080,54 @@ export default {
     },
   },
   methods: {
-    clickDelete() {
-      this.modal = {
-        title: "Eintrag löschen",
-        description:
-          "Sind Sie sicher dass Sie diesen Eintrag unwiderruflich löschen möchten?",
-        actions: [
-          {
-            label: "Endgültig löschen",
-            class: "error",
-            onClick: () => {
-              this.$store.dispatch("contacts/delete", this.contact.id).then(() => {
-                this.$router.push("/contacts/person");
-              });
-              if (this.selectedInboxItem && this.selectedInboxItem.id) {
-                this.$store.dispatch("inbox/delete", this.selectedInboxItem.id);
-              }
-            },
-          },
-          {
-            label: "Abbrechen",
-            class: "warning",
-            onClick: () => {
-              this.modal = null;
-            },
-          },
-        ],
-      };
-    },
+    async clickDelete() {
+            try {
+                const response = await this.$store.dispatch('contacts/getConnectedRegions', this.contact.id);
+                this.connectedRegions = response || [];
+                let description = 'Sind Sie sicher dass Sie diesen Eintrag unwiderruflich löschen möchten?';
+                
+                if (this.connectedRegions.length > 0) {
+                    description = `Dieser Kontakt ist mit folgenden Regionen verknüpft:\n\n${
+                        this.connectedRegions.map(region => `- ${region.name}`).join('\n')
+                    }\n\nWenn Sie fortfahren, werden diese Verknüpfungen gelöscht. Möchten Sie wirklich fortfahren?`;
+                }
+
+                this.modal = {
+                    title: 'Eintrag löschen',
+                    description: description,
+                    actions: [
+                        {
+                            label: 'Endgültig löschen',
+                            class: 'error',
+                            onClick: async () => {
+                                try {
+                                    if (this.connectedRegions.length > 0) {
+                                        await this.$store.dispatch('contacts/removeRegionConnections', this.contact.id);
+                                    }
+                                    await this.$store.dispatch('contacts/delete', this.contact.id);
+                                    this.$router.push('/contacts/person');
+                                } catch (error) {
+                                    this.formErrors.push({
+                                        message: 'Fehler beim Löschen des Kontakts. Bitte versuchen Sie es später erneut.'
+                                    });
+                                }
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+            } catch (error) {
+                this.formErrors.push({
+                    message: 'Fehler beim Laden der verknüpften Regionen. Bitte versuchen Sie es später erneut.'
+                });
+            }
+        },
     clickCancel() {
       this.$router.push("/contacts/person");
     },
@@ -1171,7 +1191,7 @@ export default {
             role: null,
           },
         },
-      };
+        };
 
       this.contact.employments.push(employment);
     },

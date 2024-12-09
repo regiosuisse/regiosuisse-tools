@@ -30,4 +30,12 @@ export default {
         return axios.delete(endpoint+'/'+id);
     },
 
+    getRegionByContact(contactId) {
+        return axios.get(endpoint + `/${contactId}/regions`);
+    },
+
+    removeRegionConnections(contactId) {
+        return axios.delete(endpoint + `/${contactId}/regions`);
+    },
+
 };
