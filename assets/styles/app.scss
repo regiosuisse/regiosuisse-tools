@@ -1550,4 +1550,12 @@ th, td {
 
 }
 
+.contact-component {
+  .modal-component-modal {
+    p {
+      white-space: pre-line;
+    }
+  }
+}
+
 @import '../custom/styles/custom';
