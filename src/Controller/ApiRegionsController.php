@@ -333,6 +333,9 @@ class ApiRegionsController extends AbstractController
                             'id' => $region->getId(),
                             'name' => PvTrans::trans($region, 'name', $request->getLocale()),
                             'color' => $region->getColor(),
+                            'tags' => $normalizer->normalize($region->getTags(), null, [
+                                'groups' => ['id', 'tag'],
+                            ]),
                             'cities' => [],
                         ],
                         'geometry' => [

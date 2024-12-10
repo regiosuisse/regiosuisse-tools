@@ -11,11 +11,13 @@
             </template>
         </template>
     </div>
-    <div class="embed-regions-content-map-container-legend" :style="{display: hasOverlappingRegions ? 'block' : 'none'}">
+    <div class="embed-regions-content-map-container-legend" :style="{display: (hasOverlappingRegions || templateHook('regionsMapLegendBefore', locale, geoJson, regionsGeoJson) || templateHook('regionsMapLegendAfter', locale, geoJson, regionsGeoJson)) ? 'block' : 'none'}">
+        <div v-if="templateHook('regionsMapLegendBefore', locale, geoJson, regionsGeoJson)" v-html="templateHook('regionsMapLegendBefore', locale, geoJson, regionsGeoJson)"></div>
         <div class="embed-regions-content-map-container-legend-row">
             <div class="embed-regions-content-map-container-legend-row-thumb" ref="legendMultiRegion"></div>
             <div class="embed-regions-content-map-container-legend-row-label">{{ $t('Mehreren Regionen zugehörig', locale) }}</div>
         </div>
+        <div v-if="templateHook('regionsMapLegendAfter', locale, geoJson, regionsGeoJson)" v-html="templateHook('regionsMapLegendAfter', locale, geoJson, regionsGeoJson)"></div>
     </div>
     <transition name="embed-regions-overlay" mode="out-in">
         <div class="embed-regions-content-map-container-loader" v-if="isLoading">{{ $t('Karte wird geladen...', locale) }}</div>
@@ -42,7 +44,7 @@ export default {
             renderLoop: null,
             isLoading: true,
             geoJson: {},
-            regionsGeoJSON: {},
+            regionsGeoJson: {},
             hasOverlappingRegions: false,
         };
     },
@@ -70,6 +72,86 @@ export default {
     ],
 
     computed: {
+
+        layers () {
+
+            let layers = {
+                'cities': {
+                    id: 'cities',
+                    type: 'fill',
+                    source: 'cities',
+                    paint: {
+                        'fill-color': '#F3F3F3',
+                        'fill-opacity': 0,
+                    },
+                },
+                'regions': {
+                    id: 'regions',
+                    type: 'fill',
+                    source: 'regions',
+                    paint: {
+                        'fill-color': '#eaefd5',
+                        'fill-opacity': .25,
+                    },
+                },
+                'regions-hover': {
+                    id: 'regions-hover',
+                    type: 'fill',
+                    source: 'regions-hover',
+                    paint: {
+                        'fill-color': '#FFFFFF',
+                        'fill-opacity': .75,
+                    },
+                },
+                'regions-intersect': {
+                    id: 'regions-intersect',
+                    type: 'fill',
+                    source: 'regions-intersect',
+                    paint: {
+                        'fill-pattern': 'intersect-pattern',
+                    },
+                },
+                'regions-active': {
+                    id: 'regions-active',
+                    type: 'fill',
+                    source: 'regions-active',
+                    paint: {
+                        'fill-color': '#D3E292',
+                        'fill-opacity': .75,
+                    },
+                },
+                'regions-outline': {
+                    id: 'regions-outline',
+                    type: 'line',
+                    source: 'regions-outline',
+                    paint: {
+                        'line-width': 2,
+                        'line-color': '#a4a4a4',
+                        'line-opacity': 1,
+                    },
+                },
+                'cities-hover': {
+                    id: 'cities-hover',
+                    type: 'fill',
+                    source: 'cities-hover',
+                    paint: {
+                        'fill-color': '#a4a4a4',
+                        'fill-opacity': 0,
+                    },
+                },
+                'cities-active': {
+                    id: 'cities-active',
+                    type: 'fill',
+                    source: 'cities-active',
+                    paint: {
+                        'fill-color': '#FFFFFF',
+                        'fill-opacity': 0,
+                    },
+                },
+            };
+
+            return (this.$clientOptions?.middleware?.transformLayers || (e => e))(layers);
+        },
 
     },
 
@@ -131,6 +213,8 @@ export default {
             let response = await api.regions.cities();
 
             this.geoJson = response.data;
+
+            this.geoJson = (this.$clientOptions?.middleware?.transformCitiesGeoJson || (e => e))(this.geoJson);
 
             let insertBefore = 'waterway_line_label';
 
@@ -198,7 +282,7 @@ export default {
             const stripes = canvas.toDataURL('image/png');
 
             this.$refs.legendMultiRegion.style.backgroundImage = 'url('+stripes+')';
-            this.$refs.legendMultiRegion.style.backgroundColor = '#eaefd5';
+            //this.$refs.legendMultiRegion.style.backgroundColor = '#eaefd5';
 
             this.map.loadImage(
                 stripes,
@@ -225,85 +309,21 @@ export default {
                 },
             }, insertBefore);
 
-            this.map.addLayer({
-                id: 'cities',
-                type: 'fill',
-                source: 'cities',
-                paint: {
-                    'fill-color': '#F3F3F3',
-                    'fill-opacity': 0,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['cities'], insertBefore);
 
-            this.map.addLayer({
-                id: 'regions',
-                type: 'fill',
-                source: 'regions',
-                paint: {
-                    'fill-color': '#eaefd5',
-                    'fill-opacity': .25,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['regions'], insertBefore);
 
-            this.map.addLayer({
-                id: 'regions-hover',
-                type: 'fill',
-                source: 'regions-hover',
-                paint: {
-                    'fill-color': '#FFFFFF',
-                    'fill-opacity': .75,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['regions-hover'], insertBefore);
 
-            this.map.addLayer({
-                id: 'regions-intersect',
-                type: 'fill',
-                source: 'regions-intersect',
-                paint: {
-                    'fill-pattern': 'intersect-pattern',
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['regions-intersect'], insertBefore);
 
-            this.map.addLayer({
-                id: 'regions-active',
-                type: 'fill',
-                source: 'regions-active',
-                paint: {
-                    'fill-color': '#D3E292',
-                    'fill-opacity': .75,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['regions-active'], insertBefore);
 
-            this.map.addLayer({
-                id: 'regions-outline',
-                type: 'line',
-                source: 'regions-outline',
-                paint: {
-                    'line-width': 2,
-                    'line-color': '#a4a4a4',
-                    'line-opacity': 1,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['regions-outline'], insertBefore);
 
-            this.map.addLayer({
-                id: 'cities-hover',
-                type: 'fill',
-                source: 'cities-hover',
-                paint: {
-                    'fill-color': '#a4a4a4',
-                    'fill-opacity': 0,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['cities-hover'], insertBefore);
 
-            this.map.addLayer({
-                id: 'cities-active',
-                type: 'fill',
-                source: 'cities-active',
-                paint: {
-                    'fill-color': '#FFFFFF',
-                    'fill-opacity': 0,
-                },
-            }, insertBefore);
+            this.map.addLayer(this.layers['cities-active'], insertBefore);
 
             this.map.on('mousemove', (event) => {
 
@@ -422,6 +442,14 @@ export default {
 
         translateField,
 
+        templateHook(name, ...params) {
+            if(this?.$clientOptions?.templateHooks?.[name]) {
+                return this.$clientOptions.templateHooks[name](this, ...params);
+            }
+
+            return null;
+        },
+
         getBounds () {
             let bounds = new mapboxgl.LngLatBounds();
 
@@ -445,18 +473,20 @@ export default {
 
         async updateRegions () {
 
-            let regionsGeoJSON = (await api.regions.regions(this.regionType)).data;
+            let regionsGeoJson = (await api.regions.regions(this.regionType)).data;
 
-            this.regionsGeoJSON = regionsGeoJSON;
+            regionsGeoJson = (this.$clientOptions?.middleware?.transformRegionsGeoJson || (e => e))(regionsGeoJson);
 
-            this.map.getSource('regions').setData(regionsGeoJSON);
+            this.regionsGeoJson = regionsGeoJson;
 
-            this.map.getSource('regions-outline').setData(regionsGeoJSON);
+            this.map.getSource('regions').setData(regionsGeoJson);
+
+            this.map.getSource('regions-outline').setData(regionsGeoJson);
 
             let intersectFeatures = [];
 
-            regionsGeoJSON.features.forEach((a) => {
-                regionsGeoJSON.features.forEach((b) => {
+            regionsGeoJson.features.forEach((a) => {
+                regionsGeoJson.features.forEach((b) => {
                     if(a === b) {
                         return;
                     }
