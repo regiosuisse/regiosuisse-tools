@@ -1629,35 +1629,139 @@ td {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1em;
+    padding: 0 1rem;
     box-sizing: border-box;
   }
 
-  .ck-label {
-    display: none!important;
-  }
+  .desc-editor {
+    width: 100%;
+    box-sizing: border-box;
+    
 
-}
-@media screen and (min-width: 2000px) {
-  .verification-page {
-    .container {
-      max-width: 1440px;
+    .ck.ck-editor {
+      font-size: 14px !important;
+      
+      .ck-editor__main {
+        width: 100% !important;
+        font-size: 1em;
+      }
+  
+      .ck-editor__editable {
+        min-height: 150px;
+        background: $white;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        
+        &.ck-focused {
+          border-color: $theme-color-1 !important;
+        }
+      }
+  
+      .ck-toolbar {
+        border: 1px solid #ddd !important;
+        border-bottom: none !important;
+        background: #f8f8f8 !important;
+        
+        .ck-toolbar__items {
+          flex-wrap: wrap;
+        }
+        
+        .ck-button {
+
+          
+          &:hover {
+            background: darken(#f8f8f8, 5%) !important;
+          }
+          
+          &.ck-on {
+            background: $theme-color-1 !important;
+            color: $white !important;
+          }
+  
+
+  
+          &.ck-button_with-text {
+            width: auto !important;
+            padding: 4px 8px !important;
+            
+            .ck-button__label {
+              font-size: 14px !important;
+            }
+          }
+        }
+      }
+    }
+  
+    @media screen and (max-width: 768px) {
+      .ck.ck-editor {
+        .ck-toolbar {
+          padding: 4px !important;
+          
+          .ck-toolbar__items {
+            gap: 4px;
+          }
+        }
+        
+        .ck-editor__editable {
+          min-height: 120px;
+          padding: 8px !important;
+        }
+      }
+    }
+  
+    @media screen and (min-width: 769px) {
+      .ck.ck-editor {
+        .ck-toolbar {
+          padding: 6px !important;
+          
+          .ck-toolbar__items {
+            gap: 6px;
+          }
+        }
+        
+        .ck-editor__editable {
+          padding: 12px !important;
+        }
+      }
     }
   }
+  
+  .ck.ck-reset_all, .ck.ck-reset_all * {
+    font-size: 12px !important;
+  }
+  
+  .ck-content {
+    font-family: inherit !important;
+    color: inherit !important;
+    font-size: 1em !important;
+    
+    p {
+      margin: 0.5em 0;
+      line-height: 1.5;
+    }
+  }
+
+  .ck-label {
+    display: none !important;
+  }
 }
 
+// Responsive container sizes
+@media screen and (min-width: 2000px) {
+  .verification-page .container {
+    max-width: 1440px;
+  }
+}
 
 @media screen and (min-width: 2560px) {
-  .verification-page {
-    .container {
-      max-width: 1920px;
-    }
+  .verification-page .container {
+    max-width: 1920px;
   }
 }
 
 .verification-header {
   color: $theme-color-1;
-  padding: 1em 0;
+  padding: 1rem 0;
 
   .container {
     display: flex;
@@ -1666,12 +1770,22 @@ td {
 
     .logo {
       height: 50px;
-      margin-right: 1em;
+      margin-right: 1rem;
     }
 
     h1 {
-      font-size: 1.8em;
+      font-size: clamp(1.5rem, 2vw, 2rem);
       margin: 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      p {
+        font-size: 0.7em;
+        text-align: center;
+      }
     }
   }
 }
@@ -1682,41 +1796,62 @@ td {
 
 .verification-form {
   flex: 1;
-  padding: 2em 0;
+  padding: 2rem 0;
+
+  // Base font size for the form
+  font-size: clamp(14px, 1vw, 16px);
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 
   .verification-form-row {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 2em;
+    gap: 2rem;
+    margin-bottom: 2rem;
 
     @media screen and (max-width: 768px) {
       flex-direction: column;
+      gap: 1rem;
     }
   }
 
   .verification-form-group {
-    flex: 1 1 48%;
-    padding: 0 1%;
-    box-sizing: border-box;
+    flex: 1;
+    min-width: 300px;
+    
+    @media screen and (max-width: 768px) {
+      min-width: 100%;
+    }
 
     h2 {
-      font-size: 1.5em;
-      margin-bottom: 1em;
+      font-size: clamp(1.2em, 2vw, 1.5em);
+      margin-bottom: 1rem;
+      color: $theme-color-1;
+      font-weight: 600;
+
+      @media screen and (max-width: 768px) {
+        font-size: 1.3em; // Ensure it's larger than labels on mobile
+      }
     }
 
     label {
       display: block;
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5rem;
+      font-size: 1em;
     }
 
+    // Revert language button styling to original
     .locale-btn {
-      margin-left: 0.5em;
       padding: 0.3em 0.6em;
       background-color: $white;
       color: $color-regiosuisse;
       border-radius: 3px;
       text-decoration: none;
+      font-size: 0.9em;
       transition: background-color 0.3s;
+      min-width: unset!important;
 
       &:hover {
         background-color: $color-regiosuisse;
@@ -1724,29 +1859,53 @@ td {
       }
     }
 
-
     .form-control {
       width: 100%;
-      margin-bottom: 1em;
+      margin-bottom: 1rem;
+      padding: 0.75em;
+      font-size: 1em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      
+      &:focus {
+        outline: none;
+        border-color: $theme-color-1;
+      }
     }
   }
 
   .form-actions {
     text-align: center;
+    margin-top: 2rem;
+  }
 
-    .btn {
-      padding: 0.7em 1.5em;
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    padding: 0.75em 1.5em;
+    background-color: $theme-color-1;
+    color: $white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: darken($theme-color-1, 10%);
+    }
+  }
+
+  .btn-secondary {
+    background-color: $white;
+    color: $theme-color-1;
+    border: 1px solid $theme-color-1;
+
+    &:hover {
       background-color: $theme-color-1;
       color: $white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: $color-blw;
-      }
     }
   }
 }
@@ -1754,15 +1913,17 @@ td {
 .verification-footer {
   background-color: $theme-color-1;
   color: $white;
-  padding: 1em 0;
+  padding: 1rem 0;
   text-align: center;
+  font-size: 0.875rem;
 
   a {
     color: $white;
     text-decoration: underline;
+    transition: color 0.2s ease;
 
     &:hover {
-      color: lighten($white, 20%);
+      color: rgba($white, 0.8);
     }
   }
 }
@@ -1853,17 +2014,7 @@ td {
   font-weight: bold;
 }
 
-.desc-editor {
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 25em;
 
-  @media screen and (min-width: 1024px) {
-    max-width: 30vw;
-  }
-
-}
-/* end of verification form styles */
 
 .contact-component {
   .modal-component-modal {

@@ -676,6 +676,7 @@
                   id="userComment"
                   class="form-control"
                   v-model="contact.userComment"
+                  style="height: 200px;"
                 ></textarea>
               </div>
               <div v-if="diff" class="col-md-6">
@@ -692,6 +693,7 @@
                     id="userCommentDiff"
                     class="form-control"
                     v-model="diff.userComment"
+                    style="height: 200px;"
                   ></textarea>
                 </div>
               </div>
