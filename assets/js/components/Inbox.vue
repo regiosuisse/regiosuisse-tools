@@ -81,6 +81,15 @@
         <inbox-card v-for="item in filterInboxItemsByType(inbox, 'businessSector')" :item="item"></inbox-card>
       </div>
     </div>
+
+    <div class="inbox-component-section" v-if="$env.PLUGIN_ENABLE_JOBS">
+      <div class="inbox-component-section-title">
+        <h2>Jobs</h2>
+      </div>
+      <div class="inbox-component-section-content">
+        <inbox-card v-for="item in filterInboxItemsByType(inbox, 'job')" :item="item" @click="clickJob(item)" @onDismiss="clickDismiss(item)"></inbox-card>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -159,6 +168,10 @@ export default {
       document.querySelector(".backend-component-content").scrollTop = parseInt(
         scrollTop
       );
+    },
+    clickJob(item) {
+      this.saveScroll();
+      this.$router.push("/jobs/add?inboxId=" + item.id);
     },
   },
 };

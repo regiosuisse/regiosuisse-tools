@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Entity\Inbox;
 
 #[Route(path: '/api/v1/jobs', name: 'api_jobs')]
 class ApiJobsController extends AbstractController
@@ -288,6 +289,78 @@ class ApiJobsController extends AbstractController
         $jobService->deleteJob($job);
 
         return $this->json([]);
+    }
+
+    #[Route(path: '/embed', name: 'create_from_embed', methods: ['POST'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Create a job inbox item from embed form',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'inbox', ref: new Model(type: Inbox::class, groups: ['id', 'inbox']))
+            ],
+            type: 'object'
+        )
+    )]
+    #[OA\Tag(name: 'Jobs')]
+    public function createFromEmbed(
+        Request $request,
+        EntityManagerInterface $em,
+        NormalizerInterface $normalizer,
+        JobService $jobService
+    ): JsonResponse
+    {
+        $payload = json_decode($request->getContent(), true);
+
+        // Basic validation
+        $requiredFields = ['title', 'description', 'employer', 'contact', 'applicationDeadline'];
+        foreach ($requiredFields as $field) {
+            if (empty($payload[$field])) {
+                return $this->json(['error' => "Missing required field: $field"], 400);
+            }
+        }
+
+        // Validate that at least one location and stint is provided
+        if (empty($payload['locations']) || !is_array($payload['locations'])) {
+            return $this->json(['error' => "At least one location must be selected"], 400);
+        }
+        if (empty($payload['stints']) || !is_array($payload['stints'])) {
+            return $this->json(['error' => "At least one stint must be selected"], 400);
+        }
+
+        // Validate links structure if provided
+        if (isset($payload['links']) && !is_array($payload['links'])) {
+            return $this->json(['error' => "Links must be an array"], 400);
+        }
+        if (isset($payload['links'])) {
+            foreach ($payload['links'] as $link) {
+                if (!isset($link['label']) || !isset($link['value'])) {
+                    return $this->json(['error' => "Each link must have a label and value"], 400);
+                }
+            }
+        }
+
+        // Validate files structure if provided
+        if (isset($payload['files']) && !is_array($payload['files'])) {
+            return $this->json(['error' => "Files must be an array"], 400);
+        }
+        if (isset($payload['files'])) {
+            foreach ($payload['files'] as $file) {
+                if (!isset($file['id']) || !isset($file['name'])) {
+                    return $this->json(['error' => "Each file must have an id and name"], 400);
+                }
+            }
+        }
+
+        try {
+            $result = $jobService->createJobInboxItemFromEmbed($payload);
+
+            return $this->json([
+                'inbox' => $normalizer->normalize($result['inbox'], null, ['groups' => ['id', 'inbox']])
+            ]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 }

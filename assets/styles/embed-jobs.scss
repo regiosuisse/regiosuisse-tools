@@ -7,7 +7,8 @@
     @include embed-variables;
     @include embed-base;
 
-    &-search, &-filters {
+    &-search,
+    &-filters {
         @include embed-filters;
     }
 
@@ -32,6 +33,74 @@
     }
 
     @include embed-transitions('embed-jobs');
+
+    .button {
+        background: $color-2;
+        color: $black;
+        border-radius: .25em;
+        padding: .25em 1em;
+        cursor: pointer;
+        text-decoration: none;
+        border: 1px solid $black;
+        font-size: inherit;
+        display: inline-flex;
+        align-items: center;
+
+        &[disabled],
+        &.disabled {
+            pointer-events: none;
+            opacity: .25;
+        }
+
+        &:hover {
+            background: $white;
+            text-decoration: none;
+        }
+
+        &.success {
+            color: $success;
+            background: $white;
+            border-color: $success;
+
+            &:hover {
+                color: $white;
+                background: $success;
+            }
+        }
+
+        &.error {
+            color: $error;
+            background: $white;
+            border-color: $error;
+
+            &:hover {
+                color: $white;
+                background: $error;
+            }
+        }
+
+        &.warning {
+            color: $warning;
+            background: $white;
+            border-color: $warning;
+
+            &:hover {
+                color: $white;
+                background: $warning;
+            }
+        }
+
+        &.primary {
+            color: $white;
+            background: $color-blw;
+            border-color: $color-blw;
+
+            &:hover {
+                color: $color-blw;
+                background: $white;
+            }
+        }
+    }
 }
 
 .embed-jobs-view {

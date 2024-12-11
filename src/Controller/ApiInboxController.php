@@ -68,6 +68,11 @@ class ApiInboxController extends AbstractController
             'type' => 'contact_update',
         ], ['createdAt' => 'ASC'], 500));
 
+        $inbox = array_merge($inbox, $em->getRepository(Inbox::class)->findBy([
+            'isMerged' => false,
+            'type' => 'job',
+        ], ['createdAt' => 'ASC'], 500));
+
         $result = $normalizer->normalize($inbox, null, [
             'groups' => ['id', 'inbox'],
         ]);

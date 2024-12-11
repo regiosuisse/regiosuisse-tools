@@ -209,12 +209,23 @@ export default {
                 translations: {
                     fr: {
                         links: [],
+                        name: '',
+                        description: '',
+                        employer: '',
+                        location: '',
+                        contact: '',
                     },
                     it: {
                         links: [],
+                        name: '',
+                        description: '',
+                        employer: '',
+                        location: '',
+                        contact: '',
                     },
                 },
             },
+            inboxId: null,
             showPreview: false,
             modal: null,
             editor: ClassicEditor,
@@ -263,10 +274,10 @@ export default {
     },
     computed: {
         ...mapState({
-            selectedJob: state => state.jobs.job,
-            languages: state => state.languages.all,
+            inboxItem: state => state.inbox.item,
             locations: state => state.locations.all,
             stints: state => state.stints.all,
+            selectedJob: state => state.jobs.job,
         }),
     },
     methods: {
@@ -297,29 +308,85 @@ export default {
         clickCancel () {
             this.$router.push('/jobs');
         },
-        clickSave() {
+        async clickSave() {
+            try {
+                // Prepare the job data
+                const jobData = {
+                    isPublic: this.job.isPublic,
+                    position: this.job.position,
+                    name: this.job.name,
+                    description: this.job.description,
+                    employer: this.job.employer,
+                    location: this.job.location,
+                    contact: this.job.contact,
+                    applicationDeadline: this.job.applicationDeadline,
+                    locations: this.job.locations.map(loc => ({ id: loc.id })),
+                    stints: this.job.stints.map(stint => ({ id: stint.id })),
+                    links: this.job.links || [],
+                    files: this.job.files || [],
+                    translations: this.job.translations || {
+                        fr: { links: [] },
+                        it: { links: [] }
+                    }
+                };
 
-            if(!this.job.applicationDeadline) {
-                this.job.applicationDeadline = null;
-            }
+                // Validate required fields
+                const requiredFields = ['name', 'description', 'employer', 'contact'];
+                const missingFields = requiredFields.filter(field => !jobData[field]);
+                
+                if (missingFields.length > 0) {
+                    this.modal = {
+                        type: 'error',
+                        title: 'Fehlende Pflichtfelder',
+                        message: `Bitte füllen Sie die folgenden Pflichtfelder aus: ${missingFields.join(', ')}`
+                    };
+                    return;
+                }
 
-            if(this.job.id) {
-                return this.$store.dispatch('jobs/update', this.job).then(() => {
-                    this.$router.push('/jobs');
-                });
-            }
-
-            this.$store.dispatch('jobs/create', this.job).then(() => {
+                if (this.job.id) {
+                    await this.$store.dispatch('jobs/update', jobData);
+                } else {
+                    await this.$store.dispatch('jobs/create', jobData);
+                }
+                
+                // If this was from an inbox item, delete it after successful save
+                if (this.inboxId) {
+                    await this.$store.dispatch('inbox/delete', this.inboxId);
+                }
+                
                 this.$router.push('/jobs');
-            });
-
+            } catch (error) {
+                console.error('Error saving job:', error);
+                this.modal = {
+                    type: 'error',
+                    title: 'Fehler beim Speichern',
+                    message: error.response?.data?.error || 'Fehler beim Speichern des Jobs.'
+                };
+            }
         },
-        reload() {
-            if(this.$route.params.id) {
+        async reload() {
+            if (this.$route.params.id) {
+                // Only load existing job if we have an ID
                 this.$store.commit('jobs/set', {});
-                this.$store.dispatch('jobs/load', this.$route.params.id).then(() => {
-                    this.job = {...this.selectedJob};
-                });
+                await this.$store.dispatch('jobs/load', this.$route.params.id);
+                if (this.selectedJob) {
+                    // Ensure translations object exists
+                    const translations = this.selectedJob.translations || {
+                        fr: { links: [] },
+                        it: { links: [] }
+                    };
+                    
+                    this.job = {
+                        ...this.job, // Keep default structure
+                        ...this.selectedJob,
+                        translations: {
+                            fr: { ...this.job.translations.fr, ...translations.fr },
+                            it: { ...this.job.translations.it, ...translations.it }
+                        }
+                    };
+                }
+            } else if (this.inboxId) {
+                await this.loadInboxJob();
             }
         },
         clickRemoveProgram(programIndex) {
@@ -415,16 +482,20 @@ export default {
             this.job.files = files;
         },
         translate(property, context) {
+            if (!context || !context.translations) {
+                return context?.[property] || '';
+            }
+
             if(this.locale === 'de') {
-                return context[property] || context.translations.fr[property] || context.translations.it[property];
+                return context[property] || context.translations?.fr?.[property] || context.translations?.it?.[property] || '';
             }
             if(this.locale === 'fr') {
-                return context.translations.fr[property] || context[property] || context.translations.it[property];
+                return context.translations?.fr?.[property] || context[property] || context.translations?.it?.[property] || '';
             }
             if(this.locale === 'it') {
-                return context.translations.it[property] || context.translations.fr[property] || context[property];
+                return context.translations?.it?.[property] || context.translations?.fr?.[property] || context[property] || '';
             }
-            return context[property];
+            return context[property] || '';
         },
         getPreviewLink() {
             let url = 'https://regiosuisse.ch';
@@ -443,9 +514,85 @@ export default {
             const result = (url || '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
             return (result[2] !== undefined) ? result[2].split(/[^0-9a-z_\-]/i)[0] : false;
         },
+        async loadInboxJob() {
+            try {
+                if (!this.inboxId) return;
+                
+                // Make sure we have the locations and stints loaded
+                await Promise.all([
+                    this.$store.dispatch('locations/loadAll'),
+                    this.$store.dispatch('stints/loadAll'),
+                    this.$store.dispatch('inbox/load', this.inboxId)
+                ]);
+                
+                if (this.inboxItem && this.inboxItem.data && this.inboxItem.data.job) {
+                    const jobData = this.inboxItem.data.job;
+                    
+                    // Populate the job form with inbox data
+                    this.job.name = jobData.name || jobData.title || '';
+                    this.job.description = jobData.description || '';
+                    this.job.employer = jobData.employer || '';
+                    this.job.location = jobData.location || '';
+                    this.job.contact = jobData.contact || '';
+                    this.job.applicationDeadline = jobData.applicationDeadline || null;
+                    
+                    // Handle locations - find matching location objects
+                    if (jobData.locations && Array.isArray(jobData.locations)) {
+                        const locationIds = jobData.locations.map(loc => loc.id);
+                        this.job.locations = this.locations.filter(loc => 
+                            locationIds.includes(loc.id)
+                        );
+                    }
+                    
+                    // Handle stints - find matching stint objects
+                    if (jobData.stints && Array.isArray(jobData.stints)) {
+                        const stintIds = jobData.stints.map(stint => stint.id);
+                        this.job.stints = this.stints.filter(stint => 
+                            stintIds.includes(stint.id)
+                        );
+                    }
+
+                    // Handle links
+                    if (jobData.links && Array.isArray(jobData.links)) {
+                        this.job.links = jobData.links;
+                    }
+
+                    // Handle files
+                    if (jobData.files && Array.isArray(jobData.files)) {
+                        this.job.files = jobData.files;
+                    }
+                    
+                    // Handle translations if they exist
+                    if (jobData.translations) {
+                        this.job.translations = {
+                            fr: {
+                                ...this.job.translations.fr,
+                                ...jobData.translations.fr,
+                                links: jobData.translations.fr?.links || []
+                            },
+                            it: {
+                                ...this.job.translations.it,
+                                ...jobData.translations.it,
+                                links: jobData.translations.it?.links || []
+                            }
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading inbox job:', error);
+                this.modal = {
+                    type: 'error',
+                    message: 'Fehler beim Laden des Jobs aus dem Posteingang.'
+                };
+            }
+        },
     },
     created () {
         this.reload();
+        this.inboxId = this.$route.query.inboxId;
+        if (this.inboxId) {
+            this.loadInboxJob();
+        }
     }
 }
 </script>

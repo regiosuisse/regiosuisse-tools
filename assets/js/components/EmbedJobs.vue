@@ -76,6 +76,10 @@
 
         </div>
 
+        <div class="embed-jobs-filterbar">
+            <button class="button primary add-job-button" @click="showJobModal = true">Stellenausschreibung Hinzufügen</button>
+        </div>
+
         <transition name="embed-jobs-list" mode="out-in">
 
             <div class="embed-jobs-list" v-if="!isLoading">
@@ -138,6 +142,87 @@
 
         </transition>
 
+        <JobModal v-if="showJobModal" @close="showJobModal = false">
+            <div class="job-form-modal">
+                <h3 class="modal-title">Neuen Job hinzufügen</h3>
+                <form @submit.prevent="submitJob" class="job-form">
+                    <div class="job-form-columns">
+                        <div class="job-form-column">
+                            <div class="form-group">
+                                <label for="jobTitle">Bezeichnung</label>
+                                <input id="jobTitle" class="form-control" v-model="newJob.title" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobLocation">Arbeitsort</label>
+                                <tag-selector id="jobLocation" 
+                                    :model="newJob.locations"
+                                    :options="locations.filter(location => !location.context || location.context === 'job')" 
+                                    :searchType="'select'"
+                                    required>
+                                </tag-selector>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobStint">Pensum</label>
+                                <tag-selector id="jobStint" 
+                                    :model="newJob.stints"
+                                    :options="stints.filter(stint => !stint.context || stint.context === 'job')" 
+                                    :searchType="'select'"
+                                    required>
+                                </tag-selector>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobDescription">Beschreibung</label>
+                                <textarea id="jobDescription" class="form-control" rows="5" v-model="newJob.description" required></textarea>
+                            </div>
+                        </div>
+                        <div class="job-form-column">
+                            <div class="form-group">
+                                <label for="jobEmployer">Arbeitgeber</label>
+                                <input id="jobEmployer" class="form-control" v-model="newJob.employer" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobEmployerLocation">Arbeitgeber Location</label>
+                                <input id="jobEmployerLocation" class="form-control" v-model="newJob.location" />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobContact">Kontakt</label>
+                                <input id="jobContact" class="form-control" v-model="newJob.contact" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobDeadline">Bewerbungsfrist</label>
+                                <input type="date" id="jobDeadline" class="form-control" v-model="newJob.applicationDeadline" required />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Links and Documents Section -->
+                    <div class="additional-sections">
+                        <div class="form-group">
+                            <label>Links</label>
+                            <div class="links-list">
+                                <div v-for="(link, index) in newJob.links" :key="index" class="link-item">
+                                    <input type="text" class="form-control" v-model="link.label" placeholder="Bezeichnung">
+                                    <input type="text" class="form-control" v-model="link.value" placeholder="URL">
+                                    <button type="button" class="button error" @click="removeLink(index)">Entfernen</button>
+                                </div>
+                            </div>
+                            <button type="button" class="button success" @click="addLink">Link hinzufügen</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dokumente</label>
+                            <file-selector :items="newJob.files" @changed="updateFiles"></file-selector>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="button warning" @click="showJobModal = false">Abbrechen</button>
+                        <button type="submit" class="button primary">Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </JobModal>
+
     </div>
 
 </template>
@@ -148,11 +233,17 @@ import {mapGetters, mapState} from 'vuex';
 import { translateField } from '../utils/filters';
 import EmbedJobsView from './EmbedJobsView';
 import {track, trackDevice, trackPageView} from '../utils/logger';
+import JobModal from './JobModal.vue';
+import TagSelector from './TagSelector';
+import FileSelector from './FileSelector';
 
 export default {
 
     components: {
         EmbedJobsView,
+        JobModal,
+        TagSelector,
+        FileSelector,
     },
 
     data() {
@@ -163,6 +254,19 @@ export default {
             filters: [],
             activeFilterSelect: null,
             job: null,
+            showJobModal: false,
+            newJob: {
+                title: '',
+                locations: [],
+                stints: [],
+                description: '',
+                employer: '',
+                location: '',
+                contact: '',
+                applicationDeadline: '',
+                links: [],
+                files: [],
+            },
         };
     },
 
@@ -489,6 +593,65 @@ export default {
             });
         },
 
+        submitJob() {
+            // Prepare the job data
+            const jobData = {
+                title: this.newJob.title,
+                description: this.newJob.description,
+                employer: this.newJob.employer,
+                location: this.newJob.location,
+                contact: this.newJob.contact,
+                applicationDeadline: this.newJob.applicationDeadline,
+                // Send arrays of locations and stints
+                locations: this.newJob.locations.map(loc => ({ id: loc.id })),
+                stints: this.newJob.stints.map(stint => ({ id: stint.id })),
+                // Add links and files
+                links: this.newJob.links || [],
+                files: this.newJob.files || []
+            };
+
+            this.$store.dispatch('jobs/createFromEmbed', jobData)
+                .then(() => {
+                    this.showJobModal = false;
+                    // Reset form
+                    this.newJob = {
+                        title: '',
+                        locations: [],
+                        stints: [],
+                        description: '',
+                        employer: '',
+                        location: '',
+                        contact: '',
+                        applicationDeadline: '',
+                        links: [],
+                        files: [],
+                    };
+                })
+                .catch(error => {
+                    console.error('Error creating job:', error);
+                    // Show error modal
+                    this.modal = {
+                        type: 'error',
+                        message: 'Fehler beim Erstellen des Jobs. Bitte überprüfen Sie alle Pflichtfelder.'
+                    };
+                });
+        },
+
+        addLink() {
+            this.newJob.links.push({
+                label: '',
+                value: ''
+            });
+        },
+
+        removeLink(index) {
+            this.newJob.links.splice(index, 1);
+        },
+
+        updateFiles(files) {
+            this.newJob.files = files;
+        },
+
     },
 
     created() {
@@ -555,3 +718,133 @@ export default {
 };
 
 </script>
+
+<style lang="scss">
+.embed-jobs-filterbar {
+    padding: 1rem;
+    text-align: end;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 1rem;
+    margin: 0 auto;
+    max-width: calc(var(--regiosuisse-max-width) + var(--regiosuisse-gutter-width));
+
+    .add-job-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 200px;
+
+    }
+}
+
+.job-form-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 4px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+
+    .modal-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .job-form {
+        &-columns {
+            display: flex;
+            gap: 2rem;
+        }
+
+        &-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .links-list {
+            margin-bottom: 1rem;
+
+            .link-item {
+                display: grid;
+                grid-template-columns: 1fr 1fr auto;
+                gap: 0.5rem;
+                margin-bottom: 0.5rem;
+                align-items: start;
+
+                .button {
+                    padding: 0.5rem;
+                    height: 100%;
+                }
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #e5e5e5;
+                border-radius: 4px;
+
+                &:focus {
+                    outline: none;
+                    border-color: #666;
+                }
+            }
+
+            textarea.form-control {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            button.success {
+                margin-top: 0.5rem;
+            }
+        }
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+
+        .button {
+            min-width: 120px;
+            justify-content: center;
+        }
+    }
+}
+
+.additional-sections {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.links-list {
+    margin-bottom: 1rem;
+    
+    .link-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        
+        input {
+            flex: 1;
+        }
+        
+        button {
+            flex-shrink: 0;
+        }
+    }
+}
+</style>
