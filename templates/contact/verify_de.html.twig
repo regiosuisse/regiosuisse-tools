@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}
+				{{ env.INSTANCE_NAME }}
+			{% endblock %}
+		</title>
+		<link rel="icon" href="{{ asset('build/'~env.THEME_ICON) }}">
+		<meta name="theme-color" content="{{ env.THEME_COLOR_1 }}">
+
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app', null, 'app') }}
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app', null, 'app') }}
+		{% endblock %}
+	</head>
+	<body>
+		{% block body %}
+			<div
+				class="verification-page">
+				<!-- Header Section -->
+				<header class="verification-header">
+					<div class="container">
+						<p>
+							<img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="Logo" class="logo">
+						</p>
+					</div>
+					<div class="container">
+						<h1>Ihre Kontaktinformationen</h1>
+					</div>
+					<div class="container">
+						<p style="color: black">
+							Bitte überprüfen Sie Ihre Kontaktinformationen und aktualisieren Sie diese bei Bedarf. Wenn Sie aus unserer Datenbank gelöscht werden wollen, aktivieren Sie die Checkbox unten und speichern Sie Ihre Informationen.
+						</p>
+					</div>
+					<div class="container verification-header-seperator"></div>
+				</header>
+
+				<!-- Form Section -->
+				<div class="container">
+					{{ form_start(form) }}
+					<div
+						class="verification-form">
+						<!-- Persönliche Informationen & Kontaktinformationen -->
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<h2>Persönliche Informationen</h2>
+								{{ form_row(form.academicTitle, { label: 'Akademischer Titel', attr: { class: 'form-control' } }) }}
+								{{ form_row(form.firstName, { label: 'Vorname', attr: { class: 'form-control' } }) }}
+								{{ form_row(form.lastName, { label: 'Nachname', attr: { class: 'form-control' } }) }}
+								{{ form_row(form.gender, { label: 'Geschlecht', attr: { class: 'form-control' } }) }}
+							</div>
+
+							<div class="verification-form-group">
+								<h2>Kontaktinformationen</h2>
+								{{ form_row(form.email, { label: 'E-Mail', attr: { class: 'form-control' } }) }}
+								{{ form_row(form.phone, { label: 'Telefon', attr: { class: 'form-control' } }) }}
+
+								<!-- Multilingual Website field with locale switch buttons -->
+								<div class="website" style="display: flex; flex-direction: row; margin-top: 10px;">
+									<label id="website-label-de">Webseite (DE)</label>
+									<label id="website-label-fr" style="display:none;">Webseite (FR)</label>
+									<label id="website-label-it" style="display:none;">Webseite (IT)</label>
+									<span style="margin-left: 10px;">
+										<a href="#" class="btn locale-btn" onclick="changeLocale('de', 'website', event)">DE</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'website', event)">FR</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('it', 'website', event)">IT</a>
+									</span>
+								</div>
+								<div id="website-de" class="locale-input">
+									{{ form_row(form.website, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+								<div id="website-fr" class="locale-input" style="display:none;">
+									{{ form_row(form.translations_fr_website, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+								<div id="website-it" class="locale-input" style="display:none;">
+									{{ form_row(form.translations_it_website, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+							</div>
+						</div>
+
+						<!-- Adresse & Weitere Informationen -->
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<h2>Adresse</h2>
+								{{ form_row(form.street, { label: 'Strasse', attr: { class: 'form-control' } }) }}
+								{{ form_row(form.zipCode, { label: 'Postleitzahl', attr: { class: 'form-control' } }) }}
+
+								<!-- Multilingual City field with locale switch buttons -->
+								<div class="city" style="display: flex; flex-direction: row; margin-top: 10px;">
+									<label id="city-label-de">Stadt (DE)</label>
+									<label id="city-label-fr" style="display:none;">Stadt (FR)</label>
+									<label id="city-label-it" style="display:none;">Stadt (IT)</label>
+									<span style="margin-left: 10px;">
+										<a href="#" class="btn locale-btn" onclick="changeLocale('de', 'city', event)">DE</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'city', event)">FR</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('it', 'city', event)">IT</a>
+									</span>
+								</div>
+								<div id="city-de" class="locale-input">
+									{{ form_row(form.city, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+								<div id="city-fr" class="locale-input" style="display:none;">
+									{{ form_row(form.translations_fr_city, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+								<div id="city-it" class="locale-input" style="display:none;">
+									{{ form_row(form.translations_it_city, { label: false, attr: { class: 'form-control' } }) }}
+								</div>
+
+								{{ form_row(form.country, { label: 'Land', attr: { class: 'form-control' }, id: 'country-select' }) }}
+								<div id="state-container" style="display: none;">
+									{{ form_row(form.state, { label: 'Kanton', attr: { class: 'form-control', id: 'state-select' } }) }}
+								</div>
+							</div>
+
+							<div class="verification-form-group">
+								<h2>Weitere Informationen</h2>
+								{{ form_row(form.language, { label: 'Sprache', attr: { class: 'form-control' } }) }}
+
+								<!-- Multilingual Description field with locale switch buttons -->
+								<div class="description" style="display: flex; flex-direction: row; margin-top: 10px;">
+									<label id="description-label-de">Beschreibung (DE)</label>
+									<label id="description-label-fr" style="display:none;">Beschreibung (FR)</label>
+									<label id="description-label-it" style="display:none;">Beschreibung (IT)</label>
+									<span style="margin-left: 10px;">
+										<a href="#" class="btn locale-btn" onclick="changeLocale('de', 'description', event)">DE</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('fr', 'description', event)">FR</a>
+										<span>|</span>
+										<a href="#" class="btn locale-btn" onclick="changeLocale('it', 'description', event)">IT</a>
+									</span>
+								</div>
+								<p style="margin-top: 0; color: gray; font-style: italic;">
+									Nennen Sie bitte Ihre spezifischen Arbeits- oder Forschungsthemen.
+								</p>
+								<div id="description-de" class="locale-input desc-editor">
+									{{ form_row(form.description, { label: false, attr: { class: 'form-control' }, value: form.description.vars.value|raw }) }}
+								</div>
+								<div id="description-fr" class="locale-input desc-editor" style="display:none;">
+									{{ form_row(form.translations_fr_description, { label: false, attr: { class: 'form-control' }, value: form.translations_fr_description.vars.value|raw }) }}
+								</div>
+								<div id="description-it" class="locale-input desc-editor" style="display:none;">
+									{{ form_row(form.translations_it_description, { label: false, attr: { class: 'form-control' }, value: form.translations_it_description.vars.value|raw }) }}
+								</div>
+							</div>
+						</div>
+
+						<!-- Themen Field -->
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<h2>Themen</h2>
+								<p style="margin-top: 0; color: gray; font-style: italic;">
+									Welche Themen stehen im Fokus Ihrer Tätigkeit? (Mehrfachauswahl möglich)
+								</p>
+								{{ form_row(form.topics, { label: false, attr: { class: 'form-control select2' } }) }}
+							</div>
+						</div>
+
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<h2>Sonstiges</h2>
+								<p style="margin-top: 0; color: gray; font-style: italic;">
+									Geben Sie hier Ihre Kommentare / Anmerkungen ein. (optional)
+								</p>
+								{{ form_row(form.userComment, { label: false, attr: { class: 'form-control' } }) }}
+							</div>
+						</div>
+
+						<div class="verification-form-row verification-form-group">
+							<h2 style="margin-bottom: 0">Verknüpfte Unternehmen</h2>
+						</div>
+
+						<!-- Verknüpfte Unternehmen -->
+						<div id="employments-section" class="verification-form-row">
+							{% for employment in employments %}
+								<div class="verification-form-group col-md-6" id="employment-group-{{ employment.id }}">
+									<div style="display: flex; justify-content: space-between; align-items: center;">
+										<label style="text-decoration: underline;">{{ employment.companyName }}</label>
+										<div class="idontworkhere-checkbox-container">
+											<input type="checkbox" name="removeEmploymentIds[]" value="{{ employment.id }}" id="employment-checkbox-{{ employment.id }}" onchange="toggleDisabledState({{ employment.id }})">
+											<span>Ich arbeite nicht mehr hier.</span>
+										</div>
+									</div>
+
+									<!-- Locale Switch Buttons for Role -->
+									<div class="role" style="display: flex; flex-direction: row; margin-top: 10px;">
+										<label id="role-label-{{ employment.id }}-de">Funktion (DE)</label>
+										<label id="role-label-{{ employment.id }}-fr" style="display:none;">Funktion (FR)</label>
+										<label id="role-label-{{ employment.id }}-it" style="display:none;">Funktion (IT)</label>
+										<span style="margin-left: 10px;">
+											<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'de', event)">DE</a>
+											<span>|</span>
+											<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'fr', event)">FR</a>
+											<span>|</span>
+											<a href="#" class="btn locale-btn" onclick="changeEmploymentLocale('{{ employment.id }}', 'it', event)">IT</a>
+										</span>
+									</div>
+
+									<!-- Input Fields for Role -->
+									<div id="role-{{ employment.id }}-de" class="locale-input">
+										<input type="text" name="employments[{{ employment.id }}][role]" value="{{ employment.role }}" class="form-control"/>
+									</div>
+									<div id="role-{{ employment.id }}-fr" class="locale-input" style="display:none;">
+										<input type="text" name="employments[{{ employment.id }}][translations][fr][role]" value="{{ employment.translations['fr']['role'] ?? '' }}" class="form-control"/>
+									</div>
+									<div id="role-{{ employment.id }}-it" class="locale-input" style="display:none;">
+										<input type="text" name="employments[{{ employment.id }}][translations][it][role]" value="{{ employment.translations['it']['role'] ?? '' }}" class="form-control"/>
+									</div>
+								</div>
+							{% endfor %}
+
+							{% if employments|length is odd %}
+								<div class="employment-item verification-form-group col-md-6"></div>
+							{% endif %}
+							<div class="col-md-12">
+								{% if employments|length == 0 %}
+									<div class="verification-form-group col-md-12" id="no-employments-message">
+										<p style="color: #666; font-style: italic;">Keine verknüpften Unternehmen gefunden</p>
+									</div>
+									<script>
+										document.addEventListener('DOMContentLoaded', function () {
+                                            const showFormBtn = document.getElementById('show-employment-form-btn');
+                                            const noEmplMessage = document.getElementById('no-employments-message');
+                                            const employmentsSection = document.getElementById('employments-section');
+                                            const newEmploymentForm = document.getElementById('new-employment-form');
+                                            const hideFormBtn = document.getElementById('hide-employment-form-btn');
+
+                                            showFormBtn.addEventListener('click', function () {
+                                                if(noEmplMessage) {
+                                                    noEmplMessage.style.display = 'none';
+                                                    employmentsSection.style.marginBottom = '0';
+                                                    newEmploymentForm.style.marginTop = '0';
+                                                }
+                                            });
+
+                                            hideFormBtn.addEventListener('click', function () {
+                                                if(noEmplMessage) {
+                                                    noEmplMessage.style.display = 'block';
+                                                    employmentsSection.style.marginBottom = '20px';
+                                                    newEmploymentForm.style.marginTop = '20px';
+                                                }
+                                            });
+                                        });
+									</script>
+								{% endif %}
+								<!-- Add this right after the existing employments section -->
+								<div class="verification-form-row">
+									<div class="verification-form-group col-md-12">
+										<button type="button" class="btn btn-secondary" onclick="toggleNewEmploymentForm('show')" id="show-employment-form-btn">
+											Neues Unternehmen verknüpfen
+										</button>
+										<div id="new-employment-form" style="display: none; margin-top: 20px;" class="col-md-6">
+											<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+												<span style="margin: 0;">Neues Unternehmen verknüpfen</span>
+												<button id="hide-employment-form-btn" type="button" class="btn-link" onclick="toggleNewEmploymentForm('hide')" style="color: #666; text-decoration: none; font-size: 20px;">×</button>
+											</div>
+
+											<div class="form-group">
+												<label>Name des Unternehmens</label>
+												<input type="text" id="new-company-name" class="form-control">
+											</div>
+
+											<!-- Multilingual Role field -->
+											<div class="role" style="display: flex; flex-direction: row; margin-top: 10px;">
+												<label id="new-role-label-de">Funktion (DE)</label>
+												<label id="new-role-label-fr" style="display:none;">Funktion (FR)</label>
+												<label id="new-role-label-it" style="display:none;">Funktion (IT)</label>
+												<span style="margin-left: 10px;">
+													<a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('de', event)">DE</a>
+													<span>|</span>
+													<a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('fr', event)">FR</a>
+													<span>|</span>
+													<a href="#" class="btn locale-btn" onclick="changeNewEmploymentLocale('it', event)">IT</a>
+												</span>
+											</div>
+											<div id="new-role-de" class="locale-input">
+												<input type="text" id="new-role-de-input" class="form-control">
+											</div>
+											<div id="new-role-fr" class="locale-input" style="display:none;">
+												<input type="text" id="new-role-fr-input" class="form-control">
+											</div>
+											<div id="new-role-it" class="locale-input" style="display:none;">
+												<input type="text" id="new-role-it-input" class="form-control">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Abmelden Section -->
+						<div class="verification-form-row">
+							<div class="verification-form-group">
+								<div>
+									<h2>Abmelden</h2>
+									<div style="display: flex; align-items: center; margin-top: 40px;">
+										<input type="checkbox" name="delete" value="1">
+										<span style="margin-left: 5px; color: black;">Ich möchte aus der Datenbank gelöscht werden.</span>
+									</div>
+								</div>
+							</div>
+							<div class="verification-form-group"></div>
+						</div>
+
+						<!-- Form Actions -->
+						<div class="form-actions">
+							<button class="btn btn-primary">Speichern</button>
+						</div>
+					</div>
+					{{ form_end(form) }}
+				</div>
+			</div>
+		{% endblock %}
+
+		<!-- Footer Section -->
+		<footer class="verification-footer">
+			<div class="container">
+				<p>
+					&copy;
+					{{ "now"|date("Y") }}
+					regiosuisse - Die Plattform für Regionalentwicklung in der Schweiz
+				</p>
+				<p>
+					<a href="https://www.regiosuisse.ch" target="_blank">www.regiosuisse.ch</a>
+					<span>
+						Bei Fragen oder Problemen wenden Sie sich bitte an
+						<a href="mailto:web@regiosuisse.ch">web@regiosuisse.ch</a>
+					</span>
+				</p>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+changeLocale('de', 'website');
+changeLocale('de', 'city');
+changeLocale('de', 'description');{% for employment in employments %}
+changeEmploymentLocale('{{ employment.id }}', 'de');{% endfor %}
+});
+
+function changeLocale(locale, field, event) {
+if (event) {
+event.preventDefault();
+}['de', 'fr', 'it'].forEach(function (lang) {
+document.getElementById(`${field}-${lang}`).style.display = 'none';
+document.getElementById(`${field}-label-${lang}`).style.display = 'none';
+});
+
+document.getElementById(`${field}-${locale}`).style.display = 'block';
+document.getElementById(`${field}-label-${locale}`).style.display = 'block';
+}
+
+function changeEmploymentLocale(employmentId, locale, event) {
+if (event) {
+event.preventDefault();
+}['de', 'fr', 'it'].forEach(function (lang) {
+document.getElementById(`role-${employmentId}-${lang}`).style.display = 'none';
+document.getElementById(`role-label-${employmentId}-${lang}`).style.display = 'none';
+});
+
+document.getElementById(`role-${employmentId}-${locale}`).style.display = 'block';
+document.getElementById(`role-label-${employmentId}-${locale}`).style.display = 'block';
+}
+
+function toggleDisabledState(employmentId) {
+const employmentGroup = document.getElementById(`employment-group-${employmentId}`);
+const inputs = employmentGroup.querySelectorAll('input[type="text"], select, textarea');
+
+const isChecked = document.getElementById(`employment-checkbox-${employmentId}`).checked;
+
+inputs.forEach(input => {
+input.disabled = isChecked;
+});
+
+if (isChecked) {
+employmentGroup.classList.add("disabled-fields");
+} else {
+employmentGroup.classList.remove("disabled-fields");
+}
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+const topicsDropdown = document.querySelector('[id^="contact_type_person_topics"]');
+const dropdownId = topicsDropdown ? topicsDropdown.id : null;
+
+if (dropdownId) {
+$('#' + dropdownId).select2({placeholder: "Wählen Sie Themen aus", width: '100%'});
+
+const preselectedValues = {{ form.topics.vars.data|map(v => v.id)|json_encode|raw }};
+
+$('#' + dropdownId).val(preselectedValues).trigger('change');
+$('#' + dropdownId).on('change', function () {
+const selectedValues = $(this).val() || [];
+updateSelectedTags(selectedValues);
+});
+
+function updateSelectedTags(selectedValues) {
+const tagContainer = document.getElementById('selected-topics-tags');
+if (! tagContainer) 
+return;
+
+
+tagContainer.innerHTML = '';
+
+selectedValues.forEach(value => {
+const tag = document.createElement('span');
+tag.className = 'topic-tag';
+tag.innerText = getTopicLabel(value);
+
+const removeButton = document.createElement('span');
+removeButton.className = 'remove-tag';
+removeButton.innerHTML = '&times;';
+removeButton.onclick = () => removeTag(value);
+
+tag.appendChild(removeButton);
+tagContainer.appendChild(tag);
+});
+}
+
+function removeTag(value) {
+let currentValues = $('#' + dropdownId).val() || [];
+currentValues = currentValues.filter(v => v !== value);
+$('#' + dropdownId).val(currentValues).trigger('change');
+}
+
+function getTopicLabel(value) {
+return $('#' + dropdownId + ' option[value="' + value + '"]').text();
+}
+} else {
+console.error("Dropdown ID for topics not found.");
+}
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+['description-de', 'description-fr', 'description-it'].forEach(function (id) {
+const element = document.querySelector(`#${id} .form-control`);
+if (element) {
+ClassicEditor.create(element).catch(error => {
+console.error(error);
+});
+}
+});
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+const countrySelect = document.getElementById('country-select');
+const stateContainer = document.getElementById('state-container');
+
+function toggleStateField() {
+const options = countrySelect.options;
+let isSwitzerland = false;
+
+for (let i = 0; i < options.length; i++) {
+if (options[i].text === "Schweiz") {
+isSwitzerland = options[i].selected;
+break;
+}
+}
+
+if (isSwitzerland) {
+stateContainer.style.display = 'block';
+} else {
+stateContainer.style.display = 'none';
+}
+}
+
+toggleStateField();
+
+countrySelect.addEventListener('change', toggleStateField);
+});
+
+// Add this to your existing script section
+document.addEventListener('DOMContentLoaded', function () { // Get the form element
+const form = document.querySelector('form');
+
+// Add submit event listener
+form.addEventListener('submit', function (e) { // Get the new employment form values
+const companyName = document.getElementById('new-company-name').value.trim();
+const roleDe = document.getElementById('new-role-de-input').value.trim();
+const roleFr = document.getElementById('new-role-fr-input').value.trim();
+const roleIt = document.getElementById('new-role-it-input').value.trim();
+
+// If there's new employment data, append it to userComment
+if (companyName || roleDe || roleFr || roleIt) {
+const userCommentField = document.querySelector('[id$="_userComment"]');
+const currentComment = userCommentField.value.trim();
+
+const newEmploymentText = `\n\nNeue Beschäftigung:\nUnternehmen: ${companyName}\nFunktion (DE): ${roleDe}${
+roleFr ? '\nFunktion (FR): ' + roleFr : ''
+}${
+roleIt ? '\nFunktion (IT): ' + roleIt : ''
+}`;
+
+userCommentField.value = currentComment + newEmploymentText;
+}
+});
+});
+
+function toggleNewEmploymentForm(action) {
+const form = document.getElementById('new-employment-form');
+const showButton = document.getElementById('show-employment-form-btn');
+
+if (action === 'show') {
+form.style.display = 'block';
+showButton.style.display = 'none';
+// Clear any existing values
+document.getElementById('new-company-name').value = '';
+document.getElementById('new-role-de-input').value = '';
+document.getElementById('new-role-fr-input').value = '';
+document.getElementById('new-role-it-input').value = '';
+} else {
+form.style.display = 'none';
+showButton.style.display = 'block';
+}
+}
+
+function changeNewEmploymentLocale(locale, event) {
+if (event) {
+event.preventDefault();
+}['de', 'fr', 'it'].forEach(function (lang) {
+document.getElementById(`new-role-${lang}`).style.display = 'none';
+document.getElementById(`new-role-label-${lang}`).style.display = 'none';
+});
+
+document.getElementById(`new-role-${locale}`).style.display = 'block';
+document.getElementById(`new-role-label-${locale}`).style.display = 'block';
+}
+
+// Initialize the new employment locale
+document.addEventListener("DOMContentLoaded", function () {
+changeNewEmploymentLocale('de');
+});
+</script>

@@ -63,6 +63,11 @@ class ApiInboxController extends AbstractController
             'type' => 'instrument',
         ], ['createdAt' => 'ASC'], 500));
 
+        $inbox = array_merge($inbox, $em->getRepository(Inbox::class)->findBy([
+            'isMerged' => false,
+            'type' => 'contact_update',
+        ], ['createdAt' => 'ASC'], 500));
+
         $result = $normalizer->normalize($inbox, null, [
             'groups' => ['id', 'inbox'],
         ]);
@@ -112,11 +117,14 @@ class ApiInboxController extends AbstractController
     public function delete(Request $request, EntityManagerInterface $em,
                            NormalizerInterface $normalizer): JsonResponse
     {
-        $inboxItem = $em->getRepository(Inbox::class)
+        if($request->get('id')) {
+            $inboxItem = $em->getRepository(Inbox::class)
             ->find($request->get('id'));
         
         $em->remove($inboxItem);
-        $em->flush();
+        $em->flush(); $this->json([]);
+        }
+
 
         return $this->json([]);
     }

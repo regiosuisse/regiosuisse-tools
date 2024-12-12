@@ -1,0 +1,91 @@
+{# templates/emails/verify_contact.fr.html.twig #}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mise à jour de vos données dans la base de données d'expertes et d'experts regiosuisse</title>
+    <style>
+        /* General reset */
+        body, p {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333333;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        /* Container styling */
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Header and logo styling */
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 2em;
+        }
+        /* Body text styling */
+        .email-content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .email-content p {
+            margin-bottom: 15px;
+        }
+        .email-content a {
+            color: #B4BE00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        /* Footer styling */
+        .email-footer {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header with logo -->
+        <div class="email-header">
+            <p>
+                <img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="Logo regiosuisse" class="logo">
+            </p>
+            <p><h3>Mise à jour de vos données dans la base de données d'expertes et d'experts regiosuisse</h3></p>
+        </div>
+
+        <!-- Email content -->
+        <div class="email-content">
+            <p>Chère experte, cher expert,</p>
+
+            <p>Nous souhaitons nous assurer que les informations dans notre base de données d'expertes et d'experts regiosuisse sont à jour et correctes. Veuillez prendre un moment pour vérifier et, si nécessaire, mettre à jour vos données via le lien suivant : <a href="{{ verificationLink }}">Vérifier et mettre à jour mes coordonnées</a></p>
+            
+            <p>Si vous souhaitez que vos données soient supprimées de notre base de données, vous pouvez également le faire via le lien ci-dessus.</p>
+
+            <p>Merci beaucoup pour votre collaboration !</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>Cordialement,</p>
+            <p>L'équipe regiosuisse</p>
+        </div>
+    </div>
+</body>
+</html>

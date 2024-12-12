@@ -46,6 +46,13 @@ const routes = [
                 component: Inbox,
             },
             {
+                path: '/inbox/contacts/:type/:id/:inbox_id',
+                component: ContactPerson,
+                meta: {
+                    requiresAuth: true,
+                },
+            },
+            {
                 path: 'inbox/projects/:id',
                 name: 'inbox_project',
                 component: Project,

@@ -8,6 +8,7 @@ use App\Entity\Country;
 use App\Entity\Employment;
 use App\Entity\Language;
 use App\Entity\State;
+use App\Entity\Topic;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -25,6 +26,8 @@ class ContactService {
         $errors = [];
         $validatedFields = [];
         $validatedFieldsEmployments = [];
+
+        //error_log(print_r($payload, true));
 
         foreach($fields as $field) {
             if(!array_key_exists($field, $payload)) {
@@ -99,6 +102,7 @@ class ContactService {
             'officialEmployment',
             'contactGroups',
             'translations',
+            'topics',
         ]);
 
         return $errors;
@@ -190,6 +194,8 @@ class ContactService {
             ->setContactGroups(new ArrayCollection())
             ->setParent(null)
             ->setTranslations($payload['translations'] ?: [])
+            ->setTopics(new ArrayCollection())
+            ->setUserComment($payload['userComment'])
         ;
 
         if($payload['country']) {
@@ -266,6 +272,20 @@ class ContactService {
             }
             if($entity) {
                 $contact->addContactGroup($entity);
+            }
+        }
+
+        foreach($payload['topics'] as $item) {
+            $entity = null;
+            if (array_key_exists('id', $item) && $item['id']) {
+                $entity = $this->em->getRepository(Topic::class)->find($item['id']);
+            }
+            if (!$entity && array_key_exists('name', $item)) {
+                $entity = $this->em->getRepository(Topic::class)
+                    ->findOneBy(['name' => $item['name']]);
+            }
+            if ($entity) {
+                $contact->addTopic($entity);
             }
         }
 

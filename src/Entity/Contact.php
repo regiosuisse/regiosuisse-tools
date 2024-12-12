@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use OpenApi\Attributes as OA;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Contact
@@ -143,6 +144,19 @@ class Contact
     #[Groups(['contact'])]
     private ?Contact $parent = null;
 
+    #[ORM\Column(name: 'one_time_code', type: 'string', nullable: true)]
+    #[Groups(['contact'])]
+    private $oneTimeCode;
+
+    #[ORM\Column(name: 'verification_email_sent_date', type: 'datetime', nullable: true)]
+    #[Groups(['contact'])]
+    private $verificationEmailSentDate;
+
+    #[ORM\ManyToMany(targetEntity: Topic::class)]
+    #[ORM\JoinTable(name: 'pv_contact_topic')]
+    #[Groups(['contact'])]
+    private Collection $topics;
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -174,11 +188,16 @@ class Contact
     #[Groups(['contact'])]
     private $contactGroups;
 
+    #[ORM\Column(name: 'user_comment', type: 'text', nullable: true)]
+    #[Groups(['contact'])]
+    private $userComment;
+
     public function __construct()
     {
         $this->employments = new ArrayCollection();
         $this->employees = new ArrayCollection();
         $this->contactGroups = new ArrayCollection();
+        $this->topics = new ArrayCollection();
     }
 
     /**
@@ -954,6 +973,130 @@ class Contact
             $this->contactGroups->removeElement($contactGroup);
             $contactGroup->removeContact($this);
         }
+    }
+
+    /**
+     * Get oneTimeCode
+     *
+     * @return string|null
+     */
+    public function getOneTimeCode(): ?string
+    {
+        return $this->oneTimeCode;
+    }
+
+    /**
+     * Set oneTimeCode
+     *
+     * @param string|null $oneTimeCode
+     *
+     * @return self
+     */
+    public function setOneTimeCode(?string $oneTimeCode): self
+    {
+        $this->oneTimeCode = $oneTimeCode;
+
+        return $this;
+    }
+
+    /**
+     * Get verificationEmailSentDate
+     *
+     * @return \DateTimeInterface|null
+     */
+    public function getVerificationEmailSentDate(): ?\DateTimeInterface
+    {
+        return $this->verificationEmailSentDate;
+    }
+
+    /**
+     * Set verificationEmailSentDate
+     *
+     * @param \DateTimeInterface|null $verificationEmailSentDate
+     *
+     * @return self
+     */
+    public function setVerificationEmailSentDate(?\DateTimeInterface $verificationEmailSentDate): self
+    {
+        $this->verificationEmailSentDate = $verificationEmailSentDate;
+
+        return $this;
+    }
+
+    /**
+     * Get topics
+     *
+     * @return Collection
+     */
+    public function getTopics(): Collection
+    {
+        return $this->topics;
+    }
+
+    /**
+     * Add topic
+     *
+     * @param Topic $topic
+     *
+     * @return self
+     */
+    public function addTopic(Topic $topic): self
+    {
+        if (!$this->topics->contains($topic)) {
+            $this->topics->add($topic);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove topic
+     *
+     * @param Topic $topic
+     *
+     * @return self
+     */
+    public function removeTopic(Topic $topic): self
+    {
+        $this->topics->removeElement($topic);
+        return $this;
+    }
+
+    /**
+     * Set topics
+     * 
+     * @param Collection $topics
+     * 
+     * @return self
+     */
+    public function setTopics(Collection $topics): self
+    {
+        $this->topics = $topics;
+
+        return $this;
+    }
+
+    /**
+     * Get userComment
+     *
+     * @return string|null
+     */
+    public function getUserComment(): ?string
+    {
+        return $this->userComment;
+    }
+
+    /**
+     * Set pvUserComment
+     *
+     * @param string|null $pvUserComment
+     *
+     * @return self
+     */
+    public function setUserComment(?string $userComment): self
+    {
+        $this->userComment = $userComment;
+
+        return $this;
     }
 }
 

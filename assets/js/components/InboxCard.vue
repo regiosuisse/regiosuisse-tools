@@ -1,7 +1,7 @@
 <template>
 
     <div class="inbox-card-component clickable"
-         :class="{error: item.status === 'deleted'}">
+        :class="{ error: (item.status === 'deleted' || item.data.delete == 1) }">
         <div class="inbox-card-component-content">
             <div class="inbox-card-component-content-title">
                 <template v-if="item.type === 'project' && item.status !== 'deleted'">
@@ -21,8 +21,10 @@
                 <div class="source blw" v-if="item.source === 'blw'">BLW</div>
                 <div class="source xls" v-if="item.source === 'xls'">XLS</div>
                 <div class="status success" v-if="item.status === 'new'">Neu</div>
-                <div class="status warning" v-if="item.status === 'update'">Update</div>
-                <div class="status error" v-if="item.status === 'deleted'">Gelöscht</div>
+                <div class="status warning"
+                    v-if="(item.status === 'update' || (item.data.changes && item.data.delete == 0))">Update
+                </div>
+                <div class="status error" v-if="(item.status === 'deleted' || item.data.delete == 1)">Gelöscht</div>
             </div>
         </div>
     </div>
@@ -30,31 +32,31 @@
 </template>
 
 <script>
-    import moment from 'moment';
+import moment from 'moment';
 
-    export default {
-        props: ['item'],
-        methods: {
-            getTitle(project) {
-                if(project.title) {
-                    return project.title;
-                }
-                if(project.translations && project.translations['fr'] && project.translations['fr'].title) {
-                    return project.translations['fr'].title;
-                }
-                if(project.translations && project.translations['it'] && project.translations['it'].title) {
-                    return project.translations['it'].title;
-                }
-                return '';
-            },
-            formatDate(date) {
-                if(date && moment(date)) {
-                    return moment(date).format('DD.MM.YYYY, HH:mm:ss') + ' Uhr';
-                }
-            },
-            clickDismiss() {
-                this.$emit('onDismiss', this.item);
-            },
-        }
+export default {
+    props: ['item'],
+    methods: {
+        getTitle(project) {
+            if (project.title) {
+                return project.title;
+            }
+            if (project.translations && project.translations['fr'] && project.translations['fr'].title) {
+                return project.translations['fr'].title;
+            }
+            if (project.translations && project.translations['it'] && project.translations['it'].title) {
+                return project.translations['it'].title;
+            }
+            return '';
+        },
+        formatDate(date) {
+            if (date && moment(date)) {
+                return moment(date).format('DD.MM.YYYY, HH:mm:ss') + ' Uhr';
+            }
+        },
+        clickDismiss() {
+            this.$emit('onDismiss', this.item);
+        },
     }
+}
 </script>

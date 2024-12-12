@@ -38,6 +38,8 @@
         "build": "encore production --config webpack.config.app.js --progress && encore production --config webpack.config.embed-projects.js --progress && encore production --config webpack.config.embed-events.js --progress && encore production --config webpack.config.embed-educations.js --progress && encore production --config webpack.config.embed-jobs.js --progress && encore production --config webpack.config.embed-regions.js --progress && encore production --config webpack.config.embed-posts.js --progress && encore production --config webpack.config.embed-contacts.js --progress"
     },
     "dependencies": {
-        "mapbox-gl": "^2.11.0"
+        "jquery": "^3.7.1",
+        "mapbox-gl": "^2.11.0",
+        "select2": "^4.1.0-rc.0"
     }
 }
