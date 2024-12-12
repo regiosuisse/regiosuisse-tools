@@ -30,17 +30,18 @@
 
 ### Options
 
-| Option             | Type      | Description                                                                              | Example                                               |
-|--------------------|-----------|------------------------------------------------------------------------------------------|-------------------------------------------------------|
-| `locale`           | `String`  | Set the locale.                                                                          | `"de"`                                                |
-| `limit`            | `Number`  | Set the pagination limit.                                                                | `30`                                                  |
-| `fixedFilters`     | `Array`   | Set fixed filter options. These aren't visible to the user.                              | `[{ type: "topic", entity: { id: 2 } }]`              |
-| `defaultFilters`   | `Array`   | Preselect specific filter options.                                                       | `[{ type: "program", entity: { id: 1 } }]`            |
-| `responsive`       | `Boolean` | Whether responsive media queries should be enabled.                                      | `true`                                                |
-| `middleware`       | `Object`  | (Experimental) Middleware options allow you to define custom methods to manipulate data. | `{ filterTopics: topic => topic.name !== "Tourism" }` |
-| `disableTelemetry` | `Boolean` | Disable collection of telemetry data.                                                    | `true`                                                |
-| `history`          | `Object`  | Enable browser history support.                                                          | `{ mode: 'hash', base: 'http://localhost/regions' }`  |
-| `regionTypes`      | `Array`   | Enabled region types.                                                                    | `[ { id: 'energy', name: 'Energie-Regionen' }]`       |
+| Option             | Type      | Description                                                                              | Example                                                                                                 |
+|--------------------|-----------|------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `locale`           | `String`  | Set the locale.                                                                          | `"de"`                                                                                                  |
+| `limit`            | `Number`  | Set the pagination limit.                                                                | `30`                                                                                                    |
+| `fixedFilters`     | `Array`   | Set fixed filter options. These aren't visible to the user.                              | `[{ type: "topic", entity: { id: 2 } }]`                                                                |
+| `defaultFilters`   | `Array`   | Preselect specific filter options.                                                       | `[{ type: "program", entity: { id: 1 } }]`                                                              |
+| `responsive`       | `Boolean` | Whether responsive media queries should be enabled.                                      | `true`                                                                                                  |
+| `middleware`       | `Object`  | (Experimental) Middleware options allow you to define custom methods to manipulate data. | `{ filterTopics: topic => topic.name !== "Tourism" }`                                                   |
+| `disableTelemetry` | `Boolean` | Disable collection of telemetry data.                                                    | `true`                                                                                                  |
+| `history`          | `Object`  | Enable browser history support.                                                          | `{ mode: 'hash', base: 'http://localhost/regions' }`                                                    |
+| `regionTypes`      | `Array`   | Enabled region types.                                                                    | `[ { id: 'energy', name: 'Energie-Regionen' }]`                                                         |
+| `templateHooks`    | `Object`  | Insert html into template hooks.                                                         | `{ regionsMapLegendAfter: (instance, locale, citiesGeoJson, regionsGeoJson) => '<p>Hello World!</p>' }` |
 
 ### Styling
 
@@ -82,7 +83,14 @@ Basic styles can be overwritten using CSS variables:
         responsive: true,
         fixedFilters: [],
         defaultFilters: [],
-        middleware: {},
+        middleware: {
+            transformCitiesGeoJson (geoJson) {
+                return geoJson;
+            },
+            transformRegionsGeoJson (geoJson) {
+                return geoJson;
+            },
+        },
         history: { 
             mode: 'query',
             base: 'http://localhost/regions',
@@ -91,6 +99,10 @@ Basic styles can be overwritten using CSS variables:
             id: 'energy',
             name: 'Energie-Regionen'
         }],
+        templateHooks: {
+            // regionsMapLegendBefore: function (instance, locale, citiesGeoJson, regionsGeoJson) {}
+            // regionsMapLegendAfter: function (instance, locale, citiesGeoJson, regionsGeoJson) {}
+        },
     });
 </script>
 ```

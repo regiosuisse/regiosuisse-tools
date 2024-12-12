@@ -82,12 +82,13 @@
                     position: absolute;
                     bottom: 1.5em;
                     right: 0;
-                    padding: 5px;
+                    padding: 10px;
                     pointer-events: none;
 
                     &-row {
                         display: flex;
                         align-items: center;
+                        margin-bottom: 5px;
 
                         &-thumb {
                             width: 1em;
