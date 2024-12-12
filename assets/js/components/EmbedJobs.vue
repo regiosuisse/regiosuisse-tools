@@ -77,7 +77,7 @@
         </div>
 
         <div class="embed-jobs-filterbar">
-            <button class="button primary add-job-button" @click="showJobModal = true">Stellenausschreibung Hinzufügen</button>
+            <button class="button primary add-job-button" @click="showJobModal = true">Stellenausschreibung einreichen</button>
         </div>
 
         <transition name="embed-jobs-list" mode="out-in">
@@ -144,75 +144,107 @@
 
         <JobModal v-if="showJobModal" @close="showJobModal = false">
             <div class="job-form-modal">
-                <h3 class="modal-title">Neuen Job hinzufügen</h3>
+                <div class="job-form-header">
+                    <img :src="$env.THEME_ICON" alt="regiosuisse Logo" class="regiosuisse-logo">
+                    <h3 class="modal-title">Neue Stellenausschreibung einreichen</h3>
+                    <p class="header-description">
+                        Bitte füllen Sie das untenstehende Formular aus, um Ihre Stellenausschreibung einzureichen.
+                    </p>
+                </div>
                 <form @submit.prevent="submitJob" class="job-form">
                     <div class="job-form-columns">
                         <div class="job-form-column">
                             <div class="form-group">
-                                <label for="jobTitle">Bezeichnung</label>
+                                <label for="jobTitle">Berufsbezeichnung</label>
+                                <small class="help-text">Geben Sie die genaue Bezeichnung der ausgeschriebenen Stelle ein</small>
                                 <input id="jobTitle" class="form-control" v-model="newJob.title" required />
                             </div>
                             <div class="form-group">
                                 <label for="jobLocation">Arbeitsort</label>
+                                <small class="help-text">Wählen Sie einen oder mehrere Standorte der Arbeitsstelle (Mehrfachauswahl möglich)</small>
                                 <tag-selector id="jobLocation" 
                                     :model="newJob.locations"
                                     :options="locations.filter(location => !location.context || location.context === 'job')" 
                                     :searchType="'select'"
                                     required>
                                 </tag-selector>
+                                
                             </div>
                             <div class="form-group">
-                                <label for="jobStint">Pensum</label>
+                                <label for="jobStint">Beschäftigungsgrad</label>
+                                <small class="help-text">Wählen Sie einen oder mehrere Beschäftigungsgrade (Mehrfachauswahl möglich)</small>
                                 <tag-selector id="jobStint" 
                                     :model="newJob.stints"
                                     :options="stints.filter(stint => !stint.context || stint.context === 'job')" 
                                     :searchType="'select'"
                                     required>
                                 </tag-selector>
+                                
                             </div>
                             <div class="form-group">
-                                <label for="jobDescription">Beschreibung</label>
+                                <label for="jobDescription">Stellenbeschreibung</label>
+                                <small class="help-text">Beschreiben Sie die Aufgaben, Anforderungen und was Sie bieten</small>
                                 <textarea id="jobDescription" class="form-control" rows="5" v-model="newJob.description" required></textarea>
                             </div>
                         </div>
                         <div class="job-form-column">
                             <div class="form-group">
                                 <label for="jobEmployer">Arbeitgeber</label>
+                                <small class="help-text">Name des Unternehmens oder der Organisation</small>
                                 <input id="jobEmployer" class="form-control" v-model="newJob.employer" required />
                             </div>
                             <div class="form-group">
-                                <label for="jobEmployerLocation">Arbeitgeber Location</label>
+                                <label for="jobEmployerLocation">Firmenstandort</label>
+                                <small class="help-text">Hauptsitz oder relevanter Standort des Arbeitgebers</small>
                                 <input id="jobEmployerLocation" class="form-control" v-model="newJob.location" />
                             </div>
-                            <div class="form-group">
-                                <label for="jobContact">Kontakt</label>
-                                <input id="jobContact" class="form-control" v-model="newJob.contact" required />
+                            <div class="form-group contact-info-group">
+                                <label>Ihre Kontaktinformationen</label>
+                                <small class="help-text">Kontaktdaten für Bewerbungen und Rückfragen</small>
+                                <div class="contact-fields">
+                                    <div class="contact-field">
+                                        <span for="contactName">Kontaktperson</span>
+                                        <input id="contactName" class="form-control" v-model="newJob.contactInfo.name" required />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactEmail">E-Mail</span>
+                                        <input id="contactEmail" type="email" class="form-control" v-model="newJob.contactInfo.email" required />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactPhone">Telefonnummer</span>
+                                        <input id="contactPhone" class="form-control" v-model="newJob.contactInfo.phone" />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactDepartment">Abteilung / Sonstiges </span>
+                                        <input id="contactDepartment" class="form-control" v-model="newJob.contactInfo.department" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="jobDeadline">Bewerbungsfrist</label>
-                                <input type="date" id="jobDeadline" class="form-control" v-model="newJob.applicationDeadline" required />
+                                <small class="help-text">Optional: Bis wann können sich Interessierte bewerben?</small>
+                                <input type="date" id="jobDeadline" class="form-control" v-model="newJob.applicationDeadline" />
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Links and Documents Section -->
-                    <div class="additional-sections">
-                        <div class="form-group">
-                            <label>Links</label>
-                            <div class="links-list">
-                                <div v-for="(link, index) in newJob.links" :key="index" class="link-item">
-                                    <input type="text" class="form-control" v-model="link.label" placeholder="Bezeichnung">
-                                    <input type="text" class="form-control" v-model="link.value" placeholder="URL">
-                                    <button type="button" class="button error" @click="removeLink(index)">Entfernen</button>
-                                </div>
+
+                    <div class="form-group">
+                        <label>Links</label>
+                        <small class="help-text">Fügen Sie relevante Links zur Stellenausschreibung hinzu</small>
+                        <div class="links-list">
+                            <div v-for="(link, index) in newJob.links" :key="index" class="link-item">
+                                <input type="text" class="form-control" v-model="link.label" placeholder="Bezeichnung">
+                                <input type="text" class="form-control" v-model="link.value" placeholder="URL">
+                                <button type="button" class="button error" @click="removeLink(index)">Entfernen</button>
                             </div>
-                            <button type="button" class="button success" @click="addLink">Link hinzufügen</button>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Dokumente</label>
-                            <file-selector :items="newJob.files" @changed="updateFiles"></file-selector>
-                        </div>
+                        <button type="button" class="button primary" @click="addLink">Link hinzufügen</button>
+                    </div>
+
+                    <div class="form-group documents-section">
+                        <label>Dokumente</label>
+                        <small class="help-text">Fügen Sie relevante Dokumente zur Stellenausschreibung hinzu</small>
+                        <file-selector :items="newJob.files" @changed="updateFiles" :cancel-label="'Entfernen'" :add-label="'Klicken Sie hier um Dateien hochzuladen...'"></file-selector>
                     </div>
 
                     <div class="modal-actions">
@@ -263,6 +295,12 @@ export default {
                 employer: '',
                 location: '',
                 contact: '',
+                contactInfo: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    department: ''
+                },
                 applicationDeadline: '',
                 links: [],
                 files: [],
@@ -595,17 +633,22 @@ export default {
 
         submitJob() {
             // Prepare the job data
+            const contactText = [
+                `Kontaktperson: ${this.newJob.contactInfo.name}`,
+                `E-Mail: ${this.newJob.contactInfo.email}`,
+                this.newJob.contactInfo.phone ? `Telefon: ${this.newJob.contactInfo.phone}` : null,
+                this.newJob.contactInfo.department ? `Abteilung: ${this.newJob.contactInfo.department}` : null
+            ].filter(Boolean).join('\n');
+
             const jobData = {
                 title: this.newJob.title,
                 description: this.newJob.description,
                 employer: this.newJob.employer,
                 location: this.newJob.location,
-                contact: this.newJob.contact,
+                contact: contactText,
                 applicationDeadline: this.newJob.applicationDeadline,
-                // Send arrays of locations and stints
                 locations: this.newJob.locations.map(loc => ({ id: loc.id })),
                 stints: this.newJob.stints.map(stint => ({ id: stint.id })),
-                // Add links and files
                 links: this.newJob.links || [],
                 files: this.newJob.files || []
             };
@@ -622,6 +665,12 @@ export default {
                         employer: '',
                         location: '',
                         contact: '',
+                        contactInfo: {
+                            name: '',
+                            email: '',
+                            phone: '',
+                            department: ''
+                        },
                         applicationDeadline: '',
                         links: [],
                         files: [],
@@ -629,7 +678,6 @@ export default {
                 })
                 .catch(error => {
                     console.error('Error creating job:', error);
-                    // Show error modal
                     this.modal = {
                         type: 'error',
                         message: 'Fehler beim Erstellen des Jobs. Bitte überprüfen Sie alle Pflichtfelder.'
@@ -651,7 +699,6 @@ export default {
         updateFiles(files) {
             this.newJob.files = files;
         },
-
     },
 
     created() {
@@ -720,131 +767,63 @@ export default {
 </script>
 
 <style lang="scss">
-.embed-jobs-filterbar {
-    padding: 1rem;
-    text-align: end;
-    border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 1rem;
-    margin: 0 auto;
-    max-width: calc(var(--regiosuisse-max-width) + var(--regiosuisse-gutter-width));
 
-    .add-job-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 200px;
+.job-form-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #dee2e6;
 
+    .regiosuisse-logo {
+        height: 50px;
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+        color: #212529;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .header-description {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+
+        .regiosuisse-logo {
+            height: 40px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+        }
     }
 }
 
 .job-form-modal {
+    // Update existing styles
     background: white;
     padding: 2rem;
-    border-radius: 4px;
-    max-width: 600px;
-    width: 100%;
-    margin: 0 auto;
+    border-radius: 8px; // Increased from 4px for a softer look
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Added subtle shadow
 
-    .modal-title {
-        text-align: center;
-        margin-bottom: 2rem;
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .job-form {
-        &-columns {
-            display: flex;
-            gap: 2rem;
-        }
-
-        &-column {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .links-list {
-            margin-bottom: 1rem;
-
-            .link-item {
-                display: grid;
-                grid-template-columns: 1fr 1fr auto;
-                gap: 0.5rem;
-                margin-bottom: 0.5rem;
-                align-items: start;
-
-                .button {
-                    padding: 0.5rem;
-                    height: 100%;
-                }
-            }
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-
-            label {
-                display: block;
-                margin-bottom: 0.5rem;
-            }
-
-            .form-control {
-                width: 100%;
-                padding: 0.5rem;
-                border: 1px solid #e5e5e5;
-                border-radius: 4px;
-
-                &:focus {
-                    outline: none;
-                    border-color: #666;
-                }
-            }
-
-            textarea.form-control {
-                min-height: 100px;
-                resize: vertical;
-            }
-
-            button.success {
-                margin-top: 0.5rem;
-            }
-        }
-    }
-
-    .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 2rem;
-
-        .button {
-            min-width: 120px;
-            justify-content: center;
-        }
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+        width: 95%;
+        margin: 1rem auto;
     }
 }
 
-.additional-sections {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #eee;
-}
-
-.links-list {
-    margin-bottom: 1rem;
-    
-    .link-item {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 0.5rem;
-        
-        input {
-            flex: 1;
-        }
-        
-        button {
-            flex-shrink: 0;
-        }
-    }
-}
 </style>

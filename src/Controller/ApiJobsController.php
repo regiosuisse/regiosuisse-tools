@@ -313,7 +313,7 @@ class ApiJobsController extends AbstractController
         $payload = json_decode($request->getContent(), true);
 
         // Basic validation
-        $requiredFields = ['title', 'description', 'employer', 'contact', 'applicationDeadline'];
+        $requiredFields = ['title', 'description', 'employer', 'contact'];
         foreach ($requiredFields as $field) {
             if (empty($payload[$field])) {
                 return $this->json(['error' => "Missing required field: $field"], 400);
