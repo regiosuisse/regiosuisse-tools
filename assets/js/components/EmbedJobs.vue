@@ -633,19 +633,18 @@ export default {
 
         submitJob() {
             // Prepare the job data
-            const contactText = [
-                `Kontaktperson: ${this.newJob.contactInfo.name}`,
-                `E-Mail: ${this.newJob.contactInfo.email}`,
-                this.newJob.contactInfo.phone ? `Telefon: ${this.newJob.contactInfo.phone}` : null,
-                this.newJob.contactInfo.department ? `Abteilung: ${this.newJob.contactInfo.department}` : null
-            ].filter(Boolean).join('\n');
-
             const jobData = {
                 title: this.newJob.title,
                 description: this.newJob.description,
                 employer: this.newJob.employer,
                 location: this.newJob.location,
-                contact: contactText,
+                contact: [
+                    this.newJob.contactInfo.name && `Kontaktperson: ${this.newJob.contactInfo.name}`,
+                    this.newJob.contactInfo.email && `E-Mail: ${this.newJob.contactInfo.email}`,
+                    this.newJob.contactInfo.phone && `Telefon: ${this.newJob.contactInfo.phone}`,
+                    this.newJob.contactInfo.department && `Abteilung: ${this.newJob.contactInfo.department}`
+                ].filter(Boolean).join('\n'),
+                contactInfo: this.newJob.contactInfo,
                 applicationDeadline: this.newJob.applicationDeadline,
                 locations: this.newJob.locations.map(loc => ({ id: loc.id })),
                 stints: this.newJob.stints.map(stint => ({ id: stint.id })),
@@ -654,7 +653,10 @@ export default {
             };
 
             this.$store.dispatch('jobs/createFromEmbed', jobData)
-                .then(() => {
+                .then(response => {
+                    // Open confirmation page in new tab
+                    window.open(response.redirectUrl, '_blank');
+                    // Close the modal
                     this.showJobModal = false;
                     // Reset form
                     this.newJob = {
@@ -680,7 +682,7 @@ export default {
                     console.error('Error creating job:', error);
                     this.modal = {
                         type: 'error',
-                        message: 'Fehler beim Erstellen des Jobs. Bitte überprüfen Sie alle Pflichtfelder.'
+                        message: error.response?.data?.error || 'Fehler beim Erstellen des Jobs. Bitte überprüfen Sie alle Pflichtfelder.'
                     };
                 });
         },
@@ -808,21 +810,70 @@ export default {
 }
 
 .job-form-modal {
-    // Update existing styles
     background: white;
     padding: 2rem;
-    border-radius: 8px; // Increased from 4px for a softer look
+    border-radius: 8px;
     width: 90%;
     max-width: 1200px;
     margin: 2rem auto;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Added subtle shadow
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 
     @media (max-width: 768px) {
         padding: 1.5rem;
         width: 95%;
         margin: 1rem auto;
+    }
+}
+
+.job-form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.job-form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.job-form-column {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contact-info-group {
+    .contact-fields {
+        display: grid;
+        gap: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .contact-field {
+        width: 100%;
+        box-sizing: border-box;
+
+        span {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
     }
 }
 

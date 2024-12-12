@@ -16,10 +16,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Entity\Inbox;
+use Symfony\Component\HttpFoundation\Response;
+use App\Service\CommunitySubmissionService;
+use App\Entity\CommunitySubmission;
 
 #[Route(path: '/api/v1/jobs', name: 'api_jobs')]
 class ApiJobsController extends AbstractController
 {
+    public function __construct(
+        private JobService $jobService,
+        private CommunitySubmissionService $submissionService
+    ) {}
 
     #[Route(path: '', name: 'index', methods: ['GET'])]
     #[OA\Parameter(
@@ -291,75 +298,27 @@ class ApiJobsController extends AbstractController
         return $this->json([]);
     }
 
-    #[Route(path: '/embed', name: 'create_from_embed', methods: ['POST'])]
-    #[OA\Response(
-        response: 200,
-        description: 'Create a job inbox item from embed form',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'inbox', ref: new Model(type: Inbox::class, groups: ['id', 'inbox']))
-            ],
-            type: 'object'
-        )
-    )]
-    #[OA\Tag(name: 'Jobs')]
-    public function createFromEmbed(
-        Request $request,
-        EntityManagerInterface $em,
-        NormalizerInterface $normalizer,
-        JobService $jobService
-    ): JsonResponse
+    #[Route('/embed', name: 'api_jobs_create_from_embed', methods: ['POST'])]
+    public function createFromEmbed(Request $request): Response
     {
-        $payload = json_decode($request->getContent(), true);
-
-        // Basic validation
-        $requiredFields = ['title', 'description', 'employer', 'contact'];
-        foreach ($requiredFields as $field) {
-            if (empty($payload[$field])) {
-                return $this->json(['error' => "Missing required field: $field"], 400);
-            }
-        }
-
-        // Validate that at least one location and stint is provided
-        if (empty($payload['locations']) || !is_array($payload['locations'])) {
-            return $this->json(['error' => "At least one location must be selected"], 400);
-        }
-        if (empty($payload['stints']) || !is_array($payload['stints'])) {
-            return $this->json(['error' => "At least one stint must be selected"], 400);
-        }
-
-        // Validate links structure if provided
-        if (isset($payload['links']) && !is_array($payload['links'])) {
-            return $this->json(['error' => "Links must be an array"], 400);
-        }
-        if (isset($payload['links'])) {
-            foreach ($payload['links'] as $link) {
-                if (!isset($link['label']) || !isset($link['value'])) {
-                    return $this->json(['error' => "Each link must have a label and value"], 400);
-                }
-            }
-        }
-
-        // Validate files structure if provided
-        if (isset($payload['files']) && !is_array($payload['files'])) {
-            return $this->json(['error' => "Files must be an array"], 400);
-        }
-        if (isset($payload['files'])) {
-            foreach ($payload['files'] as $file) {
-                if (!isset($file['id']) || !isset($file['name'])) {
-                    return $this->json(['error' => "Each file must have an id and name"], 400);
-                }
-            }
-        }
-
         try {
-            $result = $jobService->createJobInboxItemFromEmbed($payload);
-
+            $data = json_decode($request->getContent(), true);
+            
+            // Create pending submission and send verification email
+            $submission = $this->submissionService->createPendingSubmission(
+                $data, 
+                CommunitySubmission::TYPE_JOB
+            );
+            
+            // Return URL for confirmation page
             return $this->json([
-                'inbox' => $normalizer->normalize($result['inbox'], null, ['groups' => ['id', 'inbox']])
+                'redirectUrl' => $this->generateUrl('community_submission_confirmation')
             ]);
+
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            return $this->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
