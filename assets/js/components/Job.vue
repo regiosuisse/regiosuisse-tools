@@ -353,7 +353,16 @@ export default {
                 this.modal = {
                     type: 'error',
                     title: 'Fehler beim Speichern',
-                    message: error.response?.data?.error || 'Fehler beim Speichern des Jobs.'
+                    message: error.response?.data?.error || 'Fehler beim Speichern des Jobs.',
+                    actions: [
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ]
                 };
             }
         },
