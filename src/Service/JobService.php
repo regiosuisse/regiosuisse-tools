@@ -155,10 +155,7 @@ class JobService {
             'stints' => $payload['stints'],
             'links' => $payload['links'] ?? [],
             'files' => $payload['files'] ?? [],
-            'translations' => [
-                'fr' => [],
-                'it' => []
-            ]
+            'translations' => $payload['translations'] ?? []
         ];
 
         $inbox->setCreatedAt(new \DateTime())
@@ -179,10 +176,7 @@ class JobService {
                     'stints' => $payload['stints'],
                     'links' => $payload['links'] ?? [],
                     'files' => $payload['files'] ?? [],
-                    'translations' => [
-                        'fr' => [],
-                        'it' => []
-                    ]
+                    'translations' => $payload['translations'] ?? []
                 ]
             ])
             ->setNormalizedData($normalizedData);
@@ -215,10 +209,7 @@ class JobService {
             )
             ->setLinks($payload['links'] ?? [])
             ->setFiles($payload['files'] ?? [])
-            ->setTranslations([
-                'fr' => [],
-                'it' => []
-            ]);
+            ->setTranslations($payload['translations'] ?? []);
 
         $this->em->persist($job);
         $this->em->flush();
