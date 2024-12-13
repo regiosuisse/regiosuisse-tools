@@ -313,7 +313,7 @@ export default {
                 // Prepare the job data
                 const jobData = {
                     isPublic: this.job.isPublic,
-                    position: this.job.position,
+                    position: this.job.position || 10000,
                     name: this.job.name,
                     description: this.job.description,
                     employer: this.job.employer,
@@ -330,23 +330,16 @@ export default {
                     }
                 };
 
-                // Validate required fields
-                const requiredFields = ['name', 'description', 'employer', 'contact'];
-                const missingFields = requiredFields.filter(field => !jobData[field]);
-                
-                if (missingFields.length > 0) {
-                    this.modal = {
-                        type: 'error',
-                        title: 'Fehlende Pflichtfelder',
-                        message: `Bitte füllen Sie die folgenden Pflichtfelder aus: ${missingFields.join(', ')}`
-                    };
-                    return;
-                }
-
+                let response;
                 if (this.job.id) {
-                    await this.$store.dispatch('jobs/update', jobData);
+                    // If job has an ID, update it
+                    response = await this.$store.dispatch('jobs/update', {
+                        id: this.job.id,
+                        payload: jobData
+                    });
                 } else {
-                    await this.$store.dispatch('jobs/create', jobData);
+                    // If no ID, create new job
+                    response = await this.$store.dispatch('jobs/create', jobData);
                 }
                 
                 // If this was from an inbox item, delete it after successful save
