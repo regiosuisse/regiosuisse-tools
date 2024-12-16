@@ -163,7 +163,7 @@ export default {
 
         let minZoom = 7;
 
-        if(this.$refs.mapContainer && this.$refs.mapContainer.offsetWidth < 840) {
+        if(this.$refs.mapContainer && this.$refs.mapContainer.offsetWidth < 960) {
             minZoom = 5.8;
         }
 
