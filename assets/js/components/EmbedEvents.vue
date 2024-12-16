@@ -206,35 +206,6 @@
                         
                         <div class="event-form-column">
                             <div class="form-group">
-                                <label for="eventType">{{ $t('event.type', locale) }}</label>
-                                <small class="help-text">{{ $t('event.type.help', locale) }}</small>
-                                <div class="select-wrapper">
-                                    <select id="eventType" class="form-control" v-model="newEvent.type" required>
-                                        <option value="external">{{ $t('event.type.external', locale) }}</option>
-                                        <option value="regiosuisse">{{ $t('event.type.regiosuisse', locale) }}</option>
-                                        <optgroup label="regiosuisse">
-                                            <option value="fsk">{{ $t('event.type.fsk', locale) }}</option>
-                                            <option value="cafe-r">{{ $t('event.type.cafe-r', locale) }}</option>
-                                            <option value="einstiegskurs">{{ $t('event.type.einstiegskurs', locale) }}</option>
-                                            <option value="konferenz">{{ $t('event.type.konferenz', locale) }}</option>
-                                            <option value="wissenschaftsforum">{{ $t('event.type.wissenschaftsforum', locale) }}</option>
-                                        </optgroup>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group" v-if="newEvent.type !== 'external'">
-                                <label for="eventColor">{{ $t('event.color', locale) }}</label>
-                                <small class="help-text">{{ $t('event.color.help', locale) }}</small>
-                                <div class="select-wrapper">
-                                    <select id="eventColor" class="form-control" v-model="newEvent.color">
-                                        <option :value="null"></option>
-                                        <option v-for="color in colors" :key="color.code" :value="color.code">{{ color.name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
                                 <label>{{ $t('event.contact', locale) }}</label>
                                 <small class="help-text">{{ $t('event.contact.help', locale) }}</small>
                                 <div class="contact-fields">
@@ -250,30 +221,22 @@
                                         <label for="contactPhone">{{ $t('event.contact.phone', locale) }}</label>
                                         <input id="contactPhone" class="form-control" v-model="newEvent.contactInfo.phone" />
                                     </div>
+                                    <div class="form-group">
+                                        <label for="eventVenueLocation">{{ $t('event.venue_location', locale) }}</label>
+                                        <small class="help-text">{{ $t('event.venue_location.help', locale) }}</small>
+                                        <input id="eventVenueLocation" class="form-control" v-model="newEvent.location" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="eventOrganizer">{{ $t('event.organizer', locale) }}</label>
+                                        <small class="help-text">{{ $t('event.organizer.help', locale) }}</small>
+                                        <input id="eventOrganizer" class="form-control" v-model="newEvent.organizer" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <hr class="form-section-divider">
-
-                    <!-- Location and Organizer row -->
-                    <div class="event-form-columns">
-                        <div class="event-form-column">
-                            <div class="form-group">
-                                <label for="eventVenueLocation">{{ $t('event.venue_location', locale) }}</label>
-                                <small class="help-text">{{ $t('event.venue_location.help', locale) }}</small>
-                                <input id="eventVenueLocation" class="form-control" v-model="newEvent.location" />
-                            </div>
-                        </div>
-                        <div class="event-form-column">
-                            <div class="form-group">
-                                <label for="eventOrganizer">{{ $t('event.organizer', locale) }}</label>
-                                <small class="help-text">{{ $t('event.organizer.help', locale) }}</small>
-                                <input id="eventOrganizer" class="form-control" v-model="newEvent.organizer" />
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Registration link full width -->
                     <div class="form-group">
@@ -419,28 +382,6 @@ export default {
                 links: [],
                 files: []
             },
-            colors: [
-                {
-                    id: 1,
-                    name: 'Grün (Allgemein)',
-                    code: '#B4BE00',
-                },
-                {
-                    id: 2,
-                    name: 'Blau (WiGe und Plattformen)',
-                    code: '#0093D1',
-                },
-                {
-                    id: 3,
-                    name: 'Orange (formation-regiosuisse)',
-                    code: '#FF7D00',
-                },
-                {
-                    id: 4,
-                    name: 'Rot (Forschung)',
-                    code: '#DC0019',
-                }
-            ],
         };
     },
 
