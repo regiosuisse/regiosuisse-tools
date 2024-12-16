@@ -195,6 +195,113 @@
     }
 }
 
+.job-form-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #dee2e6;
+
+    .regiosuisse-logo {
+        height: 50px;
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+        color: #212529;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .header-description {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+
+        .regiosuisse-logo {
+            height: 40px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+.job-form-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+        width: 95%;
+        margin: 1rem auto;
+    }
+}
+
+.job-form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.job-form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.job-form-column {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contact-info-group {
+    .contact-fields {
+        display: grid;
+        gap: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .contact-field {
+        width: 100%;
+        box-sizing: border-box;
+
+        span {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+}
+
 .job-form-modal {
     background: white;
     padding: 2rem;
@@ -331,6 +438,12 @@
         color: $color-blw;
     }
 
+    .help-text {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+    }
+
     .form-control {
         width: -webkit-fill-available;
         padding: 0.5rem;
@@ -366,13 +479,17 @@
         }
     }
 }
-
+.file-selector-component-item-move {
+    display: none;
+}
 .file-selector-component {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     width: 100%;
     margin-top: 0.5rem;
+
+    
 
     input[type="file"] {
         display: none;
@@ -413,8 +530,8 @@
         background: white;
         border-radius: 8px;
         padding: 1rem;
-        width: calc(50% - 0.5rem);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        width: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
         border: 1px solid #e9ecef;
@@ -425,7 +542,7 @@
         }
 
         &:hover {
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
             transform: translateY(-1px);
 
             .file-selector-component-item-remove {
@@ -479,7 +596,9 @@
                 background: rgba(220, 53, 69, 0.1);
             }
 
-            .material-icons {
+            .material-icons,
+            span.material-icons,
+            i.material-icons {
                 font-size: 1.2rem;
             }
         }
@@ -521,7 +640,7 @@
     &.has-files {
         .file-selector-component-add {
             width: calc(50% - 0.5rem);
-            
+
             @media (max-width: 768px) {
                 width: 100%;
             }

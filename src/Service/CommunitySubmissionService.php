@@ -14,7 +14,8 @@ class CommunitySubmissionService
         private EntityManagerInterface $entityManager,
         private MailerInterface $mailer,
         private UrlGeneratorInterface $urlGenerator,
-        private JobService $jobService
+        private JobService $jobService,
+        private EventService $eventService
     ) {}
 
     public function createPendingSubmission(array $submissionData, string $type = CommunitySubmission::TYPE_JOB): CommunitySubmission
@@ -63,7 +64,9 @@ class CommunitySubmissionService
             case CommunitySubmission::TYPE_JOB:
                 $this->jobService->createJobInboxItemFromEmbed($submission->getSubmissionData());
                 break;
-            // Add more cases here as we add more submission types
+            case CommunitySubmission::TYPE_EVENT:
+                $this->eventService->createEventInboxItemFromEmbed($submission->getSubmissionData());
+                break;
             default:
                 throw new \InvalidArgumentException('Unknown submission type: ' . $submission->getType());
         }
@@ -94,12 +97,14 @@ class CommunitySubmissionService
     {
         $title = match($type) {
             CommunitySubmission::TYPE_JOB => 'Bestätigen Sie Ihre Stellenausschreibung',
+            CommunitySubmission::TYPE_EVENT => 'Bestätigen Sie Ihre Veranstaltung',
             default => 'Bestätigen Sie Ihre Eingabe',
         };
 
         $description = match($type) {
-            CommunitySubmission::TYPE_JOB => 'Vielen Dank für Ihre Stellenausschreibung auf regiosuisse.ch. Um die Veröffentlichung abzuschließen,',
-            default => 'Vielen Dank für Ihre Eingabe auf regiosuisse.ch. Um die Veröffentlichung abzuschließen,',
+            CommunitySubmission::TYPE_JOB => 'Vielen Dank für Ihre Stellenausschreibung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
+            CommunitySubmission::TYPE_EVENT => 'Vielen Dank für das einreichen Ihrer Veranstaltung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
+            default => 'Vielen Dank für Ihre Eingabe auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
         };
 
         return <<<HTML

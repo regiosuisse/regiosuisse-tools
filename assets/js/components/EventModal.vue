@@ -9,6 +9,7 @@
   
   <script>
   export default {
+    name: 'EventModal',
     methods: {
       close() {
         this.$emit('close');

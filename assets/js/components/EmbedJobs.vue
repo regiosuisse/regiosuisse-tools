@@ -221,7 +221,15 @@
                             <div class="form-group">
                                 <label for="jobDeadline">{{ $t('job.deadline', locale) }}</label>
                                 <small class="help-text">{{ $t('job.deadline.help', locale) }}</small>
-                                <input type="date" id="jobDeadline" class="form-control" v-model="newJob.applicationDeadline" />
+                                <date-picker mode="dateTime" :is24hr="true" v-model="newJob.applicationDeadline" :locale="'de'">
+                                    <template v-slot="{ inputValue, inputEvents }">
+                                        <input type="text" 
+                                               id="jobDeadline" 
+                                               class="form-control"
+                                               :value="inputValue"
+                                               v-on="inputEvents">
+                                    </template>
+                                </date-picker>
                             </div>
                         </div>
                     </div>
@@ -244,7 +252,7 @@
                         <small class="help-text">{{ $t('job.documents.help', locale) }}</small>
                         <file-selector :items="newJob.files" @changed="updateFiles" 
                             :cancel-label="$t('job.links.remove', locale)" 
-                            :add-label="$t('job.documents.upload', locale)">
+                            :add-label="$t('job.documents.upload.pdf', locale)">
                         </file-selector>
                     </div>
 
@@ -269,6 +277,8 @@ import {track, trackDevice, trackPageView} from '../utils/logger';
 import JobModal from './JobModal.vue';
 import TagSelector from './TagSelector';
 import FileSelector from './FileSelector';
+import { DatePicker } from 'v-calendar';
+import 'v-calendar/dist/style.css';
 
 export default {
 
@@ -277,6 +287,7 @@ export default {
         JobModal,
         TagSelector,
         FileSelector,
+        DatePicker,
     },
 
     data() {
@@ -668,7 +679,7 @@ export default {
             this.$store.dispatch('jobs/createFromEmbed', jobData)
                 .then(response => {
                     // Open confirmation page in new tab
-                    window.open(response.redirectUrl, '_blank');
+                    window.location.href = response.redirectUrl;
                     // Close the modal
                     this.showJobModal = false;
                     // Reset form
@@ -783,111 +794,6 @@ export default {
 
 <style lang="scss">
 
-.job-form-header {
-    text-align: center;
-    padding-bottom: 2rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #dee2e6;
 
-    .regiosuisse-logo {
-        height: 50px;
-        margin-bottom: 1.5rem;
-    }
-
-    .modal-title {
-        color: #212529;
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .header-description {
-        color: #6c757d;
-        font-size: 1rem;
-        margin: 0;
-    }
-
-    @media (max-width: 768px) {
-        padding-bottom: 1.5rem;
-        margin-bottom: 1.5rem;
-
-        .regiosuisse-logo {
-            height: 40px;
-            margin-bottom: 1rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-        }
-    }
-}
-
-.job-form-modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 1200px;
-    margin: 2rem auto;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-
-    @media (max-width: 768px) {
-        padding: 1.5rem;
-        width: 95%;
-        margin: 1rem auto;
-    }
-}
-
-.job-form {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.job-form-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    width: 100%;
-    box-sizing: border-box;
-
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-}
-
-.job-form-column {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.contact-info-group {
-    .contact-fields {
-        display: grid;
-        gap: 1rem;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .contact-field {
-        width: 100%;
-        box-sizing: border-box;
-
-        span {
-            display: block;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-            color: #495057;
-        }
-
-        input {
-            width: 100%;
-            box-sizing: border-box;
-        }
-    }
-}
 
 </style>

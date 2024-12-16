@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 class CommunitySubmission
 {
     public const TYPE_JOB = 'job';
+    public const TYPE_EVENT = 'event';
     // We can add more types here later
-    // public const TYPE_EVENT = 'event';
     // public const TYPE_PROJECT = 'project';
 
     #[ORM\Id]

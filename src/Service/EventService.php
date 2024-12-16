@@ -8,6 +8,7 @@ use App\Entity\Topic;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Event;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Inbox;
 
 class EventService {
 
@@ -173,6 +174,53 @@ class EventService {
         }
 
         return $event;
+    }
+
+    public function createEventInboxItemFromEmbed($payload)
+    {
+        // Create corresponding inbox item
+        $inbox = new Inbox();
+        
+        // Prepare normalized data structure
+        $normalizedData = [
+            'title' => $payload['title'],
+            'type' => $payload['type'],
+            'color' => $payload['color'] ?? null,
+            'location' => $payload['location'],
+            'organizer' => $payload['organizer'],
+            'description' => $payload['description'],
+            'registration' => $payload['registration'],
+            'startDate' => $payload['startDate'],
+            'endDate' => $payload['endDate'],
+            'contact' => $payload['contact'],
+            'topics' => $payload['topics'] ?? [],
+            'languages' => $payload['languages'] ?? [],
+            'locations' => $payload['locations'] ?? [],
+            'links' => $payload['links'] ?? [],
+            'files' => $payload['files'] ?? [],
+            'translations' => [
+                'fr' => [],
+                'it' => []
+            ]
+        ];
+
+        $inbox->setCreatedAt(new \DateTime())
+            ->setSource('embed')
+            ->setType('event')
+            ->setTitle($payload['title'])
+            ->setStatus('new')
+            ->setIsMerged(false)
+            ->setData([
+                'event' => $normalizedData
+            ])
+            ->setNormalizedData($normalizedData);
+
+        $this->em->persist($inbox);
+        $this->em->flush();
+
+        return [
+            'inbox' => $inbox
+        ];
     }
 
 }
