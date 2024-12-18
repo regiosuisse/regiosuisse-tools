@@ -2,6 +2,8 @@
 
     <div class="embed-regions" :class="[$env.INSTANCE_ID+'-regions', {'is-responsive': responsive}]" @click.stop="clickInside">
 
+        <div v-if="templateHook('regionsBefore', locale)" v-html="templateHook('regionsBefore', locale)"></div>
+
         <div class="embed-regions-search">
 
             <div class="embed-regions-search-input">
@@ -111,7 +113,7 @@
                             :region-type="regionType"
                             :active-city="selectedCity"
                             :active-region="selectedRegions[0] || null"
-                            @clickCity="selectedCity = $event"
+                            @clickCity="clickMapCity($event)"
                             @clickRegion="clickMapRegion($event)"></RegionsMap>
 
                 </div>
@@ -195,6 +197,8 @@
             </div>
 
         </template>
+
+        <div v-if="templateHook('regionsAfter', locale)" v-html="templateHook('regionsAfter', locale)"></div>
 
     </div>
 
@@ -328,6 +332,14 @@ export default {
 
         translateField,
 
+        templateHook(name, ...params) {
+            if(this?.$clientOptions?.templateHooks?.[name]) {
+                return this.$clientOptions.templateHooks[name](this, ...params);
+            }
+
+            return null;
+        },
+
         keyUp (event) {
 
             if(event.keyCode === 27) {
@@ -354,7 +366,19 @@ export default {
             this.regionType = type;
         },
 
+        clickMapCity(city) {
+            if(this.$clientOptions?.eventInterceptors?.clickMapCity) {
+                return this.$clientOptions.eventInterceptors.clickMapCity(this, this.locale, city);
+            }
+
+            this.selectedCity = city;
+        },
+
         clickMapRegion(region) {
+            if(this.$clientOptions?.eventInterceptors?.clickMapRegion) {
+                return this.$clientOptions.eventInterceptors.clickMapRegion(this, this.locale, region);
+            }
+
             let elem = document.querySelector('.embed-regions-content-context');
 
             if(elem && region) {
