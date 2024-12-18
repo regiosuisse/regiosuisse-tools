@@ -39,17 +39,7 @@
                 history: {
                     mode: 'query',
                     base: '{{ url('embed_iframe_regions') }}'
-                },
-                eventInterceptors: {
-                    clickMapRegion: function (instance, locale, region) {
-                        alert(region.name);
-                    },
-                },
-                templateHooks: {
-                    regionsBefore: function () {
-                        return '<style>.embed-regions{--regiosuisse-primary-color: \#AAA;}</style>';
-                    },
-                },
+                }
             });
         });
     </script>
