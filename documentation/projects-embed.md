@@ -114,6 +114,8 @@ Basic styles can be overwritten using CSS variables:
         },
         templateHooks: {
             projectContentAfter: (instance, project) => '<p>The project ID is: '+project.id+'</p>',
+            // projectsBefore: function (instance, locale) {}
+            // projectsAfter: function (instance, locale) {}
             // mapToggleAfter: function (instance) {}
             // filterSelectOptionsItemAfter: function (instance, context, item) {}
             // projectContentBefore: function (instance, project) {}

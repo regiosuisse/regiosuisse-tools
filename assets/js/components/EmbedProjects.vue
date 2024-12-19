@@ -2,6 +2,8 @@
 
     <div class="embed-projects" :class="[$env.INSTANCE_ID+'-projects', {'is-responsive': responsive}]" @click.stop="clickInside">
 
+        <div v-if="templateHook('projectsBefore', locale)" v-html="templateHook('projectsBefore', locale)"></div>
+
         <div class="embed-projects-search">
 
             <div class="embed-projects-search-input">
@@ -18,7 +20,7 @@
                  @click="clickToggleMap()" :class="{ 'is-active': isMapEnabled }">
                 <div class="embed-projects-search-toggle-button"></div>
                 <div class="embed-projects-search-toggle-label">{{ $t('Karte anzeigen (NRP und Interreg)', locale) }}</div>
-                <div v-if="templateHook('mapToggleAfter', null)"></div>
+                <div v-if="templateHook('mapToggleAfter', null)" v-html="templateHook('mapToggleAfter', null)"></div>
             </div>
 
         </div>
@@ -42,7 +44,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'state', entity: state }) }"
                              @click.stop="clickToggleFilter({ type: 'state', entity: state })">
                             {{ translateField(state, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'state', state)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'state', state)" v-html="templateHook('filterSelectOptionsItemAfter', 'state', state)"></div>
                         </div>
 
                     </div>
@@ -68,7 +70,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
                              @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
                             {{ translateField(topic, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'topic', topic)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'topic', topic)" v-html="templateHook('filterSelectOptionsItemAfter', 'topic', topic)"></div>
                         </div>
 
                     </div>
@@ -94,7 +96,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'program', entity: program }) }"
                              @click.stop="clickToggleFilter({ type: 'program', entity: program })">
                             {{ translateField(program, 'longName', locale) || translateField(program, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'program', program)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'program', program)" v-html="templateHook('filterSelectOptionsItemAfter', 'program', program)"></div>
                             <template v-else-if="translateField(program, 'url', locale)">
                                 <a class="embed-projects-filters-select-options-item-icon"
                                    :href="translateField(program, 'url', locale)"
@@ -125,7 +127,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'startDate', entity: startDate }) }"
                              @click.stop="clickToggleFilter({ type: 'startDate', entity: startDate })">
                             {{ translateField(startDate, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)" v-html="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)"></div>
                         </div>
 
                     </div>
@@ -151,7 +153,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'instrument', entity: instrument }) }"
                              @click.stop="clickToggleFilter({ type: 'instrument', entity: instrument })">
                             {{ translateField(instrument, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)" v-html="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)"></div>
                         </div>
 
                     </div>
@@ -177,7 +179,7 @@
                              :class="{ 'is-selected': isFilterSelected({ type: 'cooperation', entity: cooperation }) }"
                              @click.stop="clickToggleFilter({ type: 'cooperation', entity: cooperation })">
                             {{ translateField(cooperation, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)"></div>
+                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)" v-html="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)"></div>
                         </div>
 
                     </div>
@@ -292,6 +294,8 @@
             </div>
 
         </transition>
+
+        <div v-if="templateHook('projectsAfter', locale)" v-html="templateHook('projectsAfter', locale)"></div>
 
     </div>
 
