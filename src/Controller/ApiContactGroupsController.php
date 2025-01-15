@@ -14,6 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\Response;
+use App\Service\ContactService;
+use App\Entity\Contact;
 
 #[Route(path: '/api/v1/contact-groups', name: 'api_contact_groups')]
 class ApiContactGroupsController extends AbstractController
@@ -284,6 +289,103 @@ class ApiContactGroupsController extends AbstractController
         $contactGroupService->deleteContactGroup($contactGroup);
 
         return $this->json([]);
+    }
+
+    #[Route(path: '/opt-in', name: 'opt_in', methods: ['POST'])]
+    public function optIn(Request $request, EntityManagerInterface $em, ContactService $contactService, MailerInterface $mailer): JsonResponse
+    {
+        $payload = json_decode($request->getContent(), true);
+        $contactData = $payload['contact'] ?? [];
+        $contactGroupIds = $payload['contactGroups'] ?? [];
+
+        // Validate input
+        // ...
+
+        // Check if all requested groups allow public opt-in
+        $contactGroups = $em->getRepository(ContactGroup::class)->findBy(['id' => $contactGroupIds]);
+        foreach ($contactGroups as $contactGroup) {
+            if (!$contactGroup->getPublicOptIn()) {
+                return new JsonResponse(['message' => 'One or more of the requested contact groups do not allow public opt-in'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // Create or update the contact
+        $existingContact = $em->getRepository(Contact::class)->findOneBy(['email' => $contactData['email']]);
+
+        if ($existingContact) {
+            $contact = $contactService->updateContact($existingContact, $contactData);
+        } else {
+            $contact = $contactService->createContact($contactData);
+        }
+
+        // Generate a unique one-time code for this request
+        $oneTimeCode = bin2hex(random_bytes(16));
+
+        // Add the one-time code to the contact's oneTimeCodeNewsletters array
+        $oneTimeCodeNewsletters = $contact->getOneTimeCodeNewsletters();
+        $oneTimeCodeNewsletters[$oneTimeCode] = $contactGroupIds;
+        $contact->setOneTimeCodeNewsletters($oneTimeCodeNewsletters);
+        $em->flush();
+
+        // Include the contact group IDs in the verification link
+        $verificationLink = $this->generateUrl('api_contact_groups_confirm_opt_in', [
+            'code' => $oneTimeCode,
+            'groups' => implode(',', $contactGroupIds),
+        ]);
+
+        // Send verification email
+        $this->sendOptInEmail($contact, $contactGroupIds, $verificationLink, $mailer, $em);
+
+        return new JsonResponse(['message' => 'Opt-in email sent'], Response::HTTP_OK);
+    }
+
+    #[Route(path: '/confirm-opt-in', name: 'confirm_opt_in', methods: ['GET'])]  
+    public function confirmOptIn(Request $request, EntityManagerInterface $em, string $code): Response
+    {
+        // Look up contact by verification code
+        $contact = $em->getRepository(Contact::class)->findOneBy(['oneTimeCodeNewsletters' => [$code => []]]);
+
+        if (!$contact) {
+            throw $this->createNotFoundException('Invalid verification code');
+        }
+
+        // Get the contact group IDs associated with this one-time code
+        $oneTimeCodeNewsletters = $contact->getOneTimeCodeNewsletters();
+        $contactGroupIds = $oneTimeCodeNewsletters[$code];
+
+        // Add contact to each group
+        foreach ($contactGroupIds as $groupId) {
+            $contactGroup = $em->getRepository(ContactGroup::class)->find($groupId);
+            $contact->addContactGroup($contactGroup);
+        }
+
+        // Remove the one-time code 
+        unset($oneTimeCodeNewsletters[$code]);
+        $contact->setOneTimeCodeNewsletters($oneTimeCodeNewsletters);
+
+        // Persist changes  
+        $em->flush();
+
+        return $this->render('contact_group_opt_in/confirmation.html.twig');
+    }
+
+    private function sendOptInEmail(Contact $contact, array $contactGroupIds, string $verificationLink, MailerInterface $mailer, EntityManagerInterface $em): void
+    {
+        $contactGroups = $em->getRepository(ContactGroup::class)->findBy(['id' => $contactGroupIds]);
+
+        $email = (new Email())
+            ->to($contact->getEmail())
+            ->subject('Bestätigen Sie Ihre Newsletter-Anmeldung')
+            ->html(
+                $this->renderView('emails/contact_group_opt_in.html.twig', [
+                    'contact' => $contact,
+                    'contactGroups' => $contactGroups,
+                    'verificationLink' => $verificationLink,
+                ])
+            )
+        ;
+
+        $mailer->send($email);
     }
 
 }

@@ -119,6 +119,10 @@ class ContactGroup
     ], type: 'object')]
     private $translations = [];
 
+    #[ORM\Column(name: 'public_opt_in', type: 'boolean')]
+    #[Groups(['contact_group'])]
+    private $publicOptIn = false;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -533,5 +537,17 @@ class ContactGroup
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    public function getPublicOptIn(): ?bool
+    {
+        return $this->publicOptIn;
+    }
+
+    public function setPublicOptIn(bool $publicOptIn): self
+    {
+        $this->publicOptIn = $publicOptIn;
+
+        return $this;
     }
 }

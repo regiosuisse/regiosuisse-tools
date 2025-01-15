@@ -62,6 +62,15 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>
+                            <input type="checkbox" v-model="contactGroup.publicOptIn">
+                            Öffentliche Anmeldung erlauben
+                        </label>
+                    </div>
+                </div>
+
             </div>
 
             <div class="contact-group-component-form-section">
