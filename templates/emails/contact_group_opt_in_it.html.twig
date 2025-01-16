@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Conferma l'iscrizione alla newsletter</title>
+    <style>
+        body, p {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333333;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        /* Container styling */
+        .email-container {
+            background-color: #ffffff;
+            max-width: 800px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Header and logo styling */
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 2em;
+        }
+        /* Body text styling */
+        .email-content {
+            font-size: 16px;
+            line-height: 1.1;
+        }
+        .email-content p {
+            margin-bottom: 15px;
+        }
+        .email-content a {
+            color: #B4BE00;
+            text-decoration: underline;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .email-content li {
+            font-weight: bold;
+        }
+        /* Footer styling */
+        .email-footer {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .horizontal-line {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        .spacer {
+            margin-top: 50px;
+        }
+        .footer-info {
+            font-size: 12px;
+            font-style: italic;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header with logo -->
+        <div class="email-header">
+            <p>
+                <img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="regiosuisse Logo" class="logo">
+            </p>
+            <p><h3>Conferma l'iscrizione alla newsletter</h3></p>
+        </div>
+        <div class="horizontal-line"></div>
+        <div class="spacer"></div>
+        <!-- Email content -->
+        <div class="email-content">
+            {% if contact.gender is defined and contact.gender == 'female' %}
+                <p>Gentile Signora {{ contact.lastName }} !</p>
+            {% elseif contact.gender is defined and contact.gender == 'male' %}
+                <p>Gentile Signor {{ contact.lastName }} !</p>
+            {% else %}
+                <p>Buongiorno !</p>
+            {% endif %}
+
+            <p>Abbiamo appena ricevuto la tua iscrizione alle seguenti liste:</p>
+            <ul>
+            {% for contactGroup in contactGroups %}
+                <li>{{ contactGroup.name }}</li>
+            {% endfor %}
+            </ul>
+            <div class="spacer"></div>
+            <p>Per favore conferma la tua iscrizione cliccando sul seguente link:</p>
+            <p><a href="{{ verificationLink }}">{{ verificationLink }}</a></p>
+            <div class="spacer"></div>
+            <div class="horizontal-line"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p class="footer-info">Se questa iscrizione non proviene da te, puoi semplicemente ignorare questa email.</p>
+            <div class="horizontal-line"></div>
+            <p>Cordiali saluti,<br>
+            Il team regiosuisse</p>
+        </div>
+    </div>
+</body>
+</html> 

@@ -133,7 +133,9 @@ class ContactService {
         $this->em->persist($contact);
         $this->em->flush();
 
-        $this->updateEmployments($payload['employments'], $contact, $payload['officialEmployment']);
+        if(array_key_exists('employments', $payload)) {
+            $this->updateEmployments($payload['employments'], $contact, $payload['officialEmployment']);
+        }
 
         return $contact;
     }
@@ -171,6 +173,7 @@ class ContactService {
 
     public function applyContactPayload($payload, Contact $contact)
     {
+
         $contact
             ->setIsPublic($payload['isPublic'])
             ->setType($payload['type'])
@@ -450,6 +453,46 @@ class ContactService {
 
             $this->em->flush();
         }
+    }
+
+    public function createNewsletterContact(array $data): Contact
+    {
+        $contact = new Contact();
+        $contact->setCreatedAt(new \DateTime());
+        
+        // Set basic fields
+        $contact->setEmail($data['email']);
+        $contact->setFirstName($data['firstName']);
+        $contact->setLastName($data['lastName']);
+        $contact->setType($data['type']);
+        $contact->setIsPublic($data['isPublic']);
+        $contact->setLanguage($data['language']);
+        
+        $this->em->persist($contact);
+        $this->em->flush();
+        
+        return $contact;
+    }
+
+    public function updateNewsletterContact(Contact $contact, array $data): Contact
+    {
+        // Update basic fields
+        $contact->setEmail($data['email']);
+        $contact->setFirstName($data['firstName']);
+        $contact->setLastName($data['lastName']);
+        $contact->setType($data['type']);
+        $contact->setIsPublic($data['isPublic']);
+        
+        // Update language by code
+        $language = $this->em->getRepository(Language::class)->findOneBy(['code' => $data['languageCode']]);
+        if ($language) {
+            $contact->setLanguage($language);
+        }
+        
+        $contact->setUpdatedAt(new \DateTime());
+        $this->em->flush();
+        
+        return $contact;
     }
 
 }

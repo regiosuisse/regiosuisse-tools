@@ -91,9 +91,9 @@
             </div>
         </div>
 
-        <div class="embed-events-filterbar">
+        <!-- <div class="embed-events-filterbar">
             <button class="button primary add-event-button" @click="showEventModal = true">{{ $t('event.submit', locale) }}</button>
-        </div>
+        </div> -->
 
         <transition name="embed-events-list" mode="out-in">
             <div class="embed-events-list" v-if="!isLoading">

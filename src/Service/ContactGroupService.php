@@ -69,11 +69,11 @@ class ContactGroupService {
         return $contactGroup;
     }
 
-    public function updateContactGroup($contactGroup, $payload)
+    public function updateContactGroup(ContactGroup $contactGroup, array $data): ContactGroup
     {
         $contactGroup->setUpdatedAt(new \DateTime());
 
-        $contactGroup = $this->applyContactGroupPayload($payload, $contactGroup);
+        $contactGroup = $this->applyContactGroupPayload($data, $contactGroup);
 
         $this->em->persist($contactGroup);
         $this->em->flush();
@@ -98,6 +98,7 @@ class ContactGroupService {
             ->setParent(null)
             ->setEmployments(new ArrayCollection())
             ->setTranslations($payload['translations'] ?: [])
+            ->setPublicOptIn($payload['publicOptIn'] ?? false)
         ;
 
         if($payload['parent']) {

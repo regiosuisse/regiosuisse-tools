@@ -192,10 +192,6 @@ class Contact
     #[Groups(['contact'])]
     private $userComment;
 
-    #[ORM\Column(name: 'one_time_code_newsletters', type: 'json')]
-    #[Groups(['contact'])]
-    private $oneTimeCodeNewsletters = [];
-
     public function __construct()
     {
         $this->employments = new ArrayCollection();
@@ -1099,30 +1095,6 @@ class Contact
     public function setUserComment(?string $userComment): self
     {
         $this->userComment = $userComment;
-
-        return $this;
-    }
-
-    /**
-     * Get oneTimeCodeNewsletters
-     *
-     * @return array
-     */
-    public function getOneTimeCodeNewsletters(): array
-    {
-        return $this->oneTimeCodeNewsletters;
-    }
-
-    /**
-     * Set oneTimeCodeNewsletters
-     *
-     * @param array $oneTimeCodeNewsletters
-     *
-     * @return self
-     */
-    public function setOneTimeCodeNewsletters(array $oneTimeCodeNewsletters): self
-    {
-        $this->oneTimeCodeNewsletters = $oneTimeCodeNewsletters;
 
         return $this;
     }

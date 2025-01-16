@@ -76,9 +76,9 @@
 
         </div>
 
-        <div class="embed-jobs-filterbar">
+        <!-- <div class="embed-jobs-filterbar">
             <button class="button primary add-job-button" @click="showJobModal = true">{{ $t('job.submit', locale) }}</button>
-        </div>
+        </div> -->
 
         <transition name="embed-jobs-list" mode="out-in">
 

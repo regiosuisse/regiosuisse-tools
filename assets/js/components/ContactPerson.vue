@@ -620,7 +620,7 @@
                   id="description"
                   :editor="editor"
                   :config="editorConfig"
-                  v-model="contact.description"
+                  v-model="mainDescription"
                 >
                 </ckeditor>
               </div>
@@ -632,7 +632,7 @@
                   id="description"
                   :editor="editor"
                   :config="editorConfig"
-                  v-model="contact.translations[locale].description"
+                  v-model="translatedDescription"
                 ></ckeditor>
               </div>
             </div>
@@ -980,8 +980,16 @@ export default {
         contactGroups: [],
         topics: [],
         translations: {
-          fr: {},
-          it: {},
+          fr: {
+            city: "",
+            website: "",
+            description: ""
+          },
+          it: {
+            city: "",
+            website: "",
+            description: ""
+          }
         },
         isPublic: false,
         userComment: "",
@@ -1055,16 +1063,37 @@ export default {
 
       return contactGroupOptions;
     },
+    mainDescription: {
+      get() {
+        return this.contact.description || '';
+      },
+      set(value) {
+        this.contact.description = value;
+      }
+    },
+    translatedDescription: {
+      get() {
+        return this.contact.translations[this.locale]?.description || '';
+      },
+      set(value) {
+        if (!this.contact.translations[this.locale]) {
+          this.contact.translations[this.locale] = {};
+        }
+        this.contact.translations[this.locale].description = value;
+      }
+    },
     descriptionDiffValue: {
       get() {
         if (this.isFieldChanged("description", this.locale)) {
-          return this.getDiffValue("description", this.locale);
-        } else {
-          return this.locale !== "de"
-            ? this.contact.translations[this.locale]?.description || ""
-            : this.contact.description || "";
+          return this.getDiffValue("description", this.locale) || '';
         }
+        return this.locale !== "de"
+          ? this.contact.translations[this.locale]?.description || ''
+          : this.contact.description || '';
       },
+      set(value) {
+        // Read-only
+      }
     },
     isDeleteRequest() {
       return this.selectedInboxItem?.data?.delete ?? false;
@@ -1222,6 +1251,7 @@ export default {
         });
 
         this.contact = { ...contactsData.contacts[0] };
+        this.ensureTranslations();
 
         this.originalContactGroups = [...this.contact.contactGroups];
 
@@ -1556,6 +1586,22 @@ export default {
         }
       });
       return deleted;
+    },
+    ensureTranslations() {
+      if (!this.contact.translations) {
+        this.contact.translations = { fr: {}, it: {} };
+      }
+      ['fr', 'it'].forEach(lang => {
+        if (!this.contact.translations[lang]) {
+          this.contact.translations[lang] = {};
+        }
+        // Ensure all translatable fields exist
+        ['city', 'website', 'description'].forEach(field => {
+          if (!this.contact.translations[lang][field]) {
+            this.contact.translations[lang][field] = '';
+          }
+        });
+      });
     },
   },
   created() {

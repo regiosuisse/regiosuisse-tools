@@ -281,29 +281,31 @@ export default {
             this.$router.push('/contact-groups');
         },
         clickSave() {
-
             this.contactGroup.employments = [];
 
             for(let employment of Object.values(this.officialEmployments)) {
                 this.contactGroup.employments.push(employment);
             }
 
+            const payload = {
+                ...this.contactGroup,
+                publicOptIn: this.contactGroup.publicOptIn
+            };
+
             if(this.contactGroup.id) {
-                return this.$store.dispatch('contactGroups/update', this.contactGroup).then(() => {
+                return this.$store.dispatch('contactGroups/update', payload).then(() => {
                     this.$router.push('/contact-groups');
                 });
             }
 
             if(!this.contactGroup.id) {
-
-                this.$store.dispatch('contactGroups/create', this.contactGroup)
+                this.$store.dispatch('contactGroups/create', payload)
                     .then((response) => {
                         this.$store.dispatch('contacts/load', response.data);
                         this.$router.push('/contact-groups');
-
                     }, (error) => {
                         this.formErrors = error.response.data ? error.response.data.errors : [{message: 'Ein unbekannter Fehler ist aufgetreten.'}];
-                    })
+                    });
             }
         },
         clickContact (contact) {
