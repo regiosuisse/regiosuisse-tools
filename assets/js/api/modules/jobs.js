@@ -30,4 +30,8 @@ export default {
         return axios.delete(endpoint+'/'+id);
     },
 
+    createFromEmbed(payload) {
+        return axios.post(endpoint + '/embed', payload);
+    },
+
 };

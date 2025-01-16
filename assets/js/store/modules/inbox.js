@@ -1,4 +1,4 @@
-import api from '../../api';
+import api from '../../api/modules/inbox';
 
 // initial state
 const state = () => ({
@@ -20,7 +20,7 @@ const actions = {
 
     loadAll ({ commit }) {
         commit('loaders/showLoader', 'inbox', { root: true });
-        return api.inbox.getAll().then((response) => {
+        return api.getAll().then((response) => {
             commit('loaders/hideLoader', 'inbox', { root: true });
             commit('setAll', response.data);
         });
@@ -28,7 +28,7 @@ const actions = {
 
     load ({ commit }, id) {
         commit('loaders/showLoader', 'inbox/'+id, { root: true });
-        return api.inbox.get(id).then((response) => {
+        return api.get(id).then((response) => {
             commit('loaders/hideLoader', 'inbox/'+id, { root: true });
             commit('set', response.data);
         });
@@ -36,10 +36,16 @@ const actions = {
 
     delete ({ commit }, id) {
         commit('loaders/showLoader', 'inbox/'+id, { root: true });
-        return api.inbox.delete(id).then((response) => {
-            commit('loaders/hideLoader', 'inbox/'+id, { root: true });
-            commit('remove', id);
-        });
+        return api.delete(id)
+            .then((response) => {
+                commit('loaders/hideLoader', 'inbox/'+id, { root: true });
+                commit('remove', id);
+                return response;
+            })
+            .catch(error => {
+                commit('loaders/hideLoader', 'inbox/'+id, { root: true });
+                throw error;
+            });
     },
 
 };

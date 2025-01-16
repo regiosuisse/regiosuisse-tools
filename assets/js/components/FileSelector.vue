@@ -5,7 +5,7 @@
             <input type="text" class="form-control" v-model="item.name" v-if="!item.loading">
             <input type="text" class="form-control" value="Bitte warten..." readonly v-else>
             <div class="file-selector-component-item-remove" @click="items.splice(key, 1)" v-if="!item.loading && !readonly">
-                <span class="material-icons error">cancel</span>
+                <span class="material-icons error">{{ cancelLabel }}</span>
             </div>
             <div class="file-selector-component-item-move" v-if="!readonly">
                 <span class="material-icons" v-if="key !== 0" @click="clickMoveLeft(key)">keyboard_arrow_left</span>
@@ -13,7 +13,7 @@
             </div>
         </div>
         <label class="file-selector-component-add" :for="'upload-' + rand" v-if="!readonly">
-            <span class="material-icons">add</span>
+            <span class="material-icons">{{ addLabel }}</span>
         </label>
         <input type="file" :id="'upload-' + rand" ref="upload" @change="addFile()" multiple :accept="allowedTypes">
     </div>
@@ -23,6 +23,14 @@
 <script>
     export default {
         props: {
+            addLabel: {
+                type: String,
+                default: 'add',
+            },
+            cancelLabel: {
+                type: String,
+                default: 'cancel',
+            },
             items: {
                 type: Array,
                 default: [],
@@ -42,7 +50,7 @@
             };
         },
         methods: {
-            addFile () {
+            addFile() {
                 let files = this.$refs.upload.files;
                 for(let file of files) {
                     let reader = new FileReader();
@@ -58,16 +66,22 @@
                             data: reader.result,
                             mimeType: file.type,
                             extension: file.name.split('.')[1] ? file.name.split('.')[file.name.split('.').length-1] : '',
-                            loading: true,
+                            loading: true
                         };
-                        item.extension = item.extension.toLowerCase();
+
                         this.items.push(item);
 
-                        this.$store.dispatch('files/create', item).then((file) => {
-                            this.items[this.items.indexOf(item)] = {...file};
+                        this.$store.dispatch('files/create', item).then((response) => {
+                            const index = this.items.findIndex(i => i.loading && i.name === file.name);
+                            if (index !== -1) {
+                                this.items[index] = {
+                                    ...response,
+                                    name: file.name
+                                };
+                                this.items[index].loading = false;
+                            }
                             this.$emit('changed', this.items);
                         });
-
                     };
                 }
                 this.$refs.upload.value = null;

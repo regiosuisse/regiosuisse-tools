@@ -22,10 +22,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\CommunitySubmissionService;
+use App\Entity\CommunitySubmission;
 
 #[Route(path: '/api/v1/events', name: 'api_events_')]
 class ApiEventsController extends AbstractController
 {
+    public function __construct(
+        private EventService $eventService,
+        private CommunitySubmissionService $submissionService
+    ) {}
     
     #[Route(path: '', name: 'index', methods: ['GET'])]
     #[OA\Parameter(
@@ -447,5 +453,29 @@ class ApiEventsController extends AbstractController
 
         return $response;
 
+    }
+
+    #[Route('/embed', name: 'api_events_create_from_embed', methods: ['POST'])]
+    public function createFromEmbed(Request $request): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            // Create pending submission and send verification email
+            $submission = $this->submissionService->createPendingSubmission(
+                $data, 
+                CommunitySubmission::TYPE_EVENT
+            );
+            
+            // Return URL for confirmation page
+            return $this->json([
+                'redirectUrl' => $this->generateUrl('community_submission_confirmation')
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
