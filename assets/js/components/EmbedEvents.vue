@@ -91,9 +91,9 @@
             </div>
         </div>
 
-        <!-- <div class="embed-events-filterbar">
+        <div class="embed-events-filterbar">
             <button class="button primary add-event-button" @click="showEventModal = true">{{ $t('event.submit', locale) }}</button>
-        </div> -->
+        </div>
 
         <transition name="embed-events-list" mode="out-in">
             <div class="embed-events-list" v-if="!isLoading">
@@ -179,8 +179,12 @@
                                     :model="newEvent.locations"
                                     :options="locations.filter(location => !location.context || location.context === 'event')" 
                                     :searchType="'select'"
+                                    :class="{'has-error': formErrors.locations}"
                                     required>
                                 </tag-selector>
+                                <small class="error-message" v-if="formErrors.locations">
+                                    {{ $t('event.error.location_required', locale) }}
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -189,8 +193,13 @@
                                 <tag-selector id="eventTopics" 
                                     :model="newEvent.topics"
                                     :options="topics.filter(topic => !topic.context || topic.context === 'event')" 
-                                    :searchType="'select'">
+                                    :searchType="'select'"
+                                    :class="{'has-error': formErrors.topics}"
+                                    required>
                                 </tag-selector>
+                                <small class="error-message" v-if="formErrors.topics">
+                                    {{ $t('event.error.topics_required', locale) }}
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -199,8 +208,13 @@
                                 <tag-selector id="eventLanguages" 
                                     :model="newEvent.languages"
                                     :options="languages.filter(language => !language.context || language.context === 'event')" 
-                                    :searchType="'select'">
+                                    :searchType="'select'"
+                                    :class="{'has-error': formErrors.languages}"
+                                    required>
                                 </tag-selector>
+                                <small class="error-message" v-if="formErrors.languages">
+                                    {{ $t('event.error.languages_required', locale) }}
+                                </small>
                             </div>
                         </div>
                         
@@ -211,7 +225,7 @@
                                 <div class="contact-fields">
                                     <div class="form-group">
                                         <label for="contactName">{{ $t('event.contact.name', locale) }}</label>
-                                        <input id="contactName" class="form-control" v-model="newEvent.contactInfo.name" />
+                                        <input id="contactName" class="form-control" v-model="newEvent.contactInfo.name" required />
                                     </div>
                                     <div class="form-group">
                                         <label for="contactEmail">{{ $t('event.contact.email', locale) }}</label>
@@ -219,17 +233,17 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="contactPhone">{{ $t('event.contact.phone', locale) }}</label>
-                                        <input id="contactPhone" class="form-control" v-model="newEvent.contactInfo.phone" />
+                                        <input id="contactPhone" class="form-control" v-model="newEvent.contactInfo.phone" required />
                                     </div>
                                     <div class="form-group">
                                         <label for="eventVenueLocation">{{ $t('event.venue_location', locale) }}</label>
                                         <small class="help-text">{{ $t('event.venue_location.help', locale) }}</small>
-                                        <input id="eventVenueLocation" class="form-control" v-model="newEvent.location" />
+                                        <input id="eventVenueLocation" class="form-control" v-model="newEvent.location" required />
                                     </div>
                                     <div class="form-group">
                                         <label for="eventOrganizer">{{ $t('event.organizer', locale) }}</label>
                                         <small class="help-text">{{ $t('event.organizer.help', locale) }}</small>
-                                        <input id="eventOrganizer" class="form-control" v-model="newEvent.organizer" />
+                                        <input id="eventOrganizer" class="form-control" v-model="newEvent.organizer" required />
                                     </div>
                                 </div>
                             </div>
@@ -242,7 +256,7 @@
                     <div class="form-group">
                         <label for="eventRegistration">{{ $t('event.registration', locale) }}</label>
                         <small class="help-text">{{ $t('event.registration.help', locale) }}</small>
-                        <input id="eventRegistration" type="url" class="form-control" v-model="newEvent.registration" />
+                        <input id="eventRegistration" type="url" class="form-control" v-model="newEvent.registration" required />
                     </div>
 
                     <!-- New row for date, description and links -->
@@ -253,23 +267,25 @@
                             <div class="date-time-fields">
                                 <div class="date-time-field">
                                     <label>{{ $t('event.start', locale) }}</label>
-                                    <date-picker mode="dateTime" :is24hr="true" v-model="newEvent.startDate" :locale="'de'">
+                                    <date-picker mode="dateTime" :is24hr="true" v-model="newEvent.startDate" :locale="'de'" required>
                                         <template v-slot="{ inputValue, inputEvents }">
                                             <input type="text" 
                                                    class="form-control"
                                                    :value="inputValue"
-                                                   v-on="inputEvents">
+                                                   v-on="inputEvents"
+                                                   required>
                                         </template>
                                     </date-picker>
                                 </div>
                                 <div class="date-time-field">
                                     <label>{{ $t('event.end', locale) }}</label>
-                                    <date-picker mode="dateTime" :is24hr="true" v-model="newEvent.endDate" :locale="'de'">
+                                    <date-picker mode="dateTime" :is24hr="true" v-model="newEvent.endDate" :locale="'de'" required>
                                         <template v-slot="{ inputValue, inputEvents }">
                                             <input type="text" 
                                                    class="form-control"
                                                    :value="inputValue"
-                                                   v-on="inputEvents">
+                                                   v-on="inputEvents"
+                                                   required>
                                         </template>
                                     </date-picker>
                                 </div>
@@ -279,7 +295,21 @@
                         <div class="form-group">
                             <label for="eventDescription">{{ $t('event.description', locale) }}</label>
                             <small class="help-text">{{ $t('event.description.help', locale) }}</small>
-                            <textarea id="eventDescription" class="form-control" rows="5" v-model="newEvent.description" required></textarea>
+                            <ckeditor id="eventDescription" 
+                                    :editor="editor" 
+                                    :config="editorConfig"
+                                    v-model="newEvent.description" 
+                                    @input="validateDescription"
+                                    :class="{'has-error': formErrors.description}"
+                                    
+                                    required>
+                            </ckeditor>
+                            <small class="error-message" v-if="formErrors.description">
+                                {{ $t('event.error.description_required', locale) }}
+                            </small>
+                            <div v-if="descriptionLength > 0" class="character-count" :class="{ 'text-danger': isDescriptionTooLong }">
+                                {{ descriptionLength }}/5000 {{ isDescriptionTooLong ? '(Maximum erreicht)' : '' }}
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -332,6 +362,8 @@ import FileSelector from './FileSelector.vue';
 import TagSelector from './TagSelector.vue';
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/dist/style.css';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 export default {
 
@@ -341,6 +373,7 @@ export default {
         FileSelector,
         TagSelector,
         DatePicker,
+        ckeditor: CKEditor.component
     },
 
     data() {
@@ -357,6 +390,14 @@ export default {
             offset: 0,
             activeFilterSelect: null,
             event: null,
+            descriptionLength: 0,
+            isDescriptionTooLong: false,
+            formErrors: {
+                locations: false,
+                topics: false,
+                languages: false,
+                description: false
+            },
 
             // New feature data
             showEventModal: false,
@@ -381,6 +422,31 @@ export default {
                 locations: [],
                 links: [],
                 files: []
+            },
+            editor: ClassicEditor,
+            editorConfig: {
+                basicEntities: false,
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        '|',
+                        'numberedList',
+                        'bulletedList',
+                        'insertTable',
+                        '|',
+                        'undo',
+                        'redo',
+                    ]
+                },
+                maxLength: {
+                    characters: 5000
+                },
+                removePlugins: ['Title'],
+                placeholder: ' '
             },
         };
     },
@@ -761,13 +827,66 @@ export default {
         },
 
         // New feature methods
+        validateDescription() {
+            const strippedText = this.$helpers.stripHTML(this.newEvent.description);
+            this.descriptionLength = strippedText.length;
+            this.isDescriptionTooLong = this.descriptionLength > 5000;
+        },
+
         submitEvent() {
-            // Validate email
-            if (!this.newEvent.contactInfo.email) {
-                this.modal = {
-                    type: 'error',
-                    message: this.$t('event.error.email_required', this.locale)
-                };
+            // Reset form errors
+            this.formErrors = {
+                locations: false,
+                topics: false,
+                languages: false,
+                description: false
+            };
+
+            let hasError = false;
+            let firstErrorField = null;
+
+            // Validate required fields
+            if (!this.newEvent.locations || this.newEvent.locations.length === 0) {
+                this.formErrors.locations = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'eventLocation';
+            }
+
+            if (!this.newEvent.topics || this.newEvent.topics.length === 0) {
+                this.formErrors.topics = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'eventTopics';
+            }
+
+            if (!this.newEvent.languages || this.newEvent.languages.length === 0) {
+                this.formErrors.languages = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'eventLanguages';
+            }
+
+            // Validate description
+            if (!this.newEvent.description || this.newEvent.description.trim() === '') {
+                this.formErrors.description = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'eventDescription';
+            }
+
+            // Validate description length
+            this.validateDescription();
+            if (this.isDescriptionTooLong) {
+                this.formErrors.description = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'eventDescription';
+            }
+
+            if (hasError) {
+                // Scroll to first error field
+                if (firstErrorField) {
+                    const element = document.getElementById(firstErrorField);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
                 return;
             }
 
@@ -785,7 +904,8 @@ export default {
                 color: this.newEvent.type === 'regiosuisse' || this.newEvent.type === 'cafe-r' ? (this.newEvent.color || 1) : null,
                 location: this.newEvent.location,
                 organizer: this.newEvent.organizer,
-                description: this.newEvent.description,
+                description: this.$helpers.textExcerpt(this.$helpers.stripHTML(this.newEvent.description), 168, '...'),
+                text: this.newEvent.description,
                 registration: this.newEvent.registration,
                 startDate: this.newEvent.startDate,
                 endDate: this.newEvent.endDate,
@@ -824,15 +944,7 @@ export default {
             this.$store.dispatch('events/createFromEmbed', eventData)
                 .then(response => {
                     // Show success message
-                    this.modal = {
-                        type: 'success',
-                        message: this.$t('event.success.created', this.locale)
-                    };
-                    
-                    // Open the new event in a new tab if there's a redirect URL
-                    if (response.redirectUrl) {
-                        window.location.href = response.redirectUrl;
-                    }
+                    window.open(response.redirectUrl, '_blank');
                     
                     // Reset form
                     this.showEventModal = false;
@@ -972,3 +1084,37 @@ export default {
 
 };
 </script>
+
+<style>
+.character-count {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+/* Hide CKEditor voice label */
+.ck.ck-label.ck-voice-label {
+    display: none !important;
+}
+
+.has-error {
+    .ck.ck-editor__main > .ck-editor__editable {
+        border-color: #dc3545 !important;
+    }
+    
+    .ck.ck-editor__main > .ck-editor__editable.ck-focused {
+        border-color: #dc3545 !important;
+    }
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+</style>

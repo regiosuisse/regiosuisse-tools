@@ -339,7 +339,10 @@ export default {
                     });
                 } else {
                     // If no ID, create new job
-                    response = await this.$store.dispatch('jobs/create', jobData);
+                    jobData.inboxId = this.inboxId;
+                    response = await this.$store.dispatch('jobs/create', {
+                        payload: jobData,
+                    });
                 }
                 
                 // If this was from an inbox item, delete it after successful save

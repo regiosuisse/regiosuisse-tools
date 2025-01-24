@@ -8,14 +8,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Inbox;
+use Symfony\Component\Mailer\MailerInterface;
+use Twig\Environment;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Mime\Email;
+use App\Entity\CommunitySubmission;
+use App\Service\NotificationService;
 
 class JobService {
 
     protected $em;
+    private $mailer;
+    private $mailerFrom;
+    private $notificationService;
 
-    public function __construct(EntityManagerInterface $em)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        MailerInterface $mailer,
+        string $mailerFrom,
+        NotificationService $notificationService
+    ) {
         $this->em = $em;
+        $this->mailer = $mailer;
+        $this->mailerFrom = $mailerFrom;
+        $this->notificationService = $notificationService;
     }
 
     public function validateFields($payload, $fields = [])
@@ -35,6 +51,11 @@ class JobService {
 
     public function validateJobPayload($payload)
     {
+        // If payload is wrapped in a 'payload' key, extract it
+        if (isset($payload['payload'])) {
+            $payload = $payload['payload'];
+        }
+
         if(($errors = $this->validateFields($payload, [
             'isPublic',
             'position',
@@ -57,14 +78,58 @@ class JobService {
 
     public function createJob($payload)
     {
+        // Extract the payload if it's wrapped in a 'payload' key
+        if (isset($payload['payload'])) {
+            $payload = $payload['payload'];
+        }
+
+        // Validate the extracted payload
+        $validationResult = $this->validateJobPayload($payload);
+        if ($validationResult !== true) {
+            return $validationResult;
+        }
+
         $job = new Job();
-
         $job->setCreatedAt(new \DateTime());
-
+        
         $job = $this->applyJobPayload($payload, $job);
 
         $this->em->persist($job);
         $this->em->flush();
+
+        // If this job was created from an inbox item that came from a community submission
+        if (isset($payload['inboxId'])) {
+            // Find the inbox item
+            $inboxItem = $this->em->getRepository(Inbox::class)->find($payload['inboxId']);
+            if ($inboxItem) {
+                // Mark the inbox item as merged
+                $inboxItem->setIsMerged(true);
+                $inboxItem->setMergedAt(new \DateTime());
+                $this->em->persist($inboxItem);
+                $this->em->flush();
+            }
+
+            // Find and update the community submission if it exists
+            $submissions = $this->em->getRepository(CommunitySubmission::class)
+                ->findBy(['type' => CommunitySubmission::TYPE_JOB, 'isVerified' => true]);
+
+            foreach ($submissions as $submission) {
+                $data = $submission->getSubmissionData();
+                if (isset($data['related_id']) && (string)$data['related_id'] === (string)$payload['inboxId']) {
+                    // Update the submission data with the new job ID
+                    $data['job_id'] = $job->getId();
+                    $submission->setSubmissionData($data);
+                    $this->em->persist($submission);
+                    $this->em->flush();
+                    break;
+                }
+            }
+        }
+
+        // Send notification if job is created as public
+        if ($job->getIsPublic()) {
+            $this->sendPublicationNotification($job);
+        }
 
         return $job;
     }
@@ -72,11 +137,26 @@ class JobService {
     public function updateJob($job, $payload)
     {
         $job->setUpdatedAt(new \DateTime());
-
+        $wasPublic = $job->getIsPublic();
+        
         $job = $this->applyJobPayload($payload, $job);
-
+        
         $this->em->persist($job);
         $this->em->flush();
+
+        // If job was not public before but is now, send notification
+        if (!$wasPublic && $job->getIsPublic()) {
+            $submissions = $this->em->getRepository(CommunitySubmission::class)
+                ->findBy(['type' => CommunitySubmission::TYPE_JOB, 'isVerified' => true]);
+
+            foreach ($submissions as $submission) {
+                $data = $submission->getSubmissionData();
+                if (isset($data['job_id']) && (string)$data['job_id'] === (string)$job->getId()) {
+                    $this->sendPublicationNotification($job);
+                    break;
+                }
+            }
+        }
 
         return $job;
     }
@@ -189,34 +269,30 @@ class JobService {
         ];
     }
 
-    public function createJobFromInboxItem($payload)
+    private function sendPublicationNotification(Job $job): void
     {
-        $job = new Job();
-        
-        // Set basic job properties
-        $job->setCreatedAt(new \DateTime())
-            ->setIsPublic(false)
-            ->setPosition(0)
-            ->setName($payload['title'])
-            ->setDescription($payload['description'])
-            ->setEmployer($payload['employer'])
-            ->setLocation($payload['location'])
-            ->setContact($payload['contact'])
-            ->setApplicationDeadline(
-                $payload['applicationDeadline'] ? 
-                new \DateTime($payload['applicationDeadline']) : 
-                null
-            )
-            ->setLinks($payload['links'] ?? [])
-            ->setFiles($payload['files'] ?? [])
-            ->setTranslations($payload['translations'] ?? []);
+        // Find the submission to get the contact email and language
+        $submissions = $this->em->getRepository(CommunitySubmission::class)
+            ->findBy(['type' => CommunitySubmission::TYPE_JOB, 'isVerified' => true]);
 
-        $this->em->persist($job);
-        $this->em->flush();
-
-        return [
-            'job' => $job,
-        ];
+        foreach ($submissions as $submission) {
+            $data = $submission->getSubmissionData();
+            if (isset($data['job_id']) && (string)$data['job_id'] === (string)$job->getId()) {
+                $contactEmail = $data['contactInfo']['email'] ?? null;
+                $language = $data['contactInfo']['languageCode'] ?? 'de';
+                
+                if ($contactEmail) {
+                    $this->notificationService->sendPublicationNotification(
+                        CommunitySubmission::TYPE_JOB,
+                        $job->getId(),
+                        $job->getName(),
+                        $contactEmail,
+                        $language
+                    );
+                }
+                break;
+            }
+        }
     }
 
 }

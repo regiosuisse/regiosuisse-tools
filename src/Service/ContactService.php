@@ -27,8 +27,6 @@ class ContactService {
         $validatedFields = [];
         $validatedFieldsEmployments = [];
 
-        //error_log(print_r($payload, true));
-
         foreach($fields as $field) {
             if(!array_key_exists($field, $payload)) {
                 $errors[] = [

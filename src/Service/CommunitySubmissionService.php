@@ -55,7 +55,7 @@ class CommunitySubmissionService
 
         // Mark as verified
         $submission->setIsVerified(true);
-
+        
         // Process the submission based on type
         $this->processVerifiedSubmission($submission);
 
@@ -68,11 +68,19 @@ class CommunitySubmissionService
     {
         switch ($submission->getType()) {
             case CommunitySubmission::TYPE_JOB:
-                $this->jobService->createJobInboxItemFromEmbed($submission->getSubmissionData());
+                $result = $this->jobService->createJobInboxItemFromEmbed($submission->getSubmissionData());
+                // Update submission data with inbox item ID
+                $submissionData = $submission->getSubmissionData();
+                $submissionData['related_id'] = $result['inbox']->getId();
+                $submission->setSubmissionData($submissionData);
                 break;
 
             case CommunitySubmission::TYPE_EVENT:
-                $this->eventService->createEventInboxItemFromEmbed($submission->getSubmissionData());
+                $result = $this->eventService->createEventInboxItemFromEmbed($submission->getSubmissionData());
+                // Update submission data with inbox item ID
+                $submissionData = $submission->getSubmissionData();
+                $submissionData['related_id'] = $result['inbox']->getId();
+                $submission->setSubmissionData($submissionData);
                 break;
 
             case CommunitySubmission::TYPE_NEWSLETTER:

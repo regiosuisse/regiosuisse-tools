@@ -76,9 +76,9 @@
 
         </div>
 
-        <!-- <div class="embed-jobs-filterbar">
+        <div class="embed-jobs-filterbar">
             <button class="button primary add-job-button" @click="showJobModal = true">{{ $t('job.submit', locale) }}</button>
-        </div> -->
+        </div>
 
         <transition name="embed-jobs-list" mode="out-in">
 
@@ -166,8 +166,12 @@
                                     :model="newJob.locations"
                                     :options="locations.filter(location => !location.context || location.context === 'job')" 
                                     :searchType="'select'"
+                                    :class="{'has-error': formErrors.locations}"
                                     required>
                                 </tag-selector>
+                                <small class="error-message" v-if="formErrors.locations">
+                                    {{ $t('job.error.location_required', locale) }}
+                                </small>
                             </div>
                             <div class="form-group">
                                 <label for="jobStint">{{ $t('job.workload', locale) }}</label>
@@ -176,13 +180,27 @@
                                     :model="newJob.stints"
                                     :options="stints.filter(stint => !stint.context || stint.context === 'job')" 
                                     :searchType="'select'"
+                                    :class="{'has-error': formErrors.stints}"
                                     required>
                                 </tag-selector>
+                                <small class="error-message" v-if="formErrors.stints">
+                                    {{ $t('job.error.stint_required', locale) }}
+                                </small>
                             </div>
                             <div class="form-group">
                                 <label for="jobDescription">{{ $t('job.description', locale) }}</label>
                                 <small class="help-text">{{ $t('job.description.help', locale) }}</small>
-                                <textarea id="jobDescription" class="form-control" rows="5" v-model="newJob.description" required></textarea>
+                                <ckeditor 
+                                    id="jobDescription" 
+                                    :editor="editor"
+                                    :config="editorConfig"
+                                    v-model="newJob.description" 
+                                    @input="validateDescription"
+                                    required>
+                                </ckeditor>
+                                <div class="character-count" :class="{ 'text-danger': isDescriptionTooLong }">
+                                    {{ descriptionLength }}/5000 {{ isDescriptionTooLong ? '(Zu viele Zeichen)' : '' }}
+                                </div>
                             </div>
                         </div>
                         <div class="job-form-column">
@@ -194,7 +212,7 @@
                             <div class="form-group">
                                 <label for="jobEmployerLocation">{{ $t('job.employer.location', locale) }}</label>
                                 <small class="help-text">{{ $t('job.employer.location.help', locale) }}</small>
-                                <input id="jobEmployerLocation" class="form-control" v-model="newJob.location" />
+                                <input id="jobEmployerLocation" class="form-control" v-model="newJob.location" required />
                             </div>
                             <div class="form-group contact-info-group">
                                 <label>{{ $t('job.contact.info', locale) }}</label>
@@ -210,7 +228,7 @@
                                     </div>
                                     <div class="contact-field">
                                         <span for="contactPhone">{{ $t('job.contact.phone', locale) }}</span>
-                                        <input id="contactPhone" class="form-control" v-model="newJob.contactInfo.phone" />
+                                        <input id="contactPhone" class="form-control" v-model="newJob.contactInfo.phone" required />
                                     </div>
                                     <div class="contact-field">
                                         <span for="contactDepartment">{{ $t('job.contact.department', locale) }}</span>
@@ -257,12 +275,24 @@
                     </div>
 
                     <div class="modal-actions">
+                        <button type="button" class="button" @click="showPreview = true">{{ $t('job.preview', locale) }}</button>
                         <button type="button" class="button warning" @click="showJobModal = false">{{ $t('job.cancel', locale) }}</button>
                         <button type="submit" class="button primary">{{ $t('job.save', locale) }}</button>
                     </div>
                 </form>
             </div>
         </JobModal>
+
+        <transition name="embed-jobs-overlay" mode="out-in">
+            <div class="embed-jobs-overlay" v-if="showPreview" @click="showPreview = false">
+                <EmbedJobsView 
+                    :job="previewJob" 
+                    :locale="locale" 
+                    @click.stop
+                    @clickClose="showPreview = false">
+                </EmbedJobsView>
+            </div>
+        </transition>
 
     </div>
 
@@ -279,6 +309,8 @@ import TagSelector from './TagSelector';
 import FileSelector from './FileSelector';
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/dist/style.css';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 export default {
 
@@ -288,6 +320,7 @@ export default {
         TagSelector,
         FileSelector,
         DatePicker,
+        ckeditor: CKEditor.component
     },
 
     data() {
@@ -299,6 +332,25 @@ export default {
             activeFilterSelect: null,
             job: null,
             showJobModal: false,
+            editor: ClassicEditor,
+            editorConfig: {
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        '|',
+                        'numberedList',
+                        'bulletedList',
+                        'insertTable',
+                        '|',
+                        'undo',
+                        'redo'
+                    ]
+                }
+            },
             newJob: {
                 title: '',
                 locations: [],
@@ -317,6 +369,13 @@ export default {
                 links: [],
                 files: [],
             },
+            formErrors: {
+                locations: false,
+                stints: false
+            },
+            showPreview: false,
+            descriptionLength: 0,
+            isDescriptionTooLong: false,
         };
     },
 
@@ -365,6 +424,31 @@ export default {
             getLocationById: 'locations/getById',
             getStintById: 'stints/getById',
         }),
+        previewJob() {
+            // Create a preview version of the job with the current form data
+            return {
+                name: this.newJob.title,
+                description: this.newJob.description,
+                employer: this.newJob.employer,
+                location: this.newJob.location,
+                contact: [
+                    this.newJob.contactInfo.name && `Kontaktperson: ${this.newJob.contactInfo.name}`,
+                    this.newJob.contactInfo.email && `E-Mail: ${this.newJob.contactInfo.email}`,
+                    this.newJob.contactInfo.phone && `Telefon: ${this.newJob.contactInfo.phone}`,
+                    this.newJob.contactInfo.department && `Abteilung: ${this.newJob.contactInfo.department}`
+                ].filter(Boolean).join('\n'),
+                applicationDeadline: this.newJob.applicationDeadline,
+                locations: this.newJob.locations,
+                stints: this.newJob.stints,
+                links: this.newJob.links || [],
+                files: this.newJob.files || [],
+                images: [], // Empty array since new jobs don't have images
+                translations: {
+                    fr: {},
+                    it: {}
+                }
+            };
+        }
     },
 
     methods: {
@@ -644,6 +728,39 @@ export default {
         },
 
         submitJob() {
+            // Reset form errors
+            this.formErrors = {
+                locations: false,
+                stints: false
+            };
+
+            let hasError = false;
+            let firstErrorField = null;
+
+            // Validate required fields
+            if (!this.newJob.locations || this.newJob.locations.length === 0) {
+                this.formErrors.locations = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'jobLocation';
+            }
+
+            if (!this.newJob.stints || this.newJob.stints.length === 0) {
+                this.formErrors.stints = true;
+                hasError = true;
+                firstErrorField = firstErrorField || 'jobStint';
+            }
+
+            if (hasError) {
+                // Scroll to first error field
+                if (firstErrorField) {
+                    const element = document.getElementById(firstErrorField);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+                return;
+            }
+
             // Prepare the job data
             const jobData = {
                 title: this.newJob.title,
@@ -679,7 +796,7 @@ export default {
             this.$store.dispatch('jobs/createFromEmbed', jobData)
                 .then(response => {
                     // Open confirmation page in new tab
-                    window.location.href = response.redirectUrl;
+                    window.open(response.redirectUrl, '_blank');
                     // Close the modal
                     this.showJobModal = false;
                     // Reset form
@@ -724,6 +841,16 @@ export default {
 
         updateFiles(files) {
             this.newJob.files = files;
+        },
+
+        validateDescription() {
+            // Strip HTML tags to get actual text length
+            const div = document.createElement('div');
+            div.innerHTML = this.newJob.description;
+            const textLength = div.textContent.length;
+            
+            this.descriptionLength = textLength;
+            this.isDescriptionTooLong = textLength > 5000;
         },
     },
 
@@ -793,7 +920,27 @@ export default {
 </script>
 
 <style lang="scss">
+.character-count {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
 
+.text-danger {
+    color: #dc3545;
+}
 
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
 
+.has-error {
+    .tag-selector-input,
+    .tag-selector-dropdown {
+        border-color: #dc3545 !important;
+    }
+}
 </style>

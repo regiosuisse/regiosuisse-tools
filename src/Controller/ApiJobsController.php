@@ -19,6 +19,7 @@ use App\Entity\Inbox;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\CommunitySubmissionService;
 use App\Entity\CommunitySubmission;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route(path: '/api/v1/jobs', name: 'api_jobs')]
 class ApiJobsController extends AbstractController
@@ -310,9 +311,9 @@ class ApiJobsController extends AbstractController
                 CommunitySubmission::TYPE_JOB
             );
             
-            // Return URL for confirmation page
+            // Return absolute URL for confirmation page
             return $this->json([
-                'redirectUrl' => $this->generateUrl('community_submission_confirmation')
+                'redirectUrl' => $this->generateUrl('community_submission_confirmation', [], UrlGeneratorInterface::ABSOLUTE_URL)
             ]);
 
         } catch (\Exception $e) {

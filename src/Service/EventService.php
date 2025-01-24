@@ -9,14 +9,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Event;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Inbox;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use App\Entity\CommunitySubmission;
+use App\Service\NotificationService;
+use Psr\Log\LoggerInterface;
 
 class EventService {
 
     protected $em;
+    private $mailer;
+    private $mailerFrom;
+    private $notificationService;
 
-    public function __construct(EntityManagerInterface $em)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        MailerInterface $mailer,
+        string $mailerFrom,
+        NotificationService $notificationService
+    ) {
         $this->em = $em;
+        $this->mailer = $mailer;
+        $this->mailerFrom = $mailerFrom;
+        $this->notificationService = $notificationService;
     }
 
     public function validateFields($payload, $fields = [])
@@ -36,6 +51,11 @@ class EventService {
 
     public function validateEventPayload($payload)
     {
+        // If payload is wrapped in a 'payload' key, extract it
+        if (isset($payload['payload'])) {
+            $payload = $payload['payload'];
+        }
+
         if(($errors = $this->validateFields($payload, [
             'isPublic',
             'isPromotedDE',
@@ -70,14 +90,67 @@ class EventService {
 
     public function createEvent($payload)
     {
+        error_log('Creating event from payload: ' . json_encode($payload));
+
+        // Extract the payload if it's wrapped in a 'payload' key
+        if (isset($payload['payload'])) {
+            $payload = $payload['payload'];
+        }
+
+        // Validate the extracted payload
+        $validationResult = $this->validateEventPayload($payload);
+        if ($validationResult !== true) {
+            return $validationResult;
+        }
+
         $event = new Event();
-
         $event->setCreatedAt(new \DateTime());
-
+        
         $event = $this->applyEventPayload($payload, $event);
-
         $this->em->persist($event);
         $this->em->flush();
+
+        // If this event was created from an inbox item that came from a community submission
+        if (isset($payload['inboxId'])) {
+            error_log('Event created from inbox item - inbox_id: ' . $payload['inboxId'] . ', event_id: ' . $event->getId());
+
+            // Find the inbox item
+            $inboxItem = $this->em->getRepository(Inbox::class)->find($payload['inboxId']);
+            if ($inboxItem) {
+                // Mark the inbox item as merged
+                $inboxItem->setIsMerged(true);
+                $inboxItem->setMergedAt(new \DateTime());
+                $this->em->persist($inboxItem);
+                $this->em->flush();
+            }
+
+            // Find and update the community submission if it exists
+            $submissions = $this->em->getRepository(CommunitySubmission::class)
+                ->findBy(['type' => CommunitySubmission::TYPE_EVENT, 'isVerified' => true]);
+
+            error_log('Found submissions for event in createEvent - count: ' . count($submissions));
+
+            foreach ($submissions as $submission) {
+                $data = $submission->getSubmissionData();
+                error_log('Checking submission in createEvent - submission_id: ' . $submission->getId() . ', data: ' . json_encode($data) . ', inbox_id: ' . $payload['inboxId']);
+
+                if (isset($data['related_id']) && (string)$data['related_id'] === (string)$payload['inboxId']) {
+                    error_log('Found matching submission in createEvent, updating event_id - submission_id: ' . $submission->getId() . ', event_id: ' . $event->getId());
+
+                    // Update the submission data with the new event ID
+                    $data['event_id'] = $event->getId();
+                    $submission->setSubmissionData($data);
+                    $this->em->persist($submission);
+                    $this->em->flush();
+                    break;
+                }
+            }
+        }
+
+        // Send notification if event is created as public
+        if ($event->getIsPublic()) {
+            $this->sendPublicationNotification($event);
+        }
 
         return $event;
     }
@@ -85,11 +158,26 @@ class EventService {
     public function updateEvent($event, $payload)
     {
         $event->setUpdatedAt(new \DateTime());
-
+        $wasPublic = $event->getIsPublic();
+        
         $event = $this->applyEventPayload($payload, $event);
-
+        
         $this->em->persist($event);
         $this->em->flush();
+
+        // If event was not public before but is now, send notification
+        if (!$wasPublic && $event->getIsPublic()) {
+            $submissions = $this->em->getRepository(CommunitySubmission::class)
+                ->findBy(['type' => CommunitySubmission::TYPE_EVENT, 'isVerified' => true]);
+
+            foreach ($submissions as $submission) {
+                $data = $submission->getSubmissionData();
+                if (isset($data['event_id']) && (string)$data['event_id'] === (string)$event->getId()) {
+                    $this->sendPublicationNotification($event);
+                    break;
+                }
+            }
+        }
 
         return $event;
     }
@@ -189,6 +277,7 @@ class EventService {
             'location' => $payload['location'],
             'organizer' => $payload['organizer'],
             'description' => $payload['description'],
+            'text' => $payload['text'],
             'registration' => $payload['registration'],
             'startDate' => $payload['startDate'],
             'endDate' => $payload['endDate'],
@@ -221,6 +310,32 @@ class EventService {
         return [
             'inbox' => $inbox
         ];
+    }
+
+    private function sendPublicationNotification(Event $event): void
+    {
+        // Find the submission to get the contact email and language
+        $submissions = $this->em->getRepository(CommunitySubmission::class)
+            ->findBy(['type' => CommunitySubmission::TYPE_EVENT, 'isVerified' => true]);
+
+        foreach ($submissions as $submission) {
+            $data = $submission->getSubmissionData();
+            if (isset($data['event_id']) && (string)$data['event_id'] === (string)$event->getId()) {
+                $contactEmail = $data['contactInfo']['email'] ?? null;
+                $language = $data['contactInfo']['languageCode'] ?? 'de';
+                
+                if ($contactEmail) {
+                    $this->notificationService->sendPublicationNotification(
+                        CommunitySubmission::TYPE_EVENT,
+                        $event->getId(),
+                        $event->getTitle(),
+                        $contactEmail,
+                        $language
+                    );
+                }
+                break;
+            }
+        }
     }
 
 }

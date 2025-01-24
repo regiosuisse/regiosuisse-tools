@@ -588,6 +588,7 @@
                     });
                 } else {
                     // Create new event
+                    this.event.inboxId = this.inboxId;
                     this.$store.dispatch('events/create', this.event)
                     .then(async () => {
                         // If this was from an inbox item, delete it
