@@ -75,8 +75,22 @@ class ApiProjectsController extends AbstractController
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
     )]
     #[OA\Parameter(
+        name: 'excludeState[]',
+        description: 'Exclude specific states (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
         name: 'topic[]',
         description: 'Include only specific topics (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
+        name: 'excludeTopic[]',
+        description: 'Exclude specific topics (both name or id are valid values)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
@@ -89,8 +103,22 @@ class ApiProjectsController extends AbstractController
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
     )]
     #[OA\Parameter(
+        name: 'excludeTag[]',
+        description: 'Exclude specific tags (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
         name: 'program[]',
         description: 'Include only specific programs (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
+        name: 'excludeProgram[]',
+        description: 'Exclude specific programs (both name or id are valid values)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
@@ -103,6 +131,13 @@ class ApiProjectsController extends AbstractController
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
     )]
     #[OA\Parameter(
+        name: 'excludeInstrument[]',
+        description: 'Exclude specific instruments (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
         name: 'geographicRegion[]',
         description: 'Include only specific geographic regions (both name or id are valid values)',
         in: 'query',
@@ -110,8 +145,22 @@ class ApiProjectsController extends AbstractController
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
     )]
     #[OA\Parameter(
+        name: 'excludeGeographicRegion[]',
+        description: 'Exclude specific geographic regions (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
         name: 'businessSector[]',
         description: 'Include only specific business sectors (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
+        name: 'excludeBusinessSector[]',
+        description: 'Exclude specific business sectors (both name or id are valid values)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
@@ -285,6 +334,17 @@ class ApiProjectsController extends AbstractController
                 ;
             }
         }
+
+        if($request->get('excludeState') && is_array($request->get('excludeState')) && count($request->get('excludeState'))) {
+            foreach($request->get('excludeState') as $key => $state) {
+                $qb
+                    ->leftJoin('p.states', 'excludeState'.$key)
+                    ->andWhere('excludeState'.$key.'.name != :excludeState'.$key.' AND excludeState'.$key.'.id != :excludeStateId'.$key)
+                    ->setParameter('excludeState'.$key, $state)
+                    ->setParameter('excludeStateId'.$key, $state)
+                ;
+            }
+        }
         
         if($request->get('topic') && is_array($request->get('topic')) && count($request->get('topic'))) {
             foreach($request->get('topic') as $key => $topic) {
@@ -297,6 +357,17 @@ class ApiProjectsController extends AbstractController
             }
         }
 
+        if($request->get('excludeTopic') && is_array($request->get('excludeTopic')) && count($request->get('excludeTopic'))) {
+            foreach($request->get('excludeTopic') as $key => $topic) {
+                $qb
+                    ->leftJoin('p.topics', 'excludeTopic'.$key)
+                    ->andWhere('excludeTopic'.$key.'.name != :excludeTopic'.$key.' AND excludeTopic'.$key.'.id != :excludeTopicId'.$key)
+                    ->setParameter('excludeTopic'.$key, $topic)
+                    ->setParameter('excludeTopicId'.$key, $topic)
+                ;
+            }
+        }
+
         if($request->get('tag') && is_array($request->get('tag')) && count($request->get('tag'))) {
             foreach($request->get('tag') as $key => $topic) {
                 $qb
@@ -304,6 +375,17 @@ class ApiProjectsController extends AbstractController
                     ->andWhere('tag'.$key.'.name = :tag'.$key.' OR tag'.$key.'.id = :tagId'.$key)
                     ->setParameter('tag'.$key, $topic)
                     ->setParameter('tagId'.$key, $topic)
+                ;
+            }
+        }
+
+        if($request->get('excludeTag') && is_array($request->get('excludeTag')) && count($request->get('excludeTag'))) {
+            foreach($request->get('excludeTag') as $key => $topic) {
+                $qb
+                    ->leftJoin('p.tags', 'excludeTag'.$key)
+                    ->andWhere('excludeTag'.$key.'.name != :excludeTag'.$key.' AND excludeTag'.$key.'.id != :excludeTagId'.$key)
+                    ->setParameter('excludeTag'.$key, $topic)
+                    ->setParameter('excludeTagId'.$key, $topic)
                 ;
             }
         }
@@ -327,6 +409,26 @@ class ApiProjectsController extends AbstractController
                 ->andWhere(implode(' OR ', $programQuery))
             ;
         }
+
+        if($request->get('excludeProgram') && is_array($request->get('excludeProgram')) && count($request->get('excludeProgram'))) {
+
+            $programQuery = [];
+
+            foreach($request->get('excludeProgram') as $key => $program) {
+
+                $programQuery[] = 'excludeProgram'.$key.'.name != :excludeProgram'.$key.' AND excludeProgram'.$key.'.id != :excludeProgramId'.$key;
+
+                $qb
+                    ->leftJoin('p.programs', 'excludeProgram'.$key)
+                    ->setParameter('excludeProgram'.$key, $program)
+                    ->setParameter('excludeProgramId'.$key, $program)
+                ;
+            }
+
+            $qb
+                ->andWhere(implode(' AND ', $programQuery))
+            ;
+        }
         
         if($request->get('instrument') && is_array($request->get('instrument')) && count($request->get('instrument'))) {
 
@@ -348,6 +450,26 @@ class ApiProjectsController extends AbstractController
             ;
         }
 
+        if($request->get('excludeInstrument') && is_array($request->get('excludeInstrument')) && count($request->get('excludeInstrument'))) {
+
+            $instrumentQuery = [];
+
+            foreach($request->get('excludeInstrument') as $key => $instrument) {
+
+                $instrumentQuery[] = 'excludeInstrument'.$key.'.name != :excludeInstrument'.$key.' AND excludeInstrument'.$key.'.id != :excludeInstrumentId'.$key;
+
+                $qb
+                    ->leftJoin('p.instruments', 'excludeInstrument'.$key)
+                    ->setParameter('excludeInstrument'.$key, $instrument)
+                    ->setParameter('excludeInstrumentId'.$key, $instrument)
+                ;
+            }
+
+            $qb
+                ->andWhere(implode(' AND ', $instrumentQuery))
+            ;
+        }
+
         if($request->get('geographicRegion') && is_array($request->get('geographicRegion')) && count($request->get('geographicRegion'))) {
             foreach($request->get('geographicRegion') as $key => $geographicRegion) {
                 $qb
@@ -359,6 +481,17 @@ class ApiProjectsController extends AbstractController
             }
         }
 
+        if($request->get('excludeGeographicRegion') && is_array($request->get('excludeGeographicRegion')) && count($request->get('excludeGeographicRegion'))) {
+            foreach($request->get('excludeGeographicRegion') as $key => $geographicRegion) {
+                $qb
+                    ->leftJoin('p.geographicRegions', 'excludeGeographicRegion'.$key)
+                    ->andWhere('excludeGeographicRegion'.$key.'.name != :excludeGeographicRegion'.$key.' AND excludeGeographicRegion'.$key.'.id != :excludeGeographicRegionId'.$key)
+                    ->setParameter('excludeGeographicRegion'.$key, $geographicRegion)
+                    ->setParameter('excludeGeographicRegionId'.$key, $geographicRegion)
+                ;
+            }
+        }
+
         if($request->get('businessSector') && is_array($request->get('businessSector')) && count($request->get('businessSector'))) {
             foreach($request->get('businessSector') as $key => $businessSector) {
                 $qb
@@ -366,6 +499,17 @@ class ApiProjectsController extends AbstractController
                     ->andWhere('businessSector'.$key.'.name = :businessSector'.$key.' OR businessSector'.$key.'.id = :businessSectorId'.$key)
                     ->setParameter('businessSector'.$key, $businessSector)
                     ->setParameter('businessSectorId'.$key, $businessSector)
+                ;
+            }
+        }
+
+        if($request->get('excludeBusinessSector') && is_array($request->get('excludeBusinessSector')) && count($request->get('excludeBusinessSector'))) {
+            foreach($request->get('excludeBusinessSector') as $key => $businessSector) {
+                $qb
+                    ->leftJoin('p.businessSectors', 'excludeBusinessSector'.$key)
+                    ->andWhere('excludeBusinessSector'.$key.'.name != :excludeBusinessSector'.$key.' AND excludeBusinessSector'.$key.'.id = :excludeBusinessSectorId'.$key)
+                    ->setParameter('excludeBusinessSector'.$key, $businessSector)
+                    ->setParameter('excludeBusinessSectorId'.$key, $businessSector)
                 ;
             }
         }
