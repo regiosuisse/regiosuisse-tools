@@ -342,14 +342,12 @@
                             <button class="button success" @click="clickAddVideo()">Video hinzufügen</button>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             <label for="images">Bilder</label>
                             <image-selector id="images" :items="event.images" :locale="locale" @changed="updateImages"></image-selector>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             <label for="files">Dokumente</label>
@@ -393,6 +391,7 @@
         data() {
             return {
                 locale: 'de',
+                inboxId: null,
                 event: {
                     isPublic: false,
                     isPromotedDE: false,
@@ -415,8 +414,8 @@
                     registration: '',
                     links: [],
                     videos: [],
-                    images: [],
                     files: [],
+                    images: [],
                     translations: {
                         fr: {
                             links: [],
@@ -537,7 +536,7 @@
                 this.$router.push('/events');
             },
             clickSave() {
-
+                // Ensure dates are properly handled
                 if(!this.event.startDate) {
                     this.event.startDate = null;
                 }
@@ -550,41 +549,177 @@
                     this.event.color = null;
                 }
 
-                if(this.event.id) {
-                    return this.$store.dispatch('events/update', this.event).then(() => {
+                // Ensure all array fields are initialized
+                const arrayFields = [
+                    'topics',
+                    'languages',
+                    'locations',
+                    'programs',
+                    'links',
+                    'videos',
+                    'files',
+                    'images'
+                ];
+
+                arrayFields.forEach(field => {
+                    if (!this.event[field]) {
+                        this.event[field] = [];
+                    }
+                });
+
+                // Check if we're updating an existing event or creating a new one
+                if (this.event.id) {
+                    // Update existing event
+                    this.$store.dispatch('events/update', {
+                        id: this.event.id,
+                        payload: this.event
+                    })
+                    .then(async () => {
+                        // If this was from an inbox item, delete it
+                        if (this.inboxId) {
+                            return this.$store.dispatch('inbox/delete', this.inboxId);
+                        }
+                    })
+                    .then(() => {
                         this.$router.push('/events');
+                    })
+                    .catch(error => {
+                        console.error('Error during save or delete:', error);
+                    });
+                } else {
+                    // Create new event
+                    this.$store.dispatch('events/create', this.event)
+                    .then(async () => {
+                        // If this was from an inbox item, delete it
+                        if (this.inboxId) {
+                            return this.$store.dispatch('inbox/delete', this.inboxId);
+                        }
+                    })
+                    .then(() => {
+                        this.$router.push('/events');
+                    })
+                    .catch(error => {
+                        console.error('Error during save or delete:', error);
                     });
                 }
-
-                this.$store.dispatch('events/create', this.event).then(() => {
-                    this.$router.push('/events');
-                });
             },
             reload() {
                 if(this.$route.params.id) {
-                    this.$store.commit('events/set', {});
-                    this.$store.dispatch('events/load', this.$route.params.id).then(() => {
-                        this.event = {...this.selectedEvent};
-
-                        if(!this.event.translations['fr'].videos) {
-                            this.event.translations['fr'].videos = [];
+                    this.$store.dispatch('events/load', this.$route.params.id).then((loadedEvent) => {
+                        if (loadedEvent) {
+                            this.event = {
+                                ...this.defaultEvent(),
+                                ...JSON.parse(JSON.stringify(loadedEvent))
+                            };
+                            
+                            if (!this.event.translations) {
+                                this.event.translations = {
+                                    fr: { links: [], videos: [] },
+                                    it: { links: [], videos: [] }
+                                };
+                            } else {
+                                ['fr', 'it'].forEach(lang => {
+                                    if (!this.event.translations[lang]) {
+                                        this.event.translations[lang] = { links: [], videos: [] };
+                                    } else {
+                                        if (!this.event.translations[lang].links) {
+                                            this.event.translations[lang].links = [];
+                                        }
+                                        if (!this.event.translations[lang].videos) {
+                                            this.event.translations[lang].videos = [];
+                                        }
+                                    }
+                                });
+                            }
                         }
-
-                        if(!this.event.translations['it'].videos) {
-                            this.event.translations['it'].videos = [];
-                        }
+                    }).catch(error => {
                     });
-
                     return;
                 }
 
                 if(this.$route.query?.copy) {
                     this.$store.dispatch('events/load', this.$route.query?.copy).then((event) => {
                         if(event) {
-                            this.event = JSON.parse(JSON.stringify({...event}));
+                            this.event = {
+                                ...this.defaultEvent(),
+                                ...JSON.parse(JSON.stringify(event))
+                            };
                             delete this.event.id;
                         }
-                    })
+                    }).catch(error => {
+                    });
+                }
+
+                // Add inbox event loading
+                if(this.$route.query?.inboxId) {
+                    this.inboxId = this.$route.query.inboxId;
+                    this.$store.dispatch('events/loadFromInbox', this.$route.query.inboxId)
+                        .then(inboxEvent => {
+                            // Convert inbox event data to event format
+                            this.event = {
+                                ...this.defaultEvent(),
+                                title: inboxEvent.title || '',
+                                description: inboxEvent.description || '',
+                                text: inboxEvent.text || inboxEvent.description || '',
+                                type: inboxEvent.type || 'external',
+                                color: inboxEvent.color || null,
+                                location: inboxEvent.location || '',
+                                organizer: inboxEvent.organizer || '',
+                                contact: inboxEvent.contact || '',
+                                startDate: inboxEvent.startDate || null,
+                                endDate: inboxEvent.endDate || null,
+                                registration: inboxEvent.registration || '',
+                                links: inboxEvent.links || [],
+                                files: inboxEvent.files || [],
+                                images: inboxEvent.images || [],
+                                // Convert topics, languages, and locations to the correct format
+                                topics: Array.isArray(inboxEvent.topics) ? inboxEvent.topics.map(topic => {
+                                    return typeof topic === 'object' ? topic : { id: topic };
+                                }) : [],
+                                languages: Array.isArray(inboxEvent.languages) ? inboxEvent.languages.map(language => {
+                                    return typeof language === 'object' ? language : { id: language };
+                                }) : [],
+                                locations: Array.isArray(inboxEvent.locations) ? inboxEvent.locations.map(location => {
+                                    return typeof location === 'object' ? location : { id: location };
+                                }) : [],
+                                translations: {
+                                    fr: {
+                                        title: '',
+                                        description: '',
+                                        text: '',
+                                        location: '',
+                                        organizer: '',
+                                        contact: '',
+                                        registration: '',
+                                        links: [],
+                                        videos: []
+                                    },
+                                    it: {
+                                        title: '',
+                                        description: '',
+                                        text: '',
+                                        location: '',
+                                        organizer: '',
+                                        contact: '',
+                                        registration: '',
+                                        links: [],
+                                        videos: []
+                                    }
+                                }
+                                
+                            };
+
+                            // Set default values for empty arrays
+                            if (!this.event.topics) this.event.topics = [];
+                            if (!this.event.languages) this.event.languages = [];
+                            if (!this.event.locations) this.event.locations = [];
+                            if (!this.event.programs) this.event.programs = [];
+                            if (!this.event.links) this.event.links = [];
+                            if (!this.event.videos) this.event.videos = [];
+                            if (!this.event.files) this.event.files = [];
+                        })
+                        .catch(error => {
+                        });
                 }
             },
             clickAddProgram() {
@@ -739,6 +874,112 @@
                 }
                 return context[property];
             },
+            defaultEvent() {
+                return {
+                    isPublic: false,
+                    isPromotedDE: false,
+                    isPromotedFR: false,
+                    isPromotedIT: false,
+                    title: '',
+                    description: '',
+                    organizer: '',
+                    location: '',
+                    contact: '',
+                    text: '',
+                    type: 'external',
+                    color: null,
+                    startDate: null,
+                    endDate: null,
+                    topics: [],
+                    languages: [],
+                    locations: [],
+                    programs: [],
+                    registration: '',
+                    links: [],
+                    videos: [],
+                    files: [],
+                    images: [],
+                    translations: {
+                        fr: {
+                            links: [],
+                            videos: [],
+                        },
+                        it: {
+                            links: [],
+                            videos: [],
+                        },
+                    },
+                };
+            },
+            loadFromInbox(inboxId) {
+                this.$store.dispatch('events/loadFromInbox', inboxId)
+                    .then(inboxEvent => {
+                        // Convert inbox event data to event format
+                        this.event = {
+                            ...this.defaultEvent(),
+                            title: inboxEvent.title || '',
+                            description: inboxEvent.description || '',
+                            text: inboxEvent.text || inboxEvent.description || '',
+                            type: inboxEvent.type || 'external',
+                            color: inboxEvent.color || null,
+                            location: inboxEvent.location || '',
+                            organizer: inboxEvent.organizer || '',
+                            contact: inboxEvent.contact || '',
+                            startDate: inboxEvent.startDate || null,
+                            endDate: inboxEvent.endDate || null,
+                            registration: inboxEvent.registration || '',
+                            links: inboxEvent.links || [],
+                            files: inboxEvent.files || [],
+                            images: inboxEvent.images || [],
+                            // Convert topics, languages, and locations to the correct format
+                            topics: Array.isArray(inboxEvent.topics) ? inboxEvent.topics.map(topic => {
+                                return typeof topic === 'object' ? topic : { id: topic };
+                            }) : [],
+                            languages: Array.isArray(inboxEvent.languages) ? inboxEvent.languages.map(language => {
+                                return typeof language === 'object' ? language : { id: language };
+                            }) : [],
+                            locations: Array.isArray(inboxEvent.locations) ? inboxEvent.locations.map(location => {
+                                return typeof location === 'object' ? location : { id: location };
+                            }) : [],
+                            translations: {
+                                fr: {
+                                    title: '',
+                                    description: '',
+                                    text: '',
+                                    location: '',
+                                    organizer: '',
+                                    contact: '',
+                                    registration: '',
+                                    links: [],
+                                    videos: []
+                                },
+                                it: {
+                                    title: '',
+                                    description: '',
+                                    text: '',
+                                    location: '',
+                                    organizer: '',
+                                    contact: '',
+                                    registration: '',
+                                    links: [],
+                                    videos: []
+                                }
+                            }
+                            
+                        };
+
+                        // Set default values for empty arrays
+                        if (!this.event.topics) this.event.topics = [];
+                        if (!this.event.languages) this.event.languages = [];
+                        if (!this.event.locations) this.event.locations = [];
+                        if (!this.event.programs) this.event.programs = [];
+                        if (!this.event.links) this.event.links = [];
+                        if (!this.event.videos) this.event.videos = [];
+                        if (!this.event.files) this.event.files = [];
+                    })
+                    .catch(error => {
+                    });
+            }
         },
         created () {
             this.reload();

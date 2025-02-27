@@ -15,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Entity\Inbox;
+use Symfony\Component\HttpFoundation\Response;
+use App\Service\CommunitySubmissionService;
+use App\Entity\CommunitySubmission;
 
 #[Route(path: '/api/v1/jobs', name: 'api_jobs')]
 class ApiJobsController extends AbstractController
 {
+    public function __construct(
+        private JobService $jobService,
+        private CommunitySubmissionService $submissionService
+    ) {}
 
     #[Route(path: '', name: 'index', methods: ['GET'])]
     #[OA\Parameter(
@@ -288,6 +296,30 @@ class ApiJobsController extends AbstractController
         $jobService->deleteJob($job);
 
         return $this->json([]);
+    }
+
+    #[Route('/embed', name: 'api_jobs_create_from_embed', methods: ['POST'])]
+    public function createFromEmbed(Request $request): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            // Create pending submission and send verification email
+            $submission = $this->submissionService->createPendingSubmission(
+                $data, 
+                CommunitySubmission::TYPE_JOB
+            );
+            
+            // Return URL for confirmation page
+            return $this->json([
+                'redirectUrl' => $this->generateUrl('community_submission_confirmation')
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
 }

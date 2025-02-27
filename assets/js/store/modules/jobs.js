@@ -63,10 +63,10 @@ const actions = {
         });
     },
 
-    update ({ commit }, payload) {
-        commit('loaders/showLoader', 'jobs/'+payload.id, { root: true });
-        return api.jobs.update(payload.id, payload).then((response) => {
-            commit('loaders/hideLoader', 'jobs/'+payload.id, { root: true });
+    update ({ commit }, { id, payload }) {
+        commit('loaders/showLoader', 'jobs/'+id, { root: true });
+        return api.jobs.update(id, payload).then((response) => {
+            commit('loaders/hideLoader', 'jobs/'+id, { root: true });
             if(payload.addToInbox) {
                 if(payload.inboxId) {
                     commit('inbox/update', response.data, { root: true });
@@ -77,6 +77,7 @@ const actions = {
                 commit('update', response.data);
                 commit('set', response.data);
             }
+            return response.data;
         });
     },
 
@@ -85,6 +86,15 @@ const actions = {
         return api.jobs.delete(id).then((response) => {
             commit('loaders/hideLoader', 'jobs/'+id, { root: true });
             commit('remove', id);
+        });
+    },
+
+    createFromEmbed({ commit }, payload) {
+        commit('loaders/showLoader', 'jobs/create', { root: true });
+        return api.jobs.createFromEmbed(payload).then((response) => {
+            commit('loaders/hideLoader', 'jobs/create', { root: true });
+            commit('inbox/insert', response.data.inbox, { root: true });
+            return response.data;
         });
     },
 

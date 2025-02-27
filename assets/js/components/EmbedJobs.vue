@@ -76,6 +76,10 @@
 
         </div>
 
+        <!-- <div class="embed-jobs-filterbar">
+            <button class="button primary add-job-button" @click="showJobModal = true">{{ $t('job.submit', locale) }}</button>
+        </div> -->
+
         <transition name="embed-jobs-list" mode="out-in">
 
             <div class="embed-jobs-list" v-if="!isLoading">
@@ -138,6 +142,128 @@
 
         </transition>
 
+        <JobModal v-if="showJobModal" @close="showJobModal = false">
+            <div class="job-form-modal">
+                <div class="job-form-header">
+                    <img :src="$env.THEME_ICON" alt="regiosuisse Logo" class="regiosuisse-logo">
+                    <h3 class="modal-title">{{ $t('job.submit.new', locale) }}</h3>
+                    <p class="header-description">
+                        {{ $t('job.submit.description', locale) }}
+                    </p>
+                </div>
+                <form @submit.prevent="submitJob" class="job-form">
+                    <div class="job-form-columns">
+                        <div class="job-form-column">
+                            <div class="form-group">
+                                <label for="jobTitle">{{ $t('job.title', locale) }}</label>
+                                <small class="help-text">{{ $t('job.title.help', locale) }}</small>
+                                <input id="jobTitle" class="form-control" v-model="newJob.title" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobLocation">{{ $t('job.location', locale) }}</label>
+                                <small class="help-text">{{ $t('job.location.help', locale) }}</small>
+                                <tag-selector id="jobLocation" 
+                                    :model="newJob.locations"
+                                    :options="locations.filter(location => !location.context || location.context === 'job')" 
+                                    :searchType="'select'"
+                                    required>
+                                </tag-selector>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobStint">{{ $t('job.workload', locale) }}</label>
+                                <small class="help-text">{{ $t('job.workload.help', locale) }}</small>
+                                <tag-selector id="jobStint" 
+                                    :model="newJob.stints"
+                                    :options="stints.filter(stint => !stint.context || stint.context === 'job')" 
+                                    :searchType="'select'"
+                                    required>
+                                </tag-selector>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobDescription">{{ $t('job.description', locale) }}</label>
+                                <small class="help-text">{{ $t('job.description.help', locale) }}</small>
+                                <textarea id="jobDescription" class="form-control" rows="5" v-model="newJob.description" required></textarea>
+                            </div>
+                        </div>
+                        <div class="job-form-column">
+                            <div class="form-group">
+                                <label for="jobEmployer">{{ $t('job.employer', locale) }}</label>
+                                <small class="help-text">{{ $t('job.employer.help', locale) }}</small>
+                                <input id="jobEmployer" class="form-control" v-model="newJob.employer" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="jobEmployerLocation">{{ $t('job.employer.location', locale) }}</label>
+                                <small class="help-text">{{ $t('job.employer.location.help', locale) }}</small>
+                                <input id="jobEmployerLocation" class="form-control" v-model="newJob.location" />
+                            </div>
+                            <div class="form-group contact-info-group">
+                                <label>{{ $t('job.contact.info', locale) }}</label>
+                                <small class="help-text">{{ $t('job.contact.help', locale) }}</small>
+                                <div class="contact-fields">
+                                    <div class="contact-field">
+                                        <span for="contactName">{{ $t('job.contact.person', locale) }}</span>
+                                        <input id="contactName" class="form-control" v-model="newJob.contactInfo.name" required />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactEmail">E-Mail</span>
+                                        <input id="contactEmail" type="email" class="form-control" v-model="newJob.contactInfo.email" required />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactPhone">{{ $t('job.contact.phone', locale) }}</span>
+                                        <input id="contactPhone" class="form-control" v-model="newJob.contactInfo.phone" />
+                                    </div>
+                                    <div class="contact-field">
+                                        <span for="contactDepartment">{{ $t('job.contact.department', locale) }}</span>
+                                        <input id="contactDepartment" class="form-control" v-model="newJob.contactInfo.department" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobDeadline">{{ $t('job.deadline', locale) }}</label>
+                                <small class="help-text">{{ $t('job.deadline.help', locale) }}</small>
+                                <date-picker mode="dateTime" :is24hr="true" v-model="newJob.applicationDeadline" :locale="'de'">
+                                    <template v-slot="{ inputValue, inputEvents }">
+                                        <input type="text" 
+                                               id="jobDeadline" 
+                                               class="form-control"
+                                               :value="inputValue"
+                                               v-on="inputEvents">
+                                    </template>
+                                </date-picker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ $t('job.links', locale) }}</label>
+                        <small class="help-text">{{ $t('job.links.help', locale) }}</small>
+                        <div class="links-list">
+                            <div v-for="(link, index) in newJob.links" :key="index" class="link-item">
+                                <input type="text" class="form-control" v-model="link.label" :placeholder="$t('job.links.label', locale)">
+                                <input type="text" class="form-control" v-model="link.value" placeholder="URL">
+                                <button type="button" class="button error" @click="removeLink(index)">{{ $t('job.links.remove', locale) }}</button>
+                            </div>
+                        </div>
+                        <button type="button" class="button primary" @click="addLink">{{ $t('job.links.add', locale) }}</button>
+                    </div>
+
+                    <div class="form-group documents-section">
+                        <label>{{ $t('job.documents', locale) }}</label>
+                        <small class="help-text">{{ $t('job.documents.help', locale) }}</small>
+                        <file-selector :items="newJob.files" @changed="updateFiles" 
+                            :cancel-label="$t('job.links.remove', locale)" 
+                            :add-label="$t('job.documents.upload.pdf', locale)">
+                        </file-selector>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="button warning" @click="showJobModal = false">{{ $t('job.cancel', locale) }}</button>
+                        <button type="submit" class="button primary">{{ $t('job.save', locale) }}</button>
+                    </div>
+                </form>
+            </div>
+        </JobModal>
+
     </div>
 
 </template>
@@ -148,11 +274,20 @@ import {mapGetters, mapState} from 'vuex';
 import { translateField } from '../utils/filters';
 import EmbedJobsView from './EmbedJobsView';
 import {track, trackDevice, trackPageView} from '../utils/logger';
+import JobModal from './JobModal.vue';
+import TagSelector from './TagSelector';
+import FileSelector from './FileSelector';
+import { DatePicker } from 'v-calendar';
+import 'v-calendar/dist/style.css';
 
 export default {
 
     components: {
         EmbedJobsView,
+        JobModal,
+        TagSelector,
+        FileSelector,
+        DatePicker,
     },
 
     data() {
@@ -163,6 +298,25 @@ export default {
             filters: [],
             activeFilterSelect: null,
             job: null,
+            showJobModal: false,
+            newJob: {
+                title: '',
+                locations: [],
+                stints: [],
+                description: '',
+                employer: '',
+                location: '',
+                contact: '',
+                contactInfo: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    department: ''
+                },
+                applicationDeadline: '',
+                links: [],
+                files: [],
+            },
         };
     },
 
@@ -489,6 +643,88 @@ export default {
             });
         },
 
+        submitJob() {
+            // Prepare the job data
+            const jobData = {
+                title: this.newJob.title,
+                description: this.newJob.description,
+                employer: this.newJob.employer,
+                location: this.newJob.location,
+                contact: [
+                    this.newJob.contactInfo.name && `Kontaktperson: ${this.newJob.contactInfo.name}`,
+                    this.newJob.contactInfo.email && `E-Mail: ${this.newJob.contactInfo.email}`,
+                    this.newJob.contactInfo.phone && `Telefon: ${this.newJob.contactInfo.phone}`,
+                    this.newJob.contactInfo.department && `Abteilung: ${this.newJob.contactInfo.department}`
+                ].filter(Boolean).join('\n'),
+                contactInfo: this.newJob.contactInfo,
+                applicationDeadline: this.newJob.applicationDeadline,
+                locations: this.newJob.locations.map(loc => ({ id: loc.id })),
+                stints: this.newJob.stints.map(stint => ({ id: stint.id })),
+                links: this.newJob.links || [],
+                files: this.newJob.files || []
+            };
+
+            if(this.locale !== 'de') {
+                jobData.translations = {
+                    [this.locale]: {
+                        title: jobData.title,
+                        description: jobData.description,
+                        employer: jobData.employer,
+                        location: jobData.location,
+                        contact: jobData.contact,
+                    }
+                }
+            }
+
+            this.$store.dispatch('jobs/createFromEmbed', jobData)
+                .then(response => {
+                    // Open confirmation page in new tab
+                    window.location.href = response.redirectUrl;
+                    // Close the modal
+                    this.showJobModal = false;
+                    // Reset form
+                    this.newJob = {
+                        title: '',
+                        locations: [],
+                        stints: [],
+                        description: '',
+                        employer: '',
+                        location: '',
+                        contact: '',
+                        contactInfo: {
+                            name: '',
+                            email: '',
+                            phone: '',
+                            department: ''
+                        },
+                        applicationDeadline: '',
+                        links: [],
+                        files: [],
+                    };
+                })
+                .catch(error => {
+                    console.error('Error creating job:', error);
+                    this.modal = {
+                        type: 'error',
+                        message: error.response?.data?.error || 'Fehler beim Erstellen des Jobs. Bitte überprüfen Sie alle Pflichtfelder.'
+                    };
+                });
+        },
+
+        addLink() {
+            this.newJob.links.push({
+                label: '',
+                value: ''
+            });
+        },
+
+        removeLink(index) {
+            this.newJob.links.splice(index, 1);
+        },
+
+        updateFiles(files) {
+            this.newJob.files = files;
+        },
     },
 
     created() {
@@ -555,3 +791,9 @@ export default {
 };
 
 </script>
+
+<style lang="scss">
+
+
+
+</style>

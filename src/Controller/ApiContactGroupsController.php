@@ -14,10 +14,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\Response;
+use App\Service\ContactService;
+use App\Entity\Contact;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\CommunitySubmission;
+use App\Service\CommunitySubmissionService;
 
 #[Route(path: '/api/v1/contact-groups', name: 'api_contact_groups')]
 class ApiContactGroupsController extends AbstractController
 {
+    public function __construct(
+        private CommunitySubmissionService $submissionService
+    ) {}
 
     #[Route(path: '', name: 'index', methods: ['GET'])]
     #[OA\Parameter(
@@ -245,6 +256,9 @@ class ApiContactGroupsController extends AbstractController
 
         $payload = json_decode($request->getContent(), true);
 
+        // Ensure publicOptIn is included in the payload
+        $payload['publicOptIn'] = $payload['publicOptIn'] ?? false;
+
         $errors = $contactGroupService->validateContactGroupPayload($payload);
 
         if(is_countable($errors) ? count($errors) : 0) {
@@ -284,6 +298,61 @@ class ApiContactGroupsController extends AbstractController
         $contactGroupService->deleteContactGroup($contactGroup);
 
         return $this->json([]);
+    }
+
+    #[Route(path: '/opt-in', name: 'opt_in', methods: ['POST'])]
+    #[OA\Tag(name: 'ContactGroups')]
+    public function optIn(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $payload = json_decode($request->getContent(), true);
+        $contactData = $payload['contact'] ?? [];
+        $contactGroupIds = $payload['contactGroups'] ?? [];
+
+        // Check if all requested groups allow public opt-in
+        $contactGroups = $em->getRepository(ContactGroup::class)->findBy(['id' => $contactGroupIds]);
+        foreach ($contactGroups as $contactGroup) {
+            if (!$contactGroup->getPublicOptIn()) {
+                return new JsonResponse(['message' => 'One or more of the requested contact groups do not allow public opt-in'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        try {
+            // Create pending submission and send verification email
+            $submissionData = [
+                'contactInfo' => [
+                    'email' => $contactData['email'],
+                    'firstName' => $contactData['firstname'] ?? '',
+                    'lastName' => $contactData['lastname'] ?? '',
+                    'languageCode' => $contactData['locale'] ?? 'de',
+                    'type' => 'person',
+                    'isPublic' => false,
+                    'gender' => $contactData['gender'] ?? null
+                ],
+                'contactGroups' => $contactGroupIds
+            ];
+
+            $this->submissionService->createPendingSubmission(
+                $submissionData, 
+                CommunitySubmission::TYPE_NEWSLETTER
+            );
+
+            return new JsonResponse(['message' => 'Opt-in email sent'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    #[Route(path: '/confirm-opt-in', name: 'confirm_opt_in', methods: ['GET'], priority: 2)]
+    #[OA\Tag(name: 'ContactGroups')]
+    public function confirmOptIn(Request $request): Response
+    {
+        $code = $request->get('code');
+        
+        $success = $this->submissionService->verifySubmission($code);
+
+        return $this->render('contact/confirmation.html.twig', [
+            'success' => $success,
+        ]);
     }
 
 }

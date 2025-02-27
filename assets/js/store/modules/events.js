@@ -1,146 +1,82 @@
-import api from '../../api';
-
-// initial state
-const state = () => ({
-    all: [],
-    filtered: [],
-    event: {},
-});
-
-// getters
-const getters = {
-
-    getById: (state) => (id) => {
-        return state.all.find(item => item.id === id);
-    },
-
-};
-
-// actions
-const actions = {
-
-    loadAll ({ commit }) {
-        commit('loaders/showLoader', 'events', { root: true });
-        return api.events.getAll().then((response) => {
-            commit('loaders/hideLoader', 'events', { root: true });
-            commit('setAll', response.data);
-            return response.data;
-        });
-    },
-
-    loadFiltered ({ commit }, params) {
-        commit('loaders/showLoader', 'events', { root: true });
-        return api.events.getFiltered(params).then((response) => {
-            commit('loaders/hideLoader', 'events', { root: true });
-            commit('setFiltered', response.data);
-            return response.data;
-        });
-    },
-
-    load ({ commit }, id) {
-        commit('loaders/showLoader', 'events/'+id, { root: true });
-        return api.events.get(id).then((response) => {
-            commit('loaders/hideLoader', 'events/'+id, { root: true });
-            commit('set', response.data);
-            return response.data;
-        });
-    },
-
-    create ({ commit }, payload) {
-        commit('loaders/showLoader', 'events/create', { root: true });
-        return api.events.create(payload).then((response) => {
-            commit('loaders/hideLoader', 'events/create', { root: true });
-            if(payload.addToInbox) {
-                if(payload.inboxId) {
-                    commit('inbox/update', response.data, { root: true });
-                } else {
-                    commit('inbox/insert', response.data, { root: true });
-                }
-            } else {
-                commit('insert', response.data);
-                commit('set', response.data);
-            }
-        });
-    },
-
-    update ({ commit }, payload) {
-        commit('loaders/showLoader', 'events/'+payload.id, { root: true });
-        return api.events.update(payload.id, payload).then((response) => {
-            commit('loaders/hideLoader', 'events/'+payload.id, { root: true });
-            if(payload.addToInbox) {
-                if(payload.inboxId) {
-                    commit('inbox/update', response.data, { root: true });
-                } else {
-                    commit('inbox/insert', response.data, { root: true });
-                }
-            } else {
-                commit('update', response.data);
-                commit('set', response.data);
-            }
-        });
-    },
-
-    delete ({ commit }, id) {
-        commit('loaders/showLoader', 'events/'+id, { root: true });
-        return api.events.delete(id).then((response) => {
-            commit('loaders/hideLoader', 'events/'+id, { root: true });
-            commit('remove', id);
-        });
-    },
-
-};
-
-// mutations
-const mutations = {
-
-    setAll (state, events) {
-        state.all = events;
-    },
-
-    setFiltered (state, filtered) {
-        state.filtered = filtered;
-    },
-
-    set (state, event) {
-        if(event) {
-            event = {
-                ...event,
-                translations: typeof event.translations === 'object' && event.translations !== null && !Array.isArray(event.translations) ? event.translations : {},
-            };
-        }
-        state.event = event;
-    },
-
-    insert (state, event) {
-        state.all = [...state.all, event];
-    },
-
-    update (state, event) {
-        let existingEvent = state.all.find(p => p.id === event.id);
-        if(existingEvent) {
-            state.all[state.all.indexOf(existingEvent)] = event;
-        }
-        existingEvent = state.filtered.find(p => p.id === event.id);
-        if(existingEvent) {
-            state.filtered[state.filtered.indexOf(existingEvent)] = event;
-        }
-    },
-
-    remove (state, id) {
-        state.all = state.all.filter((event) => {
-            return parseInt(event.id) !== parseInt(id);
-        });
-        state.filtered = state.filtered.filter((event) => {
-            return parseInt(event.id) !== parseInt(id);
-        });
-    },
-
-};
+import api from '../../api/modules/events';
 
 export default {
     namespaced: true,
-    state,
-    getters,
-    actions,
-    mutations
+
+    state: {
+        all: [],
+    },
+
+    getters: {
+        getById: (state) => (id) => {
+            return state.all.find(e => e.id === id);
+        },
+    },
+
+    mutations: {
+        setAll(state, events) {
+            state.all = events;
+        },
+    },
+
+    actions: {
+        loadAll({ commit }) {
+            return api.getAll().then((response) => {
+                commit('setAll', response.data);
+                return response.data;
+            });
+        },
+
+        loadFiltered({ commit }, params) {
+            return api.getFiltered(params).then((response) => {
+                return response.data;
+            });
+        },
+
+        load({ commit }, id) {
+            return api.get(id).then((response) => {
+                return response.data;
+            });
+        },
+
+        loadFromInbox({ commit }, inboxId) {
+            return api.getFromInbox(inboxId).then((eventData) => {
+                let data;
+                if (eventData.data && eventData.data.event) {
+                    data = eventData.data.event;
+                } else if (eventData.event) {
+                    data = eventData.event;
+                } else {
+                    data = eventData;
+                }
+                return data;
+            }).catch(error => {
+                throw error;
+            });
+        },
+
+        create({ commit }, payload) {
+            return api.create(payload).then((response) => {
+                return response.data;
+            });
+        },
+
+        update({ commit }, { id, payload }) {
+            return api.update(id, payload).then((response) => {
+                return response.data;
+            });
+        },
+
+        delete({ commit }, id) {
+            return api.delete(id).then((response) => {
+                return response.data;
+            });
+        },
+
+        createFromEmbed({ commit }, payload) {
+            return api.createFromEmbed(payload).then((response) => {
+                return response.data;
+            });
+        },
+    },
 };

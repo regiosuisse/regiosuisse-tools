@@ -7,6 +7,7 @@ use App\Entity\Stint;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Inbox;
 
 class JobService {
 
@@ -135,6 +136,87 @@ class JobService {
         }
 
         return $job;
+    }
+
+    public function createJobInboxItemFromEmbed($payload)
+    {
+        // Create corresponding inbox item
+        $inbox = new Inbox();
+        
+        // Prepare normalized data structure
+        $normalizedData = [
+            'name' => $payload['title'],
+            'description' => $payload['description'],
+            'employer' => $payload['employer'],
+            'locations' => $payload['locations'],
+            'location' => $payload['location'],
+            'contact' => $payload['contact'],
+            'applicationDeadline' => $payload['applicationDeadline'],
+            'stints' => $payload['stints'],
+            'links' => $payload['links'] ?? [],
+            'files' => $payload['files'] ?? [],
+            'translations' => $payload['translations'] ?? []
+        ];
+
+        $inbox->setCreatedAt(new \DateTime())
+            ->setSource('embed')
+            ->setType('job')
+            ->setTitle($payload['title'])
+            ->setStatus('new')
+            ->setIsMerged(false)
+            ->setData([
+                'job' => [
+                    'name' => $payload['title'],
+                    'description' => $payload['description'],
+                    'employer' => $payload['employer'],
+                    'locations' => $payload['locations'],
+                    'location' => $payload['location'],
+                    'contact' => $payload['contact'],
+                    'applicationDeadline' => $payload['applicationDeadline'],
+                    'stints' => $payload['stints'],
+                    'links' => $payload['links'] ?? [],
+                    'files' => $payload['files'] ?? [],
+                    'translations' => $payload['translations'] ?? []
+                ]
+            ])
+            ->setNormalizedData($normalizedData);
+
+        $this->em->persist($inbox);
+        $this->em->flush();
+
+        return [
+            'inbox' => $inbox
+        ];
+    }
+
+    public function createJobFromInboxItem($payload)
+    {
+        $job = new Job();
+        
+        // Set basic job properties
+        $job->setCreatedAt(new \DateTime())
+            ->setIsPublic(false)
+            ->setPosition(0)
+            ->setName($payload['title'])
+            ->setDescription($payload['description'])
+            ->setEmployer($payload['employer'])
+            ->setLocation($payload['location'])
+            ->setContact($payload['contact'])
+            ->setApplicationDeadline(
+                $payload['applicationDeadline'] ? 
+                new \DateTime($payload['applicationDeadline']) : 
+                null
+            )
+            ->setLinks($payload['links'] ?? [])
+            ->setFiles($payload['files'] ?? [])
+            ->setTranslations($payload['translations'] ?? []);
+
+        $this->em->persist($job);
+        $this->em->flush();
+
+        return [
+            'job' => $job,
+        ];
     }
 
 }
