@@ -245,17 +245,17 @@
                         <div class="embed-projects-list-item-content-tags">
 
                             <div class="embed-projects-list-item-content-tags-item"
-                                 v-for="topic in project.topics.filter(e => getTopicById(e.id))">
+                                 v-for="topic in project.topics.filter(e => getTopicById(e.id)).filter(e => topics.find(ee => ee.id === e.id))">
                                 {{ translateField(getTopicById(topic.id), 'name', locale) }}
                             </div>
 
                             <div class="embed-projects-list-item-content-tags-item"
-                                 v-for="program in project.programs.filter(e => getProgramById(e.id))">
+                                 v-for="program in project.programs.filter(e => getProgramById(e.id)).filter(e => programs.find(ee => ee.id === e.id))">
                                 {{ translateField(getProgramById(program.id), 'name', locale) }}
                             </div>
 
                             <div class="embed-projects-list-item-content-tags-item"
-                                 v-for="state in project.states.filter(e => getStateById(e.id))">
+                                 v-for="state in project.states.filter(e => getStateById(e.id)).filter(e => states.find(ee => ee.id === e.id))">
                                 {{ translateField(getStateById(state.id), 'name', locale) }}
                             </div>
 
