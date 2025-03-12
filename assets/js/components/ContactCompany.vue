@@ -252,11 +252,13 @@ export default {
                 companies: [],
                 employees: [],
                 contactGroups: [],
+                topics: [],
                 translations: {
                     fr: {},
                     it: {},
                 },
                 isPublic: false,
+                userComment: "",
             },
             showPreview: false,
             modal: null,
