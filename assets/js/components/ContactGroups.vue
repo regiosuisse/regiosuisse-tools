@@ -115,6 +115,24 @@
                       >email</span
                     >
                   </a>
+                  <input
+                      id="active"
+                      type="checkbox"
+                      :class="{ disabled: !element.group.contacts?.length }"
+                      :checked="
+                          selectedElements[element.group.id]?.find(
+                            (group) => group.id === element.group.id
+                          )
+                        "
+                      @change="
+                          clickToggleSelected(
+                            $event,
+                            element.group,
+                            element.group.id,
+                            element.group.id
+                          )
+                        "
+                  />
                   <span
                     class="material-icons"
                     @click.stop="clickContactGroup(element.group)"
@@ -124,6 +142,10 @@
                     >visibility_off</span
                   >
                   <span class="material-icons" v-else>visibility</span>
+                    <i v-if="element.group.contacts?.length"
+                    >[ Mitglieder: {{ element.group.contacts.length }} ]
+                    </i>
+                    <i v-else>[ Keine Mitglieder ]</i>
                 </div>
               </div>
 
@@ -661,9 +683,9 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.3s ease;
 }
 
@@ -675,14 +697,14 @@ export default {
   display: flex;
   flex-direction: column;
   border-radius: 8px;
-  overflow: hidden; 
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
 .modal-header {
   padding: 16px;
   background: #f5f5f5;
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: start;
@@ -703,8 +725,8 @@ export default {
 
 .modal-body {
   padding: 16px;
-  flex: 1 1 auto; 
-  overflow-y: auto; 
+  flex: 1 1 auto;
+  overflow-y: auto;
   max-height: 60vh;
   display: flex;
   flex-direction: column;
