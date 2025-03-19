@@ -95,6 +95,10 @@ class ApiEducationsController extends AbstractController
             ->from(Education::class, 'e')
         ;
 
+        if(!$this->isGranted('ROLE_EDITOR')) {
+            $qb->andWhere('e.isPublic = TRUE');
+        }
+
         if($request->get('term')) {
             $qb
                 ->andWhere('(e.name LIKE :term OR e.description LIKE :term OR e.text LIKE :term OR e.translations LIKE :term)')
