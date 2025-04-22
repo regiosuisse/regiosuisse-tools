@@ -5,6 +5,7 @@ export default {
 
     state: {
         all: [],
+        filtered: [],
     },
 
     getters: {
@@ -16,6 +17,9 @@ export default {
     mutations: {
         setAll(state, events) {
             state.all = events;
+        },
+        setFiltered(state, events) {
+            state.filtered = events;
         },
     },
 
@@ -29,6 +33,7 @@ export default {
 
         loadFiltered({ commit }, params) {
             return api.getFiltered(params).then((response) => {
+                commit('setFiltered', response.data);
                 return response.data;
             });
         },
