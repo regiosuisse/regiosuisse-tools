@@ -7,6 +7,7 @@ import helpers from './utils/helpers';
 import store from './store';
 
 import EmbedRegions from './components/EmbedRegions';
+import EmbedRegionsWirkungsmessung from "./components/EmbedRegionsWirkungsmessung.vue";
 
 const app = createApp(EmbedRegions);
 
@@ -30,3 +31,26 @@ const init = (selector, clientOptions = {}) => {
 };
 
 window[process.env.INSTANCE_ID+'Regions'] = init;
+
+// temp
+
+window[process.env.INSTANCE_ID+'RegionsWirkungsmessung'] = (selector, clientOptions = {}) => {
+
+    const app = createApp(EmbedRegionsWirkungsmessung);
+
+    app.use(env);
+    app.use(i18n);
+    app.use(helpers);
+    app.use(store);
+
+    app.use({
+        install: (app, options) => {
+            app.config.globalProperties.$clientOptions = {
+                ...clientOptions,
+            };
+        }
+    });
+
+    app.mount(selector);
+
+};

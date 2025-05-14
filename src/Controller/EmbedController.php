@@ -284,6 +284,12 @@ class EmbedController extends AbstractController
         ]);
     }
 
+    #[Route('/iframe/regions-wirkungsmessung-{_locale}.html', name: 'iframe_regions_wirkungsmessung')]
+    public function iframeRegionsWirkungsmessung(): Response
+    {
+        return $this->render('embed/iframe/regions-wirkungsmessung.html.twig', []);
+    }
+
     #[Route('/iframe/regions-{_locale}.html', name: 'iframe_regions')]
     public function iframeRegions(): Response
     {
