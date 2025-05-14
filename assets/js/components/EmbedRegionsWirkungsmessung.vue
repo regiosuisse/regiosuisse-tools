@@ -358,7 +358,7 @@ const data = [
             "Nachhaltigkeit"
         ],
         "id": "7c72dbd1-17e3-4cef-be0f-750bb6e3f25a",
-        "Link": null
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-02/Mesure%20d%27efficacité%202022%20Thermoréseau%20Jura.pdf"
     },
     {
         "Jahr": 2022,
@@ -411,7 +411,7 @@ const data = [
             "Lokale Wirtschaft"
         ],
         "id": "f10380a8-7510-4a29-b434-19a90e9983e9",
-        "Link": null
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-12/Wirkungsmessung%202022%20Kompetenzzentrum%20Fischzucht%20Erstfeld.pdf"
     },
     {
         "Jahr": 2022,
@@ -539,7 +539,7 @@ const data = [
             "Tourismus"
         ],
         "id": "038f5f47-18b5-4124-b02f-d35233225253",
-        "Link": null
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4_Wirkungsmessung%202020%20Kurzbericht%20Bergbahnen%20Obersaxen.pdf"
     },
     {
         "Jahr": 2020,
@@ -564,7 +564,7 @@ const data = [
             "Tourismus"
         ],
         "id": "aec67df0-4772-4f2e-9a15-533cbc28f7f4",
-        "Link": null
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4%20Wirkungsmessung%202020%20Kurzbericht%20Gondelbahn%20Melchsee-Frutt%20D0-2_4.pdf"
     },
     {
         "Jahr": 2020,
@@ -589,7 +589,7 @@ const data = [
             "Tourismus"
         ],
         "id": "1e8a7c6d-480e-4ec7-bfe9-4e08d1a20408",
-        "Link": null
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4%20Wirkungsmessung%202020%20Kurzbericht%20Gemmibahn.pdf"
     },
     {
         "Jahr": 2019,
