@@ -1800,7 +1800,7 @@ export default {
                         </div>
                         <div class="embed-regions-content-map-marker-overlay">
                             <p><strong>${project.name}</strong><br>Jahr ${project.year}</p>
-                            ${project.link ? '<p><a href="${project.link}" target="_blank">Zum Kurzbericht</a></p>' : ''}
+                            ${project.link ? `<p><a href="${project.link}" target="_blank">Zum Kurzbericht</a></p>` : ``}
                         </div>
                     `;
                     if(parseInt(project.year) >= 2020) {
