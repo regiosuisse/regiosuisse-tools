@@ -171,7 +171,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Digitalisierung"
         ],
         "id": "058eca44-6dcb-4c86-ac40-646395e94dc3"
@@ -196,7 +196,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Digitalisierung"
         ],
         "id": "2e13f38c-2da3-45e3-94bf-c4f197d4b303"
@@ -345,7 +345,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "7c72dbd1-17e3-4cef-be0f-750bb6e3f25a"
@@ -370,7 +370,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "b37bedea-fd6b-47fc-8abe-7cf492d7fadd"
@@ -395,7 +395,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit",
             "Lokale Wirtschaft"
         ],
@@ -446,7 +446,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "f724679e-d916-4f08-8405-b7cd1fb18f27"
@@ -471,7 +471,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "d92fc223-f614-4dc0-bb47-33dec6a1b7e0"
@@ -592,7 +592,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "4189309f-2e14-46ca-a7dd-4cf803f8e3a5"
@@ -666,7 +666,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "021e2d1b-8050-44e9-91fe-fd50b4a4acca"
     },
@@ -690,7 +690,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "120ce6fd-e0e3-43e4-986c-d1a2b7f347a0"
     },
@@ -714,7 +714,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Digitalisierung"
         ],
         "id": "2d876a98-38f7-4f3e-b205-e2d319a44ee6"
@@ -812,7 +812,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "56cd049f-7991-4277-a14c-c8eb288b1921"
     },
@@ -836,7 +836,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "bcaecda5-89da-4e9d-9882-f937745bb9c5"
     },
@@ -860,7 +860,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "8a3064fd-926a-4625-bcf6-39462256ef3d"
@@ -885,7 +885,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "4777d56e-9bcd-453f-8213-eaf079ed9236"
@@ -910,7 +910,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "bc070e66-e109-4347-ab21-0beefa2af345"
     },
@@ -934,7 +934,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "aff7c86e-7d27-4848-a5cd-5747d1a2a6ab"
     },
@@ -1054,7 +1054,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "668e4c85-43da-40a7-aa95-4b078480b924"
     },
@@ -1078,7 +1078,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "a5159d42-34d8-40bd-86ab-4c6ae771df52"
     },
@@ -1102,7 +1102,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie",
+            "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
         "id": "03301280-1cb1-4fd7-976f-31558bdda527"
@@ -1127,7 +1127,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "80587bae-bfe2-48a1-b779-b6fc4f4f5050"
     },
@@ -1297,7 +1297,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "5780f4e9-891a-45c6-8ed4-17055e0e1d17"
     },
@@ -1321,7 +1321,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "74ba7650-6107-4afd-8714-4f0f32ed0752"
     },
@@ -1345,7 +1345,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "b751b13a-55ad-40ca-885c-99e8972db591"
     },
@@ -1418,7 +1418,7 @@ const data = [
         "Projektkosten": null,
         "Anteil NRP in %": null,
         "Tags": [
-            "Industrie"
+            "Industrie & Gewerbe"
         ],
         "id": "711c2578-8a03-4758-ad2e-acec977ab12e"
     }
@@ -1481,7 +1481,7 @@ export default {
                     topics: this.topics
                         .filter(e => !e.context || e.context === 'project')
                         .filter(topic => project['Tags'].includes(topic.name)),
-                    states: this.programs
+                    states: this.states
                         .filter(e => !e.context || e.context === 'project')
                         .filter(state => project['Kanton'].includes(state.code)),
                     programs: this.programs
@@ -1700,7 +1700,7 @@ export default {
 
         let minZoom = 7;
 
-        if(this.$refs.mapContainer && this.$refs.mapContainer.offsetWidth < 960) {
+        if(this.$refs.mapContainer && this.$refs.mapContainer.offsetWidth < 720) {
             minZoom = 5.8;
         }
 

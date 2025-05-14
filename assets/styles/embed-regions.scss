@@ -20,10 +20,30 @@
 
     &-filters {
         @include embed-filters;
-    }
+        column-gap: var(--#{$instance-id}-gutter-width);
+        row-gap: calc(var(--#{$instance-id}-gutter-width) / 2);
+        max-width: var(--#{$instance-id}-max-width);
+
+        &-input, &-select, &-toggle {
+            margin: 0;
+            flex-basis: calc(33.333% - var(--#{$instance-id}-gutter-width) * 2 / 3);
+
+            .is-responsive & {
+                @include tablet {
+                    flex-basis: calc(50% - var(--#{$instance-id}-gutter-width) * 1 / 2);
+                }
+                @include mobile {
+                    flex-basis: calc(100% - var(--#{$instance-id}-gutter-width) * 1 / 1);
+                }
+            }
+        }
+
+        }
 
     &-filters-list {
         @include embed-filters-list;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     &-content {
