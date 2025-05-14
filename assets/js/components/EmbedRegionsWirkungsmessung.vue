@@ -124,7 +124,8 @@ const data = [
             "Digitalisierung",
             "Lokale Wirtschaft"
         ],
-        "id": "82818419-1b68-4fe8-9477-df1c576bb708"
+        "id": "82818419-1b68-4fe8-9477-df1c576bb708",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-02/Wirkungsmessung_2024_BE_DigitaleDorfstrasse.pdf"
     },
     {
         "Jahr": 2024,
@@ -149,7 +150,8 @@ const data = [
             "Tourismus",
             "Digitalisierung"
         ],
-        "id": "ba232bf8-a36e-48be-9960-7d8853407fea"
+        "id": "ba232bf8-a36e-48be-9960-7d8853407fea",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-02/Wirkungsmessung_2024_BE_PopupAcademyTALK_final.pdf"
     },
     {
         "Jahr": 2024,
@@ -174,7 +176,8 @@ const data = [
             "Industrie & Gewerbe",
             "Digitalisierung"
         ],
-        "id": "058eca44-6dcb-4c86-ac40-646395e94dc3"
+        "id": "058eca44-6dcb-4c86-ac40-646395e94dc3",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-02/Wirkungsmessung_2024_SO_TrainingAndEducation3DDruck_0.pdf"
     },
     {
         "Jahr": 2024,
@@ -199,7 +202,8 @@ const data = [
             "Industrie & Gewerbe",
             "Digitalisierung"
         ],
-        "id": "2e13f38c-2da3-45e3-94bf-c4f197d4b303"
+        "id": "2e13f38c-2da3-45e3-94bf-c4f197d4b303",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-02/MesureDImpact_2024_VS_SanteDigitale.pdf"
     },
     {
         "Jahr": 2023,
@@ -224,7 +228,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "3c42e683-34ad-4781-bc3b-a1a8b63b7d7f"
+        "id": "3c42e683-34ad-4781-bc3b-a1a8b63b7d7f",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-11/Wirkungsmessung%202023%20Agrotourismus%205.0.pdf"
     },
     {
         "Jahr": 2023,
@@ -249,7 +254,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "17da9b32-e46c-4117-8abc-aeefa734d535"
+        "id": "17da9b32-e46c-4117-8abc-aeefa734d535",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-12/Wirkungsmessung%202023%20Impulsprogramm%20Hotellerie.pdf"
     },
     {
         "Jahr": 2023,
@@ -273,7 +279,8 @@ const data = [
         "Tags": [
             "Lokale Wirtschaft"
         ],
-        "id": "3d4921b2-3d59-412d-92f7-61bf65dfb8a2"
+        "id": "3d4921b2-3d59-412d-92f7-61bf65dfb8a2",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-12/Wirkungsmessung%202023%20Kreativfabrik62.pdf"
     },
     {
         "Jahr": 2023,
@@ -298,7 +305,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "b98afdad-ffc8-454a-abce-534b0e088e1f"
+        "id": "b98afdad-ffc8-454a-abce-534b0e088e1f",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-12/Misurazione%20degli%20effetti%202023%20Il%20Larice.pdf"
     },
     {
         "Jahr": 2023,
@@ -323,7 +331,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "73899201-c5b1-4c90-8e40-e3e36211a546"
+        "id": "73899201-c5b1-4c90-8e40-e3e36211a546",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-12/Mesure%20d%27efficacité%202023%20Maison%20Du%20Vully.pdf"
     },
     {
         "Jahr": 2022,
@@ -348,7 +357,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "7c72dbd1-17e3-4cef-be0f-750bb6e3f25a"
+        "id": "7c72dbd1-17e3-4cef-be0f-750bb6e3f25a",
+        "Link": null
     },
     {
         "Jahr": 2022,
@@ -373,7 +383,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "b37bedea-fd6b-47fc-8abe-7cf492d7fadd"
+        "id": "b37bedea-fd6b-47fc-8abe-7cf492d7fadd",
+        "Link": "https://regiosuisse.ch/sites/default/files/2023-02/Mesure%20d%27efficacité%202022%20hub%20neuchatel.pdf"
     },
     {
         "Jahr": 2022,
@@ -399,7 +410,8 @@ const data = [
             "Nachhaltigkeit",
             "Lokale Wirtschaft"
         ],
-        "id": "f10380a8-7510-4a29-b434-19a90e9983e9"
+        "id": "f10380a8-7510-4a29-b434-19a90e9983e9",
+        "Link": null
     },
     {
         "Jahr": 2022,
@@ -424,7 +436,8 @@ const data = [
             "Tourismus",
             "Nachhaltigkeit"
         ],
-        "id": "d60e42f5-6db1-40f5-9e87-3234ab137664"
+        "id": "d60e42f5-6db1-40f5-9e87-3234ab137664",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-10/Wirkungsmessung%202022%20Nachhaltige%20Entwicklung%20Rigi%202030.pdf"
     },
     {
         "Jahr": 2022,
@@ -449,7 +462,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "f724679e-d916-4f08-8405-b7cd1fb18f27"
+        "id": "f724679e-d916-4f08-8405-b7cd1fb18f27",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-09/Kurzbericht%20IZ%20Wald%20und%20Holz%20%282022%29.pdf"
     },
     {
         "Jahr": 2021,
@@ -474,7 +488,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "d92fc223-f614-4dc0-bb47-33dec6a1b7e0"
+        "id": "d92fc223-f614-4dc0-bb47-33dec6a1b7e0",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-04/Wirkungsmessung%202021%20Kurzbericht%20Initiative%20Holz%20BE.pdf"
     },
     {
         "Jahr": 2020,
@@ -498,7 +513,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "fa4825e3-d964-4caa-ab2a-3808d46ca5c1"
+        "id": "fa4825e3-d964-4caa-ab2a-3808d46ca5c1",
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4%20Mesures%20d%27efficacité%202020%20Rapport%20Telesiege%20LaForet_0.pdf"
     },
     {
         "Jahr": 2020,
@@ -522,7 +538,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "038f5f47-18b5-4124-b02f-d35233225253"
+        "id": "038f5f47-18b5-4124-b02f-d35233225253",
+        "Link": null
     },
     {
         "Jahr": 2020,
@@ -546,7 +563,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "aec67df0-4772-4f2e-9a15-533cbc28f7f4"
+        "id": "aec67df0-4772-4f2e-9a15-533cbc28f7f4",
+        "Link": null
     },
     {
         "Jahr": 2020,
@@ -570,7 +588,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "1e8a7c6d-480e-4ec7-bfe9-4e08d1a20408"
+        "id": "1e8a7c6d-480e-4ec7-bfe9-4e08d1a20408",
+        "Link": null
     },
     {
         "Jahr": 2019,
@@ -595,7 +614,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "4189309f-2e14-46ca-a7dd-4cf803f8e3a5"
+        "id": "4189309f-2e14-46ca-a7dd-4cf803f8e3a5",
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-10/L4%20Mesures%20d%27efficacité%202019%20Rapport%20FAGUS.pdf"
     },
     {
         "Jahr": 2019,
@@ -620,7 +640,8 @@ const data = [
             "Tourismus",
             "Digitalisierung"
         ],
-        "id": "e9fbd3d8-5f0f-4725-99f2-97f8a32edd0e"
+        "id": "e9fbd3d8-5f0f-4725-99f2-97f8a32edd0e",
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4%20Wirkungsmessung%202019%20Kurzbericht%20Online-Buchungsoffensive%20Uri.pdf"
     },
     {
         "Jahr": 2019,
@@ -644,7 +665,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "e8dd6720-b015-4cc6-a45a-de34a099ec4a"
+        "id": "e8dd6720-b015-4cc6-a45a-de34a099ec4a",
+        "Link": "https://regiosuisse.ch/sites/default/files/2021-04/L4%20Wirkungsmessung%202019%20Kurzbericht%20Berglodges%20Gadmen.pdf"
     },
     {
         "Jahr": 2018,
@@ -668,7 +690,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "021e2d1b-8050-44e9-91fe-fd50b4a4acca"
+        "id": "021e2d1b-8050-44e9-91fe-fd50b4a4acca",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Wirkungsmessung%202018%20Kurzbericht%20BRC%20Pfahlkopffräse.pdf"
     },
     {
         "Jahr": 2018,
@@ -692,7 +715,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "120ce6fd-e0e3-43e4-986c-d1a2b7f347a0"
+        "id": "120ce6fd-e0e3-43e4-986c-d1a2b7f347a0",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Mesure%20d%27efficacité%202018%20Rapport%20CTM.pdf"
     },
     {
         "Jahr": 2018,
@@ -717,7 +741,8 @@ const data = [
             "Industrie & Gewerbe",
             "Digitalisierung"
         ],
-        "id": "2d876a98-38f7-4f3e-b205-e2d319a44ee6"
+        "id": "2d876a98-38f7-4f3e-b205-e2d319a44ee6",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Mesure%20d%27efficacité%202018%20Rapport%20SMAC.pdf"
     },
     {
         "Jahr": 2018,
@@ -741,7 +766,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "2e0ddd75-16bf-4e50-bd32-23fed6c6590b"
+        "id": "2e0ddd75-16bf-4e50-bd32-23fed6c6590b",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Wirkungsmessung%202018%20Kurzbericht%20micelab-bodensee.pdf"
     },
     {
         "Jahr": 2018,
@@ -766,7 +792,8 @@ const data = [
             "Tourismus",
             "Digitalisierung"
         ],
-        "id": "5557b0ed-78ca-408b-b27b-874ea0ab2834"
+        "id": "5557b0ed-78ca-408b-b27b-874ea0ab2834",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Mesure%20d%27efficacité%202018%20Rapport%20Totemi.pdf"
     },
     {
         "Jahr": 2018,
@@ -790,7 +817,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "cc555cfc-9dae-4af6-9e51-b9a5c090251d"
+        "id": "cc555cfc-9dae-4af6-9e51-b9a5c090251d",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-06/Wirkungsmessung%202018%20Kurzbericht%20Skigebietsverbindung%20Lenzerheide-Arosa.pdf"
     },
     {
         "Jahr": 2017,
@@ -814,7 +842,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "56cd049f-7991-4277-a14c-c8eb288b1921"
+        "id": "56cd049f-7991-4277-a14c-c8eb288b1921",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Wirkungsmessung%202017%20Kurzbericht%20Gebenloo-Tüfi.pdf"
     },
     {
         "Jahr": 2012,
@@ -838,7 +867,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "bcaecda5-89da-4e9d-9882-f937745bb9c5"
+        "id": "bcaecda5-89da-4e9d-9882-f937745bb9c5",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Arealentwicklung%20Gebenloo-Tüfi.pdf"
     },
     {
         "Jahr": 2017,
@@ -863,7 +893,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "8a3064fd-926a-4625-bcf6-39462256ef3d"
+        "id": "8a3064fd-926a-4625-bcf6-39462256ef3d",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Wirkungsmessung%202017%20Kurzbericht%20KEEST.pdf"
     },
     {
         "Jahr": 2012,
@@ -888,7 +919,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "4777d56e-9bcd-453f-8213-eaf079ed9236"
+        "id": "4777d56e-9bcd-453f-8213-eaf079ed9236",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20Kompetenz-Zentrum%20Erneuerbare%20Energie%20SüdThurgau%20%28KEEST%29.pdf"
     },
     {
         "Jahr": 2017,
@@ -912,7 +944,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "bc070e66-e109-4347-ab21-0beefa2af345"
+        "id": "bc070e66-e109-4347-ab21-0beefa2af345",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Mesure%20d%27efficacité%202017%20Rapport%20PST-FR.pdf"
     },
     {
         "Jahr": 2012,
@@ -936,7 +969,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "aff7c86e-7d27-4848-a5cd-5747d1a2a6ab"
+        "id": "aff7c86e-7d27-4848-a5cd-5747d1a2a6ab",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Pole%20Scientifique%20et%20Technolgique%20du%20Canton%20de%20Fribourg%20%28PST-FR%29.pdf"
     },
     {
         "Jahr": 2017,
@@ -960,7 +994,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "89819307-db2f-435a-a22b-48ac9eb6573d"
+        "id": "89819307-db2f-435a-a22b-48ac9eb6573d",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Wirkungsmessung%202017%20Kurzbericht%20Sbrinz-Route.pdf"
     },
     {
         "Jahr": 2012,
@@ -984,7 +1019,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "9ee0bcf9-d634-4932-8fe8-f1a18e7b39dd"
+        "id": "9ee0bcf9-d634-4932-8fe8-f1a18e7b39dd",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Sbrinz%20Route.pdf"
     },
     {
         "Jahr": 2017,
@@ -1008,7 +1044,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "ee1b9657-fc82-48a1-a70b-3d75df96bfb4"
+        "id": "ee1b9657-fc82-48a1-a70b-3d75df96bfb4",
+        "Link": "https://regiosuisse.ch/sites/default/files/2019-02/Mesure%20d%27efficacité%202017%20Rapport%20Souvenirs%20du%20futur.pdf"
     },
     {
         "Jahr": 2012,
@@ -1032,7 +1069,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "e36028aa-65d4-4e50-bfb0-5ed6d3aee9ed"
+        "id": "e36028aa-65d4-4e50-bfb0-5ed6d3aee9ed",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Souvenirs%20du%20futur.pdf"
     },
     {
         "Jahr": 2012,
@@ -1056,7 +1094,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "668e4c85-43da-40a7-aa95-4b078480b924"
+        "id": "668e4c85-43da-40a7-aa95-4b078480b924",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20Nano-Cluster%20Bodensee.pdf"
     },
     {
         "Jahr": 2012,
@@ -1080,7 +1119,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "a5159d42-34d8-40bd-86ab-4c6ae771df52"
+        "id": "a5159d42-34d8-40bd-86ab-4c6ae771df52",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20WTT%20Pullcoaching%20%28Kanton%20Schwyz%29.pdf"
     },
     {
         "Jahr": 2012,
@@ -1105,7 +1145,8 @@ const data = [
             "Industrie & Gewerbe",
             "Nachhaltigkeit"
         ],
-        "id": "03301280-1cb1-4fd7-976f-31558bdda527"
+        "id": "03301280-1cb1-4fd7-976f-31558bdda527",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20Bioburn%20-%20Intergrierte%20Biomasse-Nutzung.pdf"
     },
     {
         "Jahr": 2012,
@@ -1129,7 +1170,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "80587bae-bfe2-48a1-b779-b6fc4f4f5050"
+        "id": "80587bae-bfe2-48a1-b779-b6fc4f4f5050",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Phaenovum.pdf"
     },
     {
         "Jahr": 2012,
@@ -1154,7 +1196,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "904beb51-de05-4152-a075-960a584c2992"
+        "id": "904beb51-de05-4152-a075-960a584c2992",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Seetal%20-%20erlenis%2C%20genuss%2C%20kultur.pdf"
     },
     {
         "Jahr": 2012,
@@ -1178,7 +1221,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "4a2b3940-87e5-4a54-ab03-95788db89976"
+        "id": "4a2b3940-87e5-4a54-ab03-95788db89976",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Machbarkeit%20Ruinaulta%20-%20Teilprojekt%202.pdf"
     },
     {
         "Jahr": 2012,
@@ -1203,7 +1247,8 @@ const data = [
             "Tourismus",
             "Digitalisierung"
         ],
-        "id": "72d31353-6b0f-43dd-a9f6-cef11e20a9db"
+        "id": "72d31353-6b0f-43dd-a9f6-cef11e20a9db",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Aufbau%20und%20Umsetzung%20von%20e-Marketing%20im%20Tourismusbereich.pdf"
     },
     {
         "Jahr": 2012,
@@ -1227,7 +1272,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "899ac4cf-473a-499a-b472-af9a2c47eed2"
+        "id": "899ac4cf-473a-499a-b472-af9a2c47eed2",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20Wellbeing%20%26%20Health%20Resort%20Appenzellerland.pdf"
     },
     {
         "Jahr": 2012,
@@ -1251,7 +1297,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "9918ad1f-e67a-41fd-866b-50d8d42e045b"
+        "id": "9918ad1f-e67a-41fd-866b-50d8d42e045b",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Route%20de%20l%27horlogerie.pdf"
     },
     {
         "Jahr": 2012,
@@ -1275,7 +1322,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "30bd6ea2-0ce8-4367-b4ae-36ddb26c22f0"
+        "id": "30bd6ea2-0ce8-4367-b4ae-36ddb26c22f0",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20Nationalparkregion%20-%20Gesundheitsregion.pdf"
     },
     {
         "Jahr": 2012,
@@ -1299,7 +1347,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "5780f4e9-891a-45c6-8ed4-17055e0e1d17"
+        "id": "5780f4e9-891a-45c6-8ed4-17055e0e1d17",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Apprendre%20à%20Entreprendre%20%28AàE%29.pdf"
     },
     {
         "Jahr": 2012,
@@ -1323,7 +1372,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "74ba7650-6107-4afd-8714-4f0f32ed0752"
+        "id": "74ba7650-6107-4afd-8714-4f0f32ed0752",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Angebotserweiterung%20Oberstufe%20ISSH%20%28Variante%20Push%29.pdf"
     },
     {
         "Jahr": 2012,
@@ -1347,7 +1397,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "b751b13a-55ad-40ca-885c-99e8972db591"
+        "id": "b751b13a-55ad-40ca-885c-99e8972db591",
+        "Link": null
     },
     {
         "Jahr": 2012,
@@ -1372,7 +1423,8 @@ const data = [
             "Tourismus",
             "Lokale Wirtschaft"
         ],
-        "id": "963ec0fa-ed3c-469b-bdb5-b1946239dcac"
+        "id": "963ec0fa-ed3c-469b-bdb5-b1946239dcac",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20%20natürli%20Milchspezialitäten.pdf"
     },
     {
         "Jahr": 2012,
@@ -1380,7 +1432,7 @@ const data = [
             "AI"
         ],
         "Fördermassnahme": "NRP",
-        "Projekt": "Ausbau & Professionalisierung\nAppenzellerland Regionalmarketing",
+        "Projekt": "Ausbau & Professionalisierung Appenzellerland Regionalmarketing",
         "Projektträgerschaft": "Appenzellerland Regionalmarketing AG",
         "Koordinaten Pin": [
             47.33168644622082,
@@ -1396,7 +1448,8 @@ const data = [
         "Tags": [
             "Tourismus"
         ],
-        "id": "4d11645d-858d-4332-8f9e-d989f844edcc"
+        "id": "4d11645d-858d-4332-8f9e-d989f844edcc",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Ausbau%20%26%20Professionalisierung%20Appenzellerland%20Regionalmarketing%20AG.pdf"
     },
     {
         "Jahr": 2012,
@@ -1420,7 +1473,8 @@ const data = [
         "Tags": [
             "Industrie & Gewerbe"
         ],
-        "id": "711c2578-8a03-4758-ad2e-acec977ab12e"
+        "id": "711c2578-8a03-4758-ad2e-acec977ab12e",
+        "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Suissessences.pdf"
     }
 ];
 
@@ -1489,6 +1543,7 @@ export default {
                         .filter(program => project['Fördermassnahme'] === program.name),
                     year: project['Jahr'],
                     lngLat: [project['Koordinaten Pin'][1], project['Koordinaten Pin'][0]],
+                    link: project['Link'],
                 };
             });
         },
@@ -1743,12 +1798,36 @@ export default {
                         <div class="embed-regions-content-map-marker-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                         </div>
+                        <div class="embed-regions-content-map-marker-overlay">
+                            <p><strong>${project.name}</strong><br>Jahr ${project.year}</p>
+                            ${project.link ? '<p><a href="${project.link}" target="_blank">Zum Kurzbericht</a></p>' : ''}
+                        </div>
                     `;
                     if(parseInt(project.year) >= 2020) {
                         el.querySelector('svg').style.fill = '#2b9db1';
                     }
                     let marker = new mapboxgl.Marker(el).setLngLat([project.lngLat[0], project.lngLat[1]]).addTo(this.map);
                     this.markers.push(marker);
+                    el.querySelector('a')?.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                    });
+                    el.addEventListener('click', () => {
+
+                        if(el.classList.contains('is-active')) {
+                            el.classList.remove('is-active');
+                            return;
+                        }
+
+                        for(let m of this.markers) {
+                            m.getElement().classList.remove('is-active');
+                        }
+
+                        el.classList.add('is-active');
+                        this.map.flyTo({
+                            center: project.lngLat,
+                            zoom: 9,
+                        })
+                    });
                 }
             }
             if(this.map.loaded()) {

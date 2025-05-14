@@ -4,6 +4,15 @@
 @import 'embed-mixins';
 @import '~mapbox-gl/dist/mapbox-gl';
 
+@keyframes embed-regions-content-map-marker-svg {
+    from {
+        translate: 0% -50%;
+    }
+    to {
+        translate: 0% 0%;
+    }
+}
+
 .embed-regions {
     @include embed-variables;
     @include embed-base;
@@ -38,7 +47,7 @@
             }
         }
 
-        }
+    }
 
     &-filters-list {
         @include embed-filters-list;
@@ -68,14 +77,53 @@
             border-top-right-radius: var(--#{$instance-id}-border-radius-2);
 
             &-marker {
-                width: 2em;
-                height: 2em;
+                width: 2.5em;
+                height: 2.5em;
 
                 svg {
                     fill: var(--#{$instance-id}-primary-color);
                     width: 100%;
                     height: 100%;
                     object-fit: contain;
+                    filter: drop-shadow(0 0 .25em rgba($black, .15));
+                    animation: embed-regions-content-map-marker-svg .5s forwards;
+                    cursor: pointer;
+                }
+
+                &.is-active {
+                    z-index: 10;
+                }
+
+                &-overlay {
+                    opacity: 0;
+                    visibility: hidden;
+                    pointer-events: none;
+                    position: absolute;
+                    bottom: 75%;
+                    left: 50%;
+                    translate: -50% 0;
+                    width: 16em;
+                    background: var(--#{$instance-id}-white);
+                    filter: drop-shadow(0 0 .25em rgba($black, .15));
+                    transition: opacity .25s, visibility .25s;
+                    padding: 1em 2em;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 50%;
+                        translate: -50% 100%;
+                        border-width: 1em 1em 0;
+                        border-style: solid;
+                        border-color: var(--#{$instance-id}-white) transparent transparent;
+                    }
+                }
+
+                .is-active &-overlay {
+                    opacity: 1;
+                    visibility: visible;
+                    pointer-events: auto;
                 }
             }
 
