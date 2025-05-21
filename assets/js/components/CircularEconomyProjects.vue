@@ -52,7 +52,7 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group">
-                        <label for="instruments">Geschäftsfeld</label>
+                        <label for="instruments">Finanzierung</label>
                         <div class="select-wrapper">
                             <select id="instruments" class="form-control" @change="addFilter({type: 'instrument', value: $event.target.value}); $event.target.value = null;">
                                 <option></option>
