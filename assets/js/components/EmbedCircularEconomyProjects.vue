@@ -66,166 +66,175 @@
 
             </div>
 
-            <div class="embed-circular-economy-projects-content-grid" v-if="!project">
+            <Transition name="fade" mode="out-in">
 
-                <button class="embed-circular-economy-projects-content-grid-item"
-                        v-for="project in projects"
-                        @click="clickShowProject(project)">
-
-                    <span class="embed-circular-economy-projects-content-grid-item-image" v-if="project.images.length">
-                        <img :src="$env.HOST+'/api/v1/files/view/'+ project.images[0].id +'.' + project.images[0].extension" :alt="project.title">
-                    </span>
+                <div class="embed-circular-economy-projects-content-grid" v-if="!project">
                     
-                    <span class="embed-circular-economy-projects-content-grid-item-content">
+                    <TransitionGroup name="fade-down" mode="out-in">
 
-                        <span class="embed-circular-economy-projects-content-grid-item-content-title">
-                            {{ translateField(project, 'title', locale) }}
-                        </span>
-    
-                        <span class="embed-circular-economy-projects-content-grid-item-content-description">
-                            {{ $helpers.textExcerpt($helpers.stripHTML(translateField(project, 'description', locale)), 64, '...') }}
-                        </span>
-    
-                        <span class="embed-circular-economy-projects-content-grid-item-content-tags">
-    
-                            <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
-                                  v-for="e in project.topics.filter(e => getTopicById(e.id)).filter(e => topics.find(ee => ee.id === e.id))">
-                                    {{ translateField(getTopicById(e.id), 'name', locale) }}
+                        <button class="embed-circular-economy-projects-content-grid-item"
+                                v-for="project in projects"
+                                :key="project.id"
+                                @click="clickShowProject(project)">
+
+                            <span class="embed-circular-economy-projects-content-grid-item-image" v-if="project.images.length">
+                                <img :src="$env.HOST+'/api/v1/files/view/'+ project.images[0].id +'.' + project.images[0].extension" :alt="project.title">
                             </span>
-    
-                            <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
-                                  v-for="e in project.instruments.filter(e => getInstrumentById(e.id)).filter(e => instruments.find(ee => ee.id === e.id))">
-                                    {{ translateField(getInstrumentById(e.id), 'name', locale) }}
+
+                            <span class="embed-circular-economy-projects-content-grid-item-content">
+
+                                <span class="embed-circular-economy-projects-content-grid-item-content-title">
+                                    {{ translateField(project, 'title', locale) }}
+                                </span>
+
+                                <span class="embed-circular-economy-projects-content-grid-item-content-description">
+                                    {{ $helpers.textExcerpt($helpers.stripHTML(translateField(project, 'description', locale)), 64, '...') }}
+                                </span>
+
+                                <span class="embed-circular-economy-projects-content-grid-item-content-tags">
+
+                                    <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
+                                          v-for="e in project.topics.filter(e => getTopicById(e.id)).filter(e => topics.find(ee => ee.id === e.id))">
+                                            {{ translateField(getTopicById(e.id), 'name', locale) }}
+                                    </span>
+
+                                    <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
+                                          v-for="e in project.instruments.filter(e => getInstrumentById(e.id)).filter(e => instruments.find(ee => ee.id === e.id))">
+                                            {{ translateField(getInstrumentById(e.id), 'name', locale) }}
+                                    </span>
+
+                                    <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
+                                          v-for="e in project.geographicRegions.filter(e => getGeographicRegionById(e.id)).filter(e => geographicRegions.find(ee => ee.id === e.id))">
+                                            {{ translateField(getGeographicRegionById(e.id), 'name', locale) }}
+                                    </span>
+
+                                    <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
+                                          v-for="e in project.businessSectors.filter(e => getBusinessSectorById(e.id)).filter(e => businessSectors.find(ee => ee.id === e.id))">
+                                            {{ translateField(getBusinessSectorById(e.id), 'name', locale) }}
+                                    </span>
+
+                                </span>
+
                             </span>
-    
-                            <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
-                                  v-for="e in project.geographicRegions.filter(e => getGeographicRegionById(e.id)).filter(e => geographicRegions.find(ee => ee.id === e.id))">
-                                    {{ translateField(getGeographicRegionById(e.id), 'name', locale) }}
-                            </span>
-    
-                            <span class="embed-circular-economy-projects-content-grid-item-content-tags-item"
-                                  v-for="e in project.businessSectors.filter(e => getBusinessSectorById(e.id)).filter(e => businessSectors.find(ee => ee.id === e.id))">
-                                    {{ translateField(getBusinessSectorById(e.id), 'name', locale) }}
-                            </span>
-    
-                        </span>
-                        
-                    </span>
 
-                </button>
+                        </button>
 
-            </div>
-
-            <div class="embed-circular-economy-projects-content-project" v-else>
-
-                <button class="embed-circular-economy-projects-content-project-close"
-                        @click="clickHideProject()"></button>
-
-                <div class="embed-circular-economy-projects-content-project-title">{{ project.title }}</div>
-
-                <div class="embed-circular-economy-projects-content-project-description" v-if="project.description">
-                    <div v-html="project.description"></div>
-                </div>
-
-                <div class="embed-circular-economy-projects-content-project-videos" v-if="(translateField(project, 'videos', locale) || []).filter(e => e.value).length">
-
-                    <div class="embed-circular-economy-projects-content-project-videos-video" v-for="video in (translateField(project, 'videos', locale) || []).filter(e => e.value)">
-                        <iframe :src="parseVideoEmbedUrl(video.value)" frameborder="0" allowfullscreen></iframe>
-                    </div>
+                    </TransitionGroup>
 
                 </div>
 
-                <div class="embed-circular-economy-projects-content-project-attributes">
+                <div class="embed-circular-economy-projects-content-project" v-else>
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="(translateField(project, 'files', locale) || []).length">
+                    <button class="embed-circular-economy-projects-content-project-close"
+                            @click="clickHideProject()"></button>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Downloads', locale) }}</div>
+                    <div class="embed-circular-economy-projects-content-project-title">{{ project.title }}</div>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="(e, index) in (translateField(project, 'files', locale) || [])">
-                                <a :href="$env.HOST+'/api/v1/files/download/'+e.id+'.'+e.extension" download>
-                                    {{ e.description || 'Datei '+(index+1) }}
-                                </a>
-                            </div>
+                    <div class="embed-circular-economy-projects-content-project-description" v-if="project.description">
+                        <div v-html="project.description"></div>
+                    </div>
+
+                    <div class="embed-circular-economy-projects-content-project-videos" v-if="(translateField(project, 'videos', locale) || []).filter(e => e.value).length">
+
+                        <div class="embed-circular-economy-projects-content-project-videos-video" v-for="video in (translateField(project, 'videos', locale) || []).filter(e => e.value)">
+                            <iframe :src="parseVideoEmbedUrl(video.value)" frameborder="0" allowfullscreen></iframe>
                         </div>
 
                     </div>
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="(translateField(project, 'links', locale) || []).length">
+                    <div class="embed-circular-economy-projects-content-project-attributes">
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Links', locale) }}</div>
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="(translateField(project, 'files', locale) || []).length">
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="e in (translateField(project, 'links', locale) || [])">
-                                <a :href="e.value.split('://').length > 1 ? e.value : 'http://'+e.value" target="_blank">{{ e.label }}</a>
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Downloads', locale) }}</div>
+
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="(e, index) in (translateField(project, 'files', locale) || [])">
+                                    <a :href="$env.HOST+'/api/v1/files/download/'+e.id+'.'+e.extension" download>
+                                        {{ e.description || 'Datei '+(index+1) }}
+                                    </a>
+                                </div>
                             </div>
+
                         </div>
 
-                    </div>
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="(translateField(project, 'links', locale) || []).length">
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="project.topics?.length">
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Links', locale) }}</div>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Thema', locale) }}</div>
-
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="e in project.topics.map(e => getTopicById(e.id)).filter(e => e)">
-                                {{ translateField(e, 'name', locale) }}
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="(e, index) in (translateField(project, 'links', locale) || [])">
+                                    <a :href="e.value.split('://').length > 1 ? e.value : 'http://'+e.value" target="_blank">{{ e.label || e.value }}</a>
+                                </div>
                             </div>
+
                         </div>
 
-                    </div>
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="project.topics?.length">
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="project.instruments?.length">
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Thema', locale) }}</div>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Finanzierung', locale) }}</div>
-
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="e in project.instruments.map(e => getInstrumentById(e.id)).filter(e => e)">
-                                {{ translateField(e, 'name', locale) }}
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="e in project.topics.map(e => getTopicById(e.id)).filter(e => e)">
+                                    {{ translateField(e, 'name', locale) }}
+                                </div>
                             </div>
+
                         </div>
 
-                    </div>
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="project.instruments?.length">
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="project.businessSectors?.length">
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Finanzierung', locale) }}</div>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Geschäftsfeld', locale) }}</div>
-
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="e in project.businessSectors.map(e => getBusinessSectorById(e.id)).filter(e => e)">
-                                {{ translateField(e, 'name', locale) }}
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="e in project.instruments.map(e => getInstrumentById(e.id)).filter(e => e)">
+                                    {{ translateField(e, 'name', locale) }}
+                                </div>
                             </div>
+
                         </div>
 
-                    </div>
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="project.businessSectors?.length">
 
-                    <div class="embed-circular-economy-projects-content-project-attributes-attribute"
-                         v-if="project.geographicRegions?.length">
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Geschäftsfeld', locale) }}</div>
 
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Geographische Region', locale) }}</div>
-
-                        <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
-                                 v-for="e in project.geographicRegions.map(e => getGeographicRegionById(e.id)).filter(e => e)">
-                                {{ translateField(e, 'name', locale) }}
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="e in project.businessSectors.map(e => getBusinessSectorById(e.id)).filter(e => e)">
+                                    {{ translateField(e, 'name', locale) }}
+                                </div>
                             </div>
+
+                        </div>
+
+                        <div class="embed-circular-economy-projects-content-project-attributes-attribute"
+                             v-if="project.geographicRegions?.length">
+
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Geographische Region', locale) }}</div>
+
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
+                                <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
+                                     v-for="e in project.geographicRegions.map(e => getGeographicRegionById(e.id)).filter(e => e)">
+                                    {{ translateField(e, 'name', locale) }}
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
 
-            </div>
+            </Transition>
 
         </div>
 

@@ -11,6 +11,15 @@
     container-type: inline-size;
     container-name: embed-circular-economy-projects;
 
+    @include vue-transition(fade, .5s) {
+        opacity: 0;
+    }
+
+    @include vue-transition(fade-down, .5s) {
+        opacity: 0;
+        translate: 0 1em;
+    }
+
     button {
         all: initial;
         -webkit-appearance: none;
@@ -131,17 +140,6 @@
                 break-inside: avoid;
                 padding-bottom: var(--#{$instance-id}-gutter-width);
                 width: 100%;
-                opacity: 0;
-                translate: 0 1em;
-                animation-delay: .25s;
-                animation: embed-circular-economy-projects-content-grid-item .5s ease-in-out forwards;
-
-                @keyframes embed-circular-economy-projects-content-grid-item {
-                    to {
-                        translate: 0 0;
-                        opacity: 1;
-                    }
-                }
 
                 &-image {
                     position: relative;
