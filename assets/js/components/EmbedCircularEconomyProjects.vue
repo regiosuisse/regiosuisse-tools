@@ -405,6 +405,10 @@ export default {
 
             let index = this.filters.findIndex(e => e.type === filter.type && e.entity.id === filter.entity.id);
 
+            if(this.project) {
+                this.clickHideProject();
+            }
+
             if(index !== -1) {
 
                 this.filters.splice(index, 1);

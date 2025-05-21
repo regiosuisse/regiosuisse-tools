@@ -47,6 +47,33 @@
             &-section {
                 background: var(--#{$instance-id}-secondary-color);
                 padding: 1em;
+                opacity: 0;
+                translate: 0 1em;
+                animation-delay: .1s;
+                animation: embed-circular-economy-projects-content-filter-section .5s ease-in-out forwards;
+
+                &:nth-child(2) {
+                    animation-delay: .25s;
+                }
+
+                &:nth-child(3) {
+                    animation-delay: .5s;
+                }
+
+                &:nth-child(4) {
+                    animation-delay: .75s;
+                }
+
+                &:nth-child(5) {
+                    animation-delay: 1s;
+                }
+
+                @keyframes embed-circular-economy-projects-content-filter-section {
+                    to {
+                        translate: 0 0;
+                        opacity: 1;
+                    }
+                }
 
                 &-label {
                     font-size: 1.75em;
@@ -74,6 +101,7 @@
                             border: 1px solid;
                             border-radius: 50%;
                             box-sizing: border-box;
+                            transition: background-color .25s;
                         }
 
                         &.is-selected::before {
@@ -103,6 +131,17 @@
                 break-inside: avoid;
                 padding-bottom: var(--#{$instance-id}-gutter-width);
                 width: 100%;
+                opacity: 0;
+                translate: 0 1em;
+                animation-delay: .25s;
+                animation: embed-circular-economy-projects-content-grid-item .5s ease-in-out forwards;
+
+                @keyframes embed-circular-economy-projects-content-grid-item {
+                    to {
+                        translate: 0 0;
+                        opacity: 1;
+                    }
+                }
 
                 &-image {
                     position: relative;
