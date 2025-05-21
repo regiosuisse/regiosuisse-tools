@@ -1,4 +1,4 @@
-import '../styles/embed-contacts.scss';
+import '../styles/embed-circular-economy-projects.scss';
 
 import { createApp } from 'vue';
 import env from './utils/env';
@@ -6,9 +6,9 @@ import i18n from './common/i18n';
 import helpers from './utils/helpers';
 import store from './store';
 
-import EmbedContacts from './components/EmbedContacts';
+import EmbedCircularEconomyProjects from './components/EmbedCircularEconomyProjects';
 
-const app = createApp(EmbedContacts);
+const app = createApp(EmbedCircularEconomyProjects);
 
 app.use(env);
 app.use(i18n);
@@ -31,4 +31,4 @@ const init = (selector, clientOptions = {}) => {
 
 };
 
-window[process.env.INSTANCE_ID+'Contacts'] = init;
+window[process.env.INSTANCE_ID+'CircularEconomyProjects'] = init;

@@ -28,6 +28,8 @@ const init = (selector, collectionId, clientOptions = {}) => {
 
     app.mount(selector);
 
+    return app;
+
 };
 
 window[process.env.INSTANCE_ID+'EventCollection'] = init;

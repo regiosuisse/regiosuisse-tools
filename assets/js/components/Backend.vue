@@ -77,6 +77,26 @@
                         </li>
                     </ul>
                 </li>
+                <li v-if="hasRole('ROLE_EDITOR') && $env.PLUGIN_ENABLE_CIRCULAR_ECONOMY_PROJECTS">
+                    <router-link to="/circular-economy-projects" :class="{'router-link-parent-active': this.$route.path.startsWith('/circular-economy-projects')}">
+                        <span class="material-icons">change_circle</span>
+                        <span class="label">KLW Projekte</span>
+                    </router-link>
+                    <ul>
+                        <li>
+                            <router-link to="/circular-economy-projects">
+                                <span class="material-icons">list</span>
+                                <span class="label">Liste anzeigen</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/circular-economy-projects/add">
+                                <span class="material-icons">create</span>
+                                <span class="label">Neuen Eintrag erfassen</span>
+                            </router-link>
+                        </li>
+                    </ul>
+                </li>
                 <li v-if="hasRole('ROLE_EDITOR') && $env.PLUGIN_ENABLE_POSTS">
                     <router-link to="/posts" :class="{'router-link-parent-active': this.$route.path.startsWith('/post')}">
                         <span class="material-icons">newspaper</span>

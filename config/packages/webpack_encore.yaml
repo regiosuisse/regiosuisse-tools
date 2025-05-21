@@ -44,6 +44,8 @@ webpack_encore:
         embed-posts-latest: '%kernel.project_dir%/public/embed/posts-latest'
         embed-contacts: '%kernel.project_dir%/public/embed/contacts'
         embed-contacts-latest: '%kernel.project_dir%/public/embed/contacts-latest'
+        embed-circular-economy-projects: '%kernel.project_dir%/public/embed/circular-economy-projects'
+        embed-circular-economy-projects-latest: '%kernel.project_dir%/public/embed/circular-economy-projects-latest'
         # pass "frontend" as the 3rg arg to the Twig functions
         # {{ encore_entry_script_tags('entry1', null, 'frontend') }}
 

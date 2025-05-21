@@ -1,0 +1,252 @@
+@import 'config';
+@import 'embed-config';
+@import 'mixins';
+@import 'embed-mixins';
+@import '~mapbox-gl/dist/mapbox-gl';
+
+.embed-circular-economy-projects {
+    @include embed-variables;
+    font: inherit;
+    font-size: 1em;
+    container-type: inline-size;
+    container-name: embed-circular-economy-projects;
+
+    button {
+        all: initial;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    & &-content {
+        display: flex;
+        gap: var(--#{$instance-id}-gutter-width);
+        align-items: flex-start;
+
+        @container embed-circular-economy-projects (max-width: 720px) {
+            display: block;
+        }
+
+        &-filter {
+            flex: 0 0 calc(25% - var(--#{$instance-id}-gutter-width) / 2 * 1);
+            display: flex;
+            flex-direction: column;
+            gap: var(--#{$instance-id}-gutter-width);
+
+            @container embed-circular-economy-projects (max-width: 720px) {
+                margin-bottom: var(--#{$instance-id}-gutter-width);
+            }
+
+            &-section {
+                background: var(--#{$instance-id}-secondary-color);
+                padding: 1em;
+
+                &-label {
+                    font-size: 1.75em;
+                }
+
+                &-options {
+                    display: flex;
+                    flex-direction: column;
+                    padding: .5em 0;
+                    gap: .5em;
+
+                    &-option {
+                        display: flex;
+                        padding-left: 2em;
+                        position: relative;
+                        line-height: 1.5em;
+
+                        &::before {
+                            content: '';
+                            display: block;
+                            width: 1.5em;
+                            height: 1.5em;
+                            position: absolute;
+                            left: 0;
+                            border: 1px solid;
+                            border-radius: 50%;
+                            box-sizing: border-box;
+                        }
+
+                        &.is-selected::before {
+                            background: currentColor;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        &-grid {
+            flex: 0 0 calc(75% - var(--#{$instance-id}-gutter-width) / 2 * 1);
+            gap: var(--#{$instance-id}-gutter-width);
+            column-count: 3;
+
+            @container embed-circular-economy-projects (max-width: 1024px) {
+                column-count: 2;
+            }
+
+            @container embed-circular-economy-projects (max-width: 720px) {
+                column-count: 1;
+            }
+
+            &-item {
+                display: block;
+                break-inside: avoid;
+                padding-bottom: var(--#{$instance-id}-gutter-width);
+                width: 100%;
+
+                &-image {
+                    position: relative;
+                    display: block;
+                    width: 100%;
+                    box-shadow: var(--#{$instance-id}-shadow-1);
+
+                    img {
+                        width: 100%;
+                        height: auto;
+                        display: block;
+                    }
+                }
+
+                &-content {
+                    border-top: 4px solid var(--#{$instance-id}-primary-color);
+                    display: flex;
+                    padding: 1em .5em;
+                    width: 100%;
+                    box-sizing: border-box;
+                    gap: .5em;
+                    flex-direction: column;
+                    box-shadow: var(--#{$instance-id}-shadow-1);
+
+                    &-title {
+                        display: block;
+                        font-size: 1.75em;
+                    }
+
+                    &-description {
+                        display: block;
+                    }
+
+                    &-tags {
+
+                        &-item {
+
+                            &::after {
+                                content: '–';
+                                display: inline;
+                                margin: 0 .5em;
+                            }
+
+                            &:last-child::after {
+                                display: none;
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        &-project {
+            position: relative;
+            flex: 0 0 calc(75% - var(--#{$instance-id}-gutter-width) / 2 * 1);
+            padding: var(--#{$instance-id}-gutter-width);
+            box-sizing: border-box;
+            box-shadow: var(--#{$instance-id}-shadow-1);
+
+            &-close {
+                position: absolute;
+                top: var(--#{$instance-id}-gutter-width);
+                right: var(--#{$instance-id}-gutter-width);
+                width: 2em;
+                height: 2em;
+
+                &::before, &::after {
+                    content: '';
+                    display: block;
+                    width: 100%;
+                    height: 4px;
+                    background: var(--#{$instance-id}-primary-color);
+                    position: absolute;
+                    top: 50%;
+                    translate: 0 -50%;
+                    rotate: -45deg;
+                }
+
+                &::after {
+                    rotate: 45deg;
+                }
+            }
+
+            &-title {
+                margin-right: 3em;
+                margin-bottom: 1em;
+                font-size: 1.75em;
+            }
+
+            &-description {
+                margin-bottom: 2em;
+            }
+
+            &-videos {
+                margin-bottom: 2em;
+
+                &-video {
+                    margin-bottom: 2em;
+                    position: relative;
+
+                    &::before {
+                        display: block;
+                        content: '';
+                        padding-bottom: 66.666%;
+                    }
+
+                    iframe {
+                        position: absolute;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            &-attributes {
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--#{$instance-id}-gutter-width);
+
+                &-attribute {
+                    border-top: 4px solid var(--#{$instance-id}-secondary-color);
+                    padding: 1em .5em;
+                    box-sizing: border-box;
+                    box-shadow: var(--#{$instance-id}-shadow-1);
+                    min-width: calc(33.333% - var(--#{$instance-id}-gutter-width) * 2 / 3);
+
+                    @container embed-circular-economy-projects (max-width: 1024px) {
+                        min-width: calc(50% - var(--#{$instance-id}-gutter-width) * 1 / 2);
+                    }
+
+                    @container embed-circular-economy-projects (max-width: 720px) {
+                        min-width: 100%;
+                    }
+
+                    &-label {
+                        font-size: 1.5em;
+                        margin-bottom: .5em;
+                    }
+                }
+            }
+
+        }
+    }
+}

@@ -27,6 +27,8 @@ const init = (selector, clientOptions = {}) => {
 
     app.mount(selector);
 
+    return app;
+
 };
 
 window[process.env.INSTANCE_ID+'Projects'] = init;

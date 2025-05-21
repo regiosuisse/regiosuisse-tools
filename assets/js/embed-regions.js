@@ -28,6 +28,8 @@ const init = (selector, clientOptions = {}) => {
 
     app.mount(selector);
 
+    return app;
+
 };
 
 window[process.env.INSTANCE_ID+'Regions'] = init;
@@ -52,5 +54,7 @@ window[process.env.INSTANCE_ID+'RegionsWirkungsmessung'] = (selector, clientOpti
     });
 
     app.mount(selector);
+
+    return app;
 
 };

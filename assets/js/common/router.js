@@ -30,6 +30,8 @@ import Regions from '../components/Regions';
 import Region from '../components/Region';
 import Posts from '../components/Posts';
 import Post from '../components/Post';
+import CircularEconomyProjects from "../components/CircularEconomyProjects";
+import CircularEconomyProject from "../components/CircularEconomyProject";
 
 const routes = [
     {
@@ -146,6 +148,21 @@ const routes = [
                 path: 'posts/:id/edit',
                 name: 'posts_edit',
                 component: Post,
+            },
+            {
+                path: 'circular-economy-projects',
+                name: 'circular_economy_projects',
+                component: CircularEconomyProjects,
+            },
+            {
+                path: 'circular-economy-projects/add',
+                name: 'circular_economy_projects_add',
+                component: CircularEconomyProject,
+            },
+            {
+                path: 'circular-economy-projects/:id/edit',
+                name: 'circular_economy_projects_edit',
+                component: CircularEconomyProject,
             },
             {
                 path: 'financial-supports',
