@@ -32,6 +32,7 @@
         margin: 0;
         cursor: pointer;
         color: inherit;
+        font: inherit;
     }
 
     & &-content {
@@ -268,6 +269,7 @@
                     padding: 1em .5em;
                     box-sizing: border-box;
                     box-shadow: var(--#{$instance-id}-shadow-1);
+                    flex: 1 1 auto;
                     min-width: calc(33.333% - var(--#{$instance-id}-gutter-width) * 2 / 3);
 
                     @container embed-circular-economy-projects (max-width: 1024px) {
