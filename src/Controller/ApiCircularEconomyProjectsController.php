@@ -200,6 +200,13 @@ class ApiCircularEconomyProjectsController extends AbstractController
                 ->setParameter('ids', $request->get('ids'))
             ;
         }
+
+        if($request->get('type') && is_array($request->get('type'))) {
+            $qb
+                ->andWhere('p.type IN (:types)')
+                ->setParameter('types', $request->get('type'))
+            ;
+        }
         
         if($request->get('term')) {
             $qb
@@ -355,6 +362,27 @@ class ApiCircularEconomyProjectsController extends AbstractController
                 ->groupBy('p.id')
                 ->having('SUM(CASE WHEN excludeBusinessSector.id IN (:excludedBusinessSectors) OR excludeBusinessSector.name IN (:excludedBusinessSectors) THEN 1 ELSE 0 END) = 0')
                 ->setParameter('excludedBusinessSectors', $excludedBusinessSectors);
+        }
+
+        if($request->get('tag') && is_array($request->get('tag')) && count($request->get('tag'))) {
+            foreach($request->get('tag') as $key => $tag) {
+                $qb
+                    ->leftJoin('p.tags', 'tag'.$key)
+                    ->andWhere('tag'.$key.'.name = :tag'.$key.' OR tag'.$key.'.id = :tagId'.$key)
+                    ->setParameter('tag'.$key, $tag)
+                    ->setParameter('tagId'.$key, $tag)
+                ;
+            }
+        }
+
+        if ($request->get('excludeTag') && is_array($request->get('excludeTag')) && count($request->get('excludeTag'))) {
+            $excludedTags = $request->get('excludeTag');
+
+            $qb
+                ->leftJoin('p.tags', 'excludeTag')
+                ->groupBy('p.id')
+                ->having('SUM(CASE WHEN excludeTag.id IN (:excludedTags) OR excludeTag.name IN (:excludedTags) THEN 1 ELSE 0 END) = 0')
+                ->setParameter('excludedTags', $excludedTags);
         }
 
         if($request->get('status') && is_array($request->get('status')) && count($request->get('status'))) {

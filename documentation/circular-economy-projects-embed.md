@@ -41,6 +41,7 @@
 | `disableTelemetry` | `Boolean` | Disable collection of telemetry data.                                                    | `true`                                                                  |
 | `history`          | `Object`  | Enable browser history support.                                                          | `{ mode: 'hash', base: 'http://localhost/projects' }`                   |
 | `templateHooks`    | `Object`  | Insert html into template hooks.                                                         | `{ projectContentAfter: (instance, project) => '<p>Hello World!</p>' }` |
+| `types`            | `Array`   | Types of projects.                                                                       | `['project', 'exemplary']`                                              |
 
 ### Styling
 
@@ -80,6 +81,7 @@ Basic styles can be overwritten using CSS variables:
         locale: 'fr',
         limit: 6,
         responsive: true,
+        types: ['exemplary'],
         fixedFilters: [
             { 
                 type: 'topic', 
@@ -107,9 +109,12 @@ Basic styles can be overwritten using CSS variables:
             // mapInstruments
             // filterInstruments
             // sortInstruments
-            // mapInstruments
-            // filterInstruments
-            // sortInstruments
+            // mapGeographicRegions
+            // filterGeographicRegions
+            // sortGeographicRegions
+            // mapTags
+            // filterTags
+            // sortTags
         },
         templateHooks: {
             projectContentAfter: (instance, project) => '<p>The project ID is: '+project.id+'</p>',

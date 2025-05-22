@@ -109,6 +109,16 @@ class CircularEconomyProject
     #[Groups(['circular_economy_project'])]
     private $businessSectors;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    #[ORM\ManyToMany(targetEntity: 'Tag')]
+    #[ORM\JoinTable(name: 'pv_circular_economy_project_tag')]
+    #[ORM\JoinColumn(name: 'circular_economy_project_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'tag_id', referencedColumnName: 'id')]
+    #[Groups(['circular_economy_project'])]
+    private $tags;
+
     #[ORM\Column(name: 'start_date', type: 'datetime', nullable: true)]
     #[Groups(['circular_economy_project'])]
     private $startDate;
@@ -185,6 +195,7 @@ class CircularEconomyProject
         $this->countries = new ArrayCollection();
         $this->states = new ArrayCollection();
         $this->instruments = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -621,6 +632,49 @@ class CircularEconomyProject
      */
     public function removeBusinessSector($businessSector) {
         $this->businessSectors->removeElement($businessSector);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTags() {
+        return $this->tags;
+    }
+
+    /**
+     * Set tags
+     *
+     * @return $this
+     */
+    public function setTags($tags) {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Add to tags
+     *
+     * @param $tag
+     * @return CircularEconomyProject
+     */
+    public function addTag($tag) {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param $tags
+     */
+    public function removeTag($tags) {
+        $this->tags->removeElement($tags);
     }
 
     /**

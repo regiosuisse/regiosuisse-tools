@@ -17,7 +17,7 @@
           class="tag-selector-component-selection-tag"
           v-for="option in (model || []).map((option) =>
             options.find((o) => o.id === option.id)
-          )"
+          ).filter(o => !context || o.context === context)"
           @click="removeOption(option)"
           v-if="showSelection"
         >
@@ -82,6 +82,10 @@ export default {
       type: String,
       default: "name",
     },
+    context: {
+      type: String,
+      default: null,
+    },
     readonly: Boolean,
     searchType: {
       type: String,
@@ -138,6 +142,9 @@ export default {
         return options
           .filter((option) => {
             return !this.getOptionById(option.id);
+          })
+          .filter((option) => {
+            return !this.context || option.context === this.context;
           })
           .sort((a, b) => {
             return a[this.label].localeCompare(b[this.label]);

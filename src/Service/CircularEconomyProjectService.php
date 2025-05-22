@@ -125,6 +125,17 @@ class CircularEconomyProjectService {
             ->setTranslations($payload['translations'] ?: [])
         ;
 
+        if($payload['type'] === 'project') {
+            $payload['tags'] = [];
+        }
+
+        if($payload['type'] === 'exemplary') {
+            $payload['topics'] = [];
+            $payload['geographicRegions'] = [];
+            $payload['instruments'] = [];
+            $payload['businessSectors'] = [];
+        }
+
         foreach($payload['countries'] as $item) {
             $entity = null;
             if(array_key_exists('id', $item) && $item['id']) {
@@ -206,6 +217,20 @@ class CircularEconomyProjectService {
             }
             if($entity) {
                 $project->addBusinessSector($entity);
+            }
+        }
+
+        foreach($payload['tags'] as $item) {
+            $entity = null;
+            if(array_key_exists('id', $item) && $item['id']) {
+                $entity = $this->em->getRepository(Tag::class)->find($item['id']);
+            }
+            if(!$entity && array_key_exists('name', $item)) {
+                $entity = $this->em->getRepository(Tag::class)
+                    ->findOneBy(['name' => $item['name']]);
+            }
+            if($entity) {
+                $project->addTag($entity);
             }
         }
 

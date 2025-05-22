@@ -25,12 +25,24 @@
                         <input id="term" type="text" class="form-control" v-model="term" @change="changeForm()">
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="type">Typ</label>
+                        <div class="select-wrapper">
+                            <select id="types" class="form-control" @change="addFilter({type: 'type', value: $event.target.value}); $event.target.value = null;">
+                                <option></option>
+                                <option value="project">Projekt</option>
+                                <option value="exemplary">Exemplarisch</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">
-                        <label for="topics">Thema</label>
+                        <label for="topics">Kategorie</label>
                         <div class="select-wrapper">
                             <select id="topics" class="form-control" @change="addFilter({type: 'topic', value: $event.target.value}); $event.target.value = null;">
                                 <option></option>
@@ -41,7 +53,7 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group">
-                        <label for="businessSectors">Geschäftsfeld</label>
+                        <label for="businessSectors">Sektor / Branche</label>
                         <div class="select-wrapper">
                             <select id="businessSectors" class="form-control" @change="addFilter({type: 'businessSector', value: $event.target.value}); $event.target.value = null;">
                                 <option></option>
@@ -74,12 +86,28 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <div class="select-wrapper">
+                            <select id="tags" class="form-control" @change="addFilter({type: 'tag', value: $event.target.value}); $event.target.value = null;">
+                                <option></option>
+                                <option v-for="tag in tags.filter(tag => tag.context?.startsWith('circularEconomyProject'))">{{tag.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="projects-component-filter-tags">
                 <div class="tag" v-for="filter of filters" @click="removeFilter({type: filter.type, value: filter.value})">
-                    <strong v-if="filter.type === 'topic'">Thema:</strong>
-                    <strong v-if="filter.type === 'businessSector'">Geschäftsfeld:</strong>
+                    <strong v-if="filter.type === 'topic'">Kategorie:</strong>
+                    <strong v-if="filter.type === 'businessSector'">Sektor / Branche:</strong>
                     <strong v-if="filter.type === 'instrument'">Finanzierung:</strong>
                     <strong v-if="filter.type === 'geographicRegion'">Gegographische Region:</strong>
+                    <strong v-if="filter.type === 'type'">Typ:</strong>
+                    <strong v-if="filter.type === 'tag'">Tag:</strong>
                     {{filter.value}}
                 </div>
             </div>
@@ -94,10 +122,11 @@
                     <th>ID</th>
                     <th>Bezeichnung</th>
                     <th>Typ</th>
-                    <th>Thema</th>
-                    <th>Geschäftsfeld</th>
+                    <th>Kategorie</th>
+                    <th>Sektor / Branche</th>
                     <th>Finanzierung</th>
                     <th>Geographische Region</th>
+                    <th>Tags</th>
                 </tr>
                 </thead>
                 <tbody v-if="!circularEconomyProjects.length && isLoading('circularEconomyProjects')">
@@ -113,11 +142,12 @@
                         <td>{{ circularEconomyProject.id }}</td>
                         <td>{{ translateField(circularEconomyProject, 'title', 'de') }}</td>
                         <td v-if="circularEconomyProject.type === 'project'">Projekt</td>
-                        <td v-else>Beispielhaft</td>
+                        <td v-else>Exemplarisch</td>
                         <td>{{ formatOneToMany(circularEconomyProject.topics, getTopicById) }}</td>
                         <td>{{ formatOneToMany(circularEconomyProject.businessSectors, getBusinessSectorById) }}</td>
                         <td>{{ formatOneToMany(circularEconomyProject.instruments, getInstrumentById) }}</td>
                         <td>{{ formatOneToMany(circularEconomyProject.geographicRegions, getGeographicRegionById) }}</td>
+                        <td>{{ formatOneToMany(circularEconomyProject.tags, getTagById) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -147,6 +177,7 @@ export default {
             businessSectors: state => state.businessSectors.all,
             instruments: state => state.instruments.all,
             geographicRegions: state => state.geographicRegions.all,
+            tags: state => state.tags.all,
         }),
         ...mapGetters({
             isLoading: 'loaders/isLoading',
@@ -155,6 +186,7 @@ export default {
             getBusinessSectorById: 'businessSectors/getById',
             getInstrumentById: 'instruments/getById',
             getGeographicRegionById: 'geographicRegions/getById',
+            getTagById: 'tags/getById',
         }),
     },
     methods: {

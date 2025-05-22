@@ -37,7 +37,7 @@
                         <div class="select-wrapper">
                             <select class="form-control" v-model="circularEconomyProject.type">
                                 <option value="project">Projekt</option>
-                                <option value="example">Beispielhaft</option>
+                                <option value="exemplary">Exemplarisch</option>
                             </select>
                         </div>
                     </div>
@@ -60,14 +60,14 @@
 
                     <div class="circular-economy-project-component-form-section-group-headline">Kategorisierung</div>
 
-                    <div class="row">
+                    <div class="row" v-if="circularEconomyProject.type === 'project'">
                         <div class="col-md-3">
-                            <label for="topics">Thema</label>
+                            <label for="topics">Kategorie</label>
                             <tag-selector id="topics" :model="circularEconomyProject.topics"
                                           :options="topics.filter(e => !e.context || e.context === 'circularEconomyProject')" :searchType="'select'"></tag-selector>
                         </div>
                         <div class="col-md-3">
-                            <label for="businessSectors">Geschäftsfelder</label>
+                            <label for="businessSectors">Sektor / Branche</label>
                             <tag-selector id="businessSectors" :model="circularEconomyProject.businessSectors"
                                           :options="businessSectors.filter(e => !e.context || e.context === 'circularEconomyProject')" :searchType="'select'"></tag-selector>
                         </div>
@@ -80,6 +80,52 @@
                             <label for="instruments">Finanzierung</label>
                             <tag-selector id="instruments" :model="circularEconomyProject.instruments"
                                           :options="instruments.filter(e => !e.context || e.context === 'circularEconomyProject')" :searchType="'select'"></tag-selector>
+                        </div>
+                    </div>
+
+                    <div class="row" v-if="circularEconomyProject.type === 'exemplary'">
+                        <div class="col-md-3">
+                            <label for="tags:hierarchy">Handlungsebene</label>
+                            <tag-selector id="tags:hierarchy"
+                                          :model="circularEconomyProject.tags"
+                                          :context="'circularEconomyProject:hierarchy'"
+                                          :options="tags"
+                                          :searchType="'select'"></tag-selector>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tags:topic">Thematischer Bereich / Branche</label>
+                            <tag-selector id="tags:topic"
+                                          :model="circularEconomyProject.tags"
+                                          :context="'circularEconomyProject:topic'"
+                                          :options="tags"
+                                          :searchType="'select'"></tag-selector>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tags:action">Handlungsfelder</label>
+                            <tag-selector id="tags:action"
+                                          :model="circularEconomyProject.tags"
+                                          :context="'circularEconomyProject:action'"
+                                          :options="tags"
+                                          :searchType="'select'"></tag-selector>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tags:policy">Betroffene Politiken</label>
+                            <tag-selector id="tags:policy"
+                                          :model="circularEconomyProject.tags"
+                                          :context="'circularEconomyProject:policy'"
+                                          :options="tags"
+                                          :searchType="'select'"></tag-selector>
+                        </div>
+                    </div>
+
+                    <div class="row" v-if="circularEconomyProject.type === 'exemplary'">
+                        <div class="col-md-3">
+                            <label for="tags:actor">Einzubindende Akteure</label>
+                            <tag-selector id="tags:actor"
+                                          :model="circularEconomyProject.tags"
+                                          :context="'circularEconomyProject:actor'"
+                                          :options="tags"
+                                          :searchType="'select'"></tag-selector>
                         </div>
                     </div>
 
@@ -185,6 +231,7 @@ export default {
                 title: '',
                 keywords: '',
                 description: '',
+                tags: [],
                 topics: [],
                 businessSectors: [],
                 geographicRegions: [],
@@ -261,6 +308,7 @@ export default {
             businessSectors: state => state.businessSectors.all,
             geographicRegions: state => state.geographicRegions.all,
             instruments: state => state.instruments.all,
+            tags: state => state.tags.all,
         }),
     },
     methods: {
