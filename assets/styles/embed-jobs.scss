@@ -208,14 +208,13 @@
 
     .modal-title {
         color: #212529;
-        font-size: 1.75rem;
+        font-size: 1.75em;
         font-weight: 600;
         margin-bottom: 1rem;
     }
 
     .header-description {
         color: #6c757d;
-        font-size: 1rem;
         margin: 0;
     }
 
@@ -229,7 +228,7 @@
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.5em;
         }
     }
 }
@@ -291,7 +290,6 @@
         span {
             display: block;
             margin-bottom: 0.25rem;
-            font-size: 0.9rem;
             color: #495057;
         }
 
@@ -321,7 +319,7 @@
     .modal-title {
         text-align: center;
         margin-bottom: 2rem;
-        font-size: 1.5rem;
+        font-size: 1.5em;
         font-weight: bold;
     }
 
@@ -368,7 +366,6 @@
         background: #f0f0f0;
         padding: 0.25rem 0.5rem;
         border-radius: 16px;
-        font-size: 0.9em;
 
         .tag-remove {
             background: none;
@@ -376,7 +373,6 @@
             margin-left: 0.25rem;
             cursor: pointer;
             padding: 0 0.25rem;
-            font-size: 1.1em;
 
             &:hover {
                 color: #dc3545;
@@ -422,7 +418,6 @@
     }
 
     .file-selector-component-add span {
-        font-size: 0.8rem;
         font-weight: 500;
         color: #9D9D9D;
     }
@@ -441,7 +436,6 @@
     .help-text {
         display: block;
         margin-bottom: 0.5rem;
-        font-size: 0.8rem;
     }
 
     .form-control {
@@ -449,7 +443,6 @@
         padding: 0.5rem;
         border: 1px solid #e5e5e5;
         border-radius: 4px;
-        font-size: 1em;
 
         &:focus {
             outline: none;
@@ -521,7 +514,6 @@
         }
 
         span {
-            font-size: 1rem;
         }
     }
 
@@ -556,7 +548,6 @@
             padding: 0;
             margin: 0;
             flex-grow: 1;
-            font-size: 0.9rem;
             color: #495057;
             width: auto;
             min-width: 0;
@@ -599,7 +590,7 @@
             .material-icons,
             span.material-icons,
             i.material-icons {
-                font-size: 1.2rem;
+                font-size: 1.2em;
             }
         }
 
