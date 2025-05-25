@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+        <style>
+            body, p {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333333;
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            /* Container styling */
+            .email-container {
+                background-color: #ffffff;
+                max-width: 600px;
+                padding: 20px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            /* Header and logo styling */
+            .email-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .logo {
+                max-width: 180px;
+                height: auto;
+                margin-bottom: 2em;
+            }
+            /* Body text styling */
+            .email-content {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            .email-content p {
+                margin-bottom: 15px;
+            }
+            .email-content a {
+                color: #B4BE00;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            /* Footer styling */
+            .email-footer {
+                font-size: 14px;
+                color: #666666;
+                margin-top: 20px;
+                text-align: center;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+
+            <div class="email-header">
+                <p>
+                    <img src="{{ asset('build/images/regiosuisse-logo.svg') }}" alt="regiosuisse Logo" class="logo">
+                </p>
+                <h3>{{ title }}</h3>
+            </div>
+
+            <div class="email-content">
+                {{ body|raw }}
+            </div>
+
+            <div class="email-footer">
+                <p>Herzliche Grüsse,</p>
+                <p>Ihr regiosuisse-Team</p>
+            </div>
+
+        </div>
+    </body>
+</html>

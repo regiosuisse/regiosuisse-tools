@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Location;
 use App\Entity\Stint;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,10 +13,12 @@ use App\Entity\Inbox;
 class JobService {
 
     protected $em;
+    protected $userService;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, UserService $userService)
     {
         $this->em = $em;
+        $this->userService = $userService;
     }
 
     public function validateFields($payload, $fields = [])
@@ -183,6 +186,26 @@ class JobService {
 
         $this->em->persist($inbox);
         $this->em->flush();
+
+        $users = $this->em->getRepository(User::class)->findAll();
+
+        foreach($users as $user) {
+            if(!in_array('JOBS_INBOX', $user->getNotifications() ?? [])) {
+                continue;
+            }
+
+            $this->userService->sendNotification(
+                $user,
+                'Eine neue Stellenanzeige wurde über die Website eingereicht',
+                sprintf('%s', $payload['title']),
+                sprintf(
+                    '<p>%s hat eine neue Stellenanzeige eingereicht.</p><p>Prüfen Sie den Posteingang um den Eintrag freizuschalten.</p><p>Kontaktdaten für Rückfragen: %s / %s</p>',
+                    htmlspecialchars($payload['contactInfo']['name'] ?? ''),
+                    htmlspecialchars($payload['contactInfo']['email'] ?? ''),
+                    htmlspecialchars($payload['contactInfo']['phone'] ?? ''),
+                ),
+            );
+        }
 
         return [
             'inbox' => $inbox

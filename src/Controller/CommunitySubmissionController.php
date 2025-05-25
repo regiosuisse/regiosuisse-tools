@@ -43,7 +43,7 @@ class CommunitySubmissionController extends AbstractController
         }
 
         // For other submission types (jobs, events), use the default template
-        return $this->render('community_submission/verification.html.twig', [
+        return $this->render('community/verification.html.twig', [
             'success' => $success,
         ]);
     }

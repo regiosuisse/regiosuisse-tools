@@ -8,17 +8,28 @@ use App\Entity\Topic;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Twig\Environment;
 
 class UserService {
 
     protected $em;
     protected $passwordHasher;
+    protected $mailer;
+    protected $mailerFrom;
+    protected $host;
+    protected $twig;
 
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, Environment $twig, MailerInterface $mailer, string $mailerFrom, string $host)
     {
         $this->em = $em;
         $this->passwordHasher = $passwordHasher;
+        $this->twig = $twig;
+        $this->mailer = $mailer;
+        $this->mailerFrom = $mailerFrom;
+        $this->host = $host;
     }
 
     public function validateFields($payload, $fields = [])
@@ -119,6 +130,21 @@ class UserService {
         }
 
         return $user;
+    }
+
+    public function sendNotification (User $user, string $subject, string $title, string $body)
+    {
+        $email = (new Email())
+            ->from($this->mailerFrom)
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->html($this->twig->render('emails/notification.html.twig', [
+                'title' => $title,
+                'body' => $body,
+            ]))
+        ;
+
+        $this->mailer->send($email);
     }
 
 }

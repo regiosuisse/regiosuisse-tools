@@ -100,6 +100,30 @@
                                     </a>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Agenda Posteingang</td>
+                                <td>Benachrichtigen bei neuen Agenda-Einreichungen über die Website.</td>
+                                <td>
+                                    <a class="button success"
+                                       :class="{error: !user.notifications.includes('EVENTS_INBOX')}"
+                                       @click="!user.notifications.includes('EVENTS_INBOX') ? user.notifications.push('EVENTS_INBOX') : user.notifications.splice(user.notifications.indexOf('EVENTS_INBOX'), 1)">
+                                        <span v-if="user.notifications.includes('EVENTS_INBOX')">Aktiv</span>
+                                        <span v-else>Inaktiv</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Stellenmarkt Posteingang</td>
+                                <td>Benachrichtigen bei neuen Job-Einreichungen über die Website.</td>
+                                <td>
+                                    <a class="button success"
+                                       :class="{error: !user.notifications.includes('JOBS_INBOX')}"
+                                       @click="!user.notifications.includes('JOBS_INBOX') ? user.notifications.push('JOBS_INBOX') : user.notifications.splice(user.notifications.indexOf('JOBS_INBOX'), 1)">
+                                        <span v-if="user.notifications.includes('JOBS_INBOX')">Aktiv</span>
+                                        <span v-else>Inaktiv</span>
+                                    </a>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

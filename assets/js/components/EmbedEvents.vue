@@ -11,17 +11,6 @@
         </div>
 
         <div class="embed-events-filters">
-            <div class="embed-events-filters-toggle" data-filter-type="type"
-                 @click="clickToggleType()" :class="{ 'is-active': type === 'regiosuisse' }">
-                <div class="embed-events-filters-toggle-button"></div>
-                <div class="embed-events-filters-toggle-label">{{ $t('Nur regiosuisse-Veranstaltungen anzeigen', locale) }}</div>
-            </div>
-
-            <div class="embed-events-filters-toggle" data-filter-type="archive"
-                 @click="clickToggleArchive()" :class="{ 'is-active': archive }">
-                <div class="embed-events-filters-toggle-button"></div>
-                <div class="embed-events-filters-toggle-label">{{ $t('Vergangene Veranstaltungen anzeigen', locale) }}</div>
-            </div>
 
             <div class="embed-events-filters-select" data-filter-type="topics">
                 <div class="embed-events-filters-select-label"
@@ -89,11 +78,26 @@
                      :key="fIndex"
                      @click.stop="clickToggleFilter(filter)">{{ translateField(filter.entity, 'name', locale) }}</div>
             </div>
+
         </div>
 
-        <!-- <div class="embed-events-filterbar">
+        <div class="embed-events-filters">
+            <div class="embed-events-filters-toggle" data-filter-type="type"
+                 @click="clickToggleType()" :class="{ 'is-active': type === 'regiosuisse' }">
+                <div class="embed-events-filters-toggle-button"></div>
+                <div class="embed-events-filters-toggle-label">{{ $t('Nur regiosuisse-Veranstaltungen anzeigen', locale) }}</div>
+            </div>
+
+            <div class="embed-events-filters-toggle" data-filter-type="archive"
+                 @click="clickToggleArchive()" :class="{ 'is-active': archive }">
+                <div class="embed-events-filters-toggle-button"></div>
+                <div class="embed-events-filters-toggle-label">{{ $t('Vergangene Veranstaltungen anzeigen', locale) }}</div>
+            </div>
+        </div>
+
+        <div class="embed-events-filterbar">
             <button class="button primary add-event-button" @click="showEventModal = true">{{ $t('event.submit', locale) }}</button>
-        </div> -->
+        </div>
 
         <transition name="embed-events-list" mode="out-in">
             <div class="embed-events-list" v-if="!isLoading">
