@@ -1,7 +1,7 @@
 <template>
-    <div class="modal-overlay" @click.self="close">
-      <div class="modal-content">
-        <button class="modal-close" @click="close">×</button>
+    <div class="event-modal-overlay" @click.self="close">
+      <div class="event-modal-content">
+        <button class="event-modal-close" @click="close">×</button>
         <slot></slot>
       </div>
     </div>
@@ -19,7 +19,7 @@
   </script>
   
   <style scoped>
-  .modal-overlay {
+  .event-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -32,14 +32,14 @@
     z-index: 1000;
   }
   
-  .modal-content {
+  .event-modal-content {
     padding: 20px;
     border-radius: 5px;
     width: 80%;
     position: relative;
   }
   
-  .modal-close {
+  .event-modal-close {
     position: absolute;
     top: 10px;
     right: 10px;
