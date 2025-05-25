@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Entity\Inbox;
 use Symfony\Component\HttpFoundation\Response;
@@ -316,7 +317,7 @@ class ApiJobsController extends AbstractController
             
             // Return URL for confirmation page
             return $this->json([
-                'redirectUrl' => $this->generateUrl('community_submission_confirmation')
+                'redirectUrl' => $this->generateUrl('community_submission_confirmation', [], UrlGeneratorInterface::ABSOLUTE_URL)
             ]);
 
         } catch (\Exception $e) {
