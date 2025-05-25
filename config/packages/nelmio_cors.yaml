@@ -9,10 +9,10 @@ nelmio_cors:
     paths:
         '^/api/':
             allow_origin: [ '*' ]
-            allow_methods: [ 'GET', 'OPTIONS' ]
+            allow_methods: [ 'GET', 'OPTIONS', 'POST' ]
             max_age: 3600
         '^/embed/':
             allow_origin: [ '*' ]
-            allow_methods: [ 'GET', 'OPTIONS' ]
+            allow_methods: [ 'GET', 'OPTIONS', 'POST' ]
             max_age: 3600
         '^/': null
