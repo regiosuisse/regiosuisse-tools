@@ -668,7 +668,7 @@ export default {
             }
 
             window.scrollTo({
-                top: this.$refs.embedCircularEconomyProjects.offsetTop,
+                top: this.$refs.embedCircularEconomyProjects.getBoundingClientRect().top + window.scrollY - 150,
                 behavior: 'smooth',
             });
 
