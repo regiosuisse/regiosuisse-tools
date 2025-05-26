@@ -47,10 +47,14 @@ class CommunitySubmissionService
     public function verifySubmission(string $token): bool
     {
         $submission = $this->entityManager->getRepository(CommunitySubmission::class)
-            ->findOneBy(['verificationToken' => $token, 'isVerified' => false]);
+            ->findOneBy(['verificationToken' => $token]);
 
         if (!$submission) {
             return false;
+        }
+
+        if ($submission->isVerified()) {
+            return true;
         }
 
         // Mark as verified
