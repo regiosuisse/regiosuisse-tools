@@ -138,6 +138,13 @@ class ApiCircularEconomyProjectsController extends AbstractController
         schema: new OA\Schema(type: 'string', enum: ['public', 'draft']),
     )]
     #[OA\Parameter(
+        name: 'randomize',
+        description: 'Randomize projects by a frequently updated random seed',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', enum: [0, 1]),
+    )]
+    #[OA\Parameter(
         name: 'limit',
         description: 'Limit returned items',
         in: 'query',
@@ -426,6 +433,11 @@ class ApiCircularEconomyProjectsController extends AbstractController
 
             }
 
+        } else if ($request->get('randomize')) {
+            $qb
+                ->addOrderBy('RAND(:timeIntervalSeed)')
+                ->setParameter('timeIntervalSeed', intval(date('Ymd')))
+            ;
         } else {
             $qb
                 ->addOrderBy('p.id', 'DESC')

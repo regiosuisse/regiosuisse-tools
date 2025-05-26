@@ -1,6 +1,6 @@
 <template>
 
-    <div class="embed-circular-economy-projects" :class="[$env.INSTANCE_ID+'-circular-economy-projects', {'is-responsive': responsive}]" @click.stop="clickInside">
+    <div class="embed-circular-economy-projects" :class="[$env.INSTANCE_ID+'-circular-economy-projects', {'is-responsive': responsive}]" @click.stop="clickInside" ref="embedCircularEconomyProjects">
 
         <div v-if="templateHook('projectsBefore', locale)" v-html="templateHook('projectsBefore', locale)"></div>
 
@@ -529,6 +529,7 @@ export default {
             params.limit = this.limit;
             params.offset = this.offset;
             params.type = this.types;
+            params.randomize = 1;
 
             if(this.$clientOptions?.middleware?.modifyQueryParams) {
                 params = this.$clientOptions.middleware.modifyQueryParams(params);
@@ -665,6 +666,11 @@ export default {
                     title: translateField(project, 'title', this.locale),
                 });
             }
+
+            window.scrollTo({
+                top: this.$refs.embedCircularEconomyProjects.offsetTop,
+                behavior: 'smooth',
+            });
 
             this.project = project;
 
