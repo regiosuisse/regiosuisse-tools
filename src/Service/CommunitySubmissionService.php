@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class CommunitySubmissionService
@@ -21,7 +22,8 @@ class CommunitySubmissionService
         private JobService $jobService,
         private EventService $eventService,
         private ContactService $contactService,
-        private Environment $twig
+        private Environment $twig,
+        private TranslatorInterface $translator
     ) {}
 
     public function createPendingSubmission(array $submissionData, string $type = CommunitySubmission::TYPE_JOB): CommunitySubmission
@@ -137,7 +139,7 @@ class CommunitySubmissionService
         $data = $submission->getSubmissionData();
         $contactInfo = [];
         $contactGroups = [];
-        $language = 'de';
+        $language = $this->translator->getLocale() ?? 'de';
 
         if ($submission->getType() === CommunitySubmission::TYPE_NEWSLETTER) {
             $contactInfo = $data['contactInfo'] ?? [];
@@ -166,9 +168,9 @@ class CommunitySubmissionService
                 'it' => 'Conferma l\'iscrizione alla newsletter - regiosuisse.ch',
                 default => 'Bestätigen Sie Ihre Newsletter-Anmeldung - regiosuisse.ch',
             },
-            CommunitySubmission::TYPE_JOB => 'Bestätigen Sie Ihre Stellenausschreibung - regiosuisse.ch',
-            CommunitySubmission::TYPE_EVENT => 'Bestätigen Sie Ihre Veranstaltung - regiosuisse.ch',
-            default => 'Bestätigen Sie Ihre Eingabe - regiosuisse.ch',
+            CommunitySubmission::TYPE_JOB => $this->translator->trans('Bestätigen Sie Ihre Stellenausschreibung - regiosuisse.ch'),
+            CommunitySubmission::TYPE_EVENT => $this->translator->trans('Bestätigen Sie Ihre Veranstaltung - regiosuisse.ch'),
+            default => $this->translator->trans('Bestätigen Sie Ihre Eingabe - regiosuisse.ch'),
         };
 
         // Render unified template
@@ -211,20 +213,20 @@ class CommunitySubmissionService
 
         // By default (for job/event) in German:
         $title = match ($type) {
-            CommunitySubmission::TYPE_JOB => 'Bestätigen Sie Ihre Stellenausschreibung',
-            CommunitySubmission::TYPE_EVENT => 'Bestätigen Sie Ihre Veranstaltung',
+            CommunitySubmission::TYPE_JOB => $this->translator->trans('Bestätigen Sie Ihre Stellenausschreibung'),
+            CommunitySubmission::TYPE_EVENT => $this->translator->trans('Bestätigen Sie Ihre Veranstaltung'),
             CommunitySubmission::TYPE_NEWSLETTER => '', // filled below if newsletter
-            default => 'Bestätigen Sie Ihre Eingabe',
+            default => $this->translator->trans('Bestätigen Sie Ihre Eingabe'),
         };
 
         $description = match ($type) {
             CommunitySubmission::TYPE_JOB =>
-                'Vielen Dank für Ihre Stellenausschreibung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
+                $this->translator->trans('Vielen Dank für Ihre Stellenausschreibung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
             CommunitySubmission::TYPE_EVENT =>
-                'Vielen Dank für das Einreichen Ihrer Veranstaltung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
+                $this->translator->trans('Vielen Dank für das Einreichen Ihrer Veranstaltung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
             CommunitySubmission::TYPE_NEWSLETTER => '', // filled below if newsletter
             default =>
-                'Vielen Dank für Ihre Eingabe auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,',
+                $this->translator->trans('Vielen Dank für Ihre Eingabe auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
         };
 
         $newsletterListHtml = '';

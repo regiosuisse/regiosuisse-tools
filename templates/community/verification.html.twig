@@ -15,10 +15,10 @@
                         <div class="icon-container">
                             <i class="material-icons">check_circle</i>
                         </div>
-                        <h1>Eingabe erfolgreich bestätigt</h1>
+                        <h1>{{ 'Eingabe erfolgreich bestätigt'|trans }}</h1>
                         <p>
-                            Ihre Eingabe wurde erfolgreich verifiziert und wird nun von unserem Team überprüft.
-                            Sie erhalten eine Benachrichtigung, sobald die Veröffentlichung erfolgt ist.
+                            {{ 'Ihre Eingabe wurde erfolgreich verifiziert und wird nun von unserem Team überprüft.'|trans }}
+                            {{ 'Sie erhalten eine Benachrichtigung, sobald die Veröffentlichung erfolgt ist.'|trans }}
                         </p>
                     </div>
                 {% else %}
@@ -26,10 +26,10 @@
                         <div class="icon-container">
                             <i class="material-icons">error</i>
                         </div>
-                        <h1>Verifizierung fehlgeschlagen</h1>
+                        <h1>{{ 'Verifizierung fehlgeschlagen'|trans }}</h1>
                         <p>
-                            Der Verifizierungslink ist ungültig oder wurde bereits verwendet.
-                            Bitte stellen Sie sicher, dass Sie den korrekten Link verwenden.
+                            {{ 'Der Verifizierungslink ist ungültig oder wurde bereits verwendet.'|trans }}
+                            {{ 'Bitte stellen Sie sicher, dass Sie den korrekten Link verwenden.'|trans }}
                         </p>
                     </div>
                 {% endif %}

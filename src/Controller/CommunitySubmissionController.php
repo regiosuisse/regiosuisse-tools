@@ -16,7 +16,7 @@ class CommunitySubmissionController extends AbstractController
         private EntityManagerInterface $entityManager
     ) {}
 
-    #[Route('/verify/{token}', name: 'verify_community_submission')]
+    #[Route('/verify/{token}/{_locale}', name: 'verify_community_submission')]
     public function verify(string $token): Response
     {
         $success = $this->submissionService->verifySubmission($token);
@@ -48,7 +48,7 @@ class CommunitySubmissionController extends AbstractController
         ]);
     }
 
-    #[Route('api/v1/community/submit/confirmation', name: 'community_submission_confirmation')]
+    #[Route('/api/v1/community/submit/confirmation/{_locale}', name: 'community_submission_confirmation')]
     public function confirmationPage(): Response
     {
         return $this->render('community/confirmation.html.twig');

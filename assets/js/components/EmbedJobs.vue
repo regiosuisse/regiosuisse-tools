@@ -162,7 +162,8 @@
                             <div class="form-group">
                                 <label for="jobLocation">{{ $t('job.location', locale) }}</label>
                                 <small class="help-text">{{ $t('job.location.help', locale) }}</small>
-                                <tag-selector id="jobLocation" 
+                                <tag-selector id="jobLocation"
+                                    :locale="locale"
                                     :model="newJob.locations"
                                     :options="locations.filter(location => !location.context || location.context === 'job')" 
                                     :searchType="'select'"
@@ -172,7 +173,8 @@
                             <div class="form-group">
                                 <label for="jobStint">{{ $t('job.workload', locale) }}</label>
                                 <small class="help-text">{{ $t('job.workload.help', locale) }}</small>
-                                <tag-selector id="jobStint" 
+                                <tag-selector id="jobStint"
+                                    :locale="locale"
                                     :model="newJob.stints"
                                     :options="stints.filter(stint => !stint.context || stint.context === 'job')" 
                                     :searchType="'select'"
@@ -651,10 +653,10 @@ export default {
                 employer: this.newJob.employer,
                 location: this.newJob.location,
                 contact: [
-                    this.newJob.contactInfo.name && `Kontaktperson: ${this.newJob.contactInfo.name}`,
-                    this.newJob.contactInfo.email && `E-Mail: ${this.newJob.contactInfo.email}`,
-                    this.newJob.contactInfo.phone && `Telefon: ${this.newJob.contactInfo.phone}`,
-                    this.newJob.contactInfo.department && `Abteilung: ${this.newJob.contactInfo.department}`
+                    this.newJob.contactInfo.name && `${this.newJob.contactInfo.name}`,
+                    this.newJob.contactInfo.email && `${this.newJob.contactInfo.email}`,
+                    this.newJob.contactInfo.phone && `${this.newJob.contactInfo.phone}`,
+                    this.newJob.contactInfo.department && `${this.newJob.contactInfo.department}`
                 ].filter(Boolean).join('\n'),
                 contactInfo: this.newJob.contactInfo,
                 applicationDeadline: this.newJob.applicationDeadline,
@@ -676,7 +678,7 @@ export default {
                 }
             }
 
-            this.$store.dispatch('jobs/createFromEmbed', jobData)
+            this.$store.dispatch('jobs/createFromEmbed', {...jobData, locale: this.locale})
                 .then(response => {
                     // Open confirmation page in new tab
                     window.location.href = response.redirectUrl;

@@ -179,7 +179,8 @@
                             <div class="form-group">
                                 <label for="eventLocation">{{ $t('event.location', locale) }}</label>
                                 <small class="help-text">{{ $t('event.location.help', locale) }}</small>
-                                <tag-selector id="eventLocation" 
+                                <tag-selector id="eventLocation"
+                                    :locale="locale"
                                     :model="newEvent.locations"
                                     :options="locations.filter(location => !location.context || location.context === 'event')" 
                                     :searchType="'select'"
@@ -190,7 +191,8 @@
                             <div class="form-group">
                                 <label for="eventTopics">{{ $t('event.topics', locale) }}</label>
                                 <small class="help-text">{{ $t('event.topics.help', locale) }}</small>
-                                <tag-selector id="eventTopics" 
+                                <tag-selector id="eventTopics"
+                                    :locale="locale"
                                     :model="newEvent.topics"
                                     :options="topics.filter(topic => !topic.context || topic.context === 'event')" 
                                     :searchType="'select'">
@@ -200,7 +202,8 @@
                             <div class="form-group">
                                 <label for="eventLanguages">{{ $t('event.languages', locale) }}</label>
                                 <small class="help-text">{{ $t('event.languages.help', locale) }}</small>
-                                <tag-selector id="eventLanguages" 
+                                <tag-selector id="eventLanguages"
+                                    :locale="locale"
                                     :model="newEvent.languages"
                                     :options="languages.filter(language => !language.context || language.context === 'event')" 
                                     :searchType="'select'">
@@ -794,10 +797,10 @@ export default {
                 startDate: this.newEvent.startDate,
                 endDate: this.newEvent.endDate,
                 contact: [
-                    this.newEvent.contactInfo.name && `Kontaktperson: ${this.newEvent.contactInfo.name}`,
-                    this.newEvent.contactInfo.email && `E-Mail: ${this.newEvent.contactInfo.email}`,
-                    this.newEvent.contactInfo.phone && `Telefon: ${this.newEvent.contactInfo.phone}`,
-                    this.newEvent.contactInfo.department && `Abteilung: ${this.newEvent.contactInfo.department}`
+                    this.newEvent.contactInfo.name && `${this.newEvent.contactInfo.name}`,
+                    this.newEvent.contactInfo.email && `${this.newEvent.contactInfo.email}`,
+                    this.newEvent.contactInfo.phone && `${this.newEvent.contactInfo.phone}`,
+                    this.newEvent.contactInfo.department && `${this.newEvent.contactInfo.department}`
                 ].filter(Boolean).join('\n'),
                 topics: topics,
                 languages: languages,
@@ -825,7 +828,7 @@ export default {
                 }
             };
 
-            this.$store.dispatch('events/createFromEmbed', eventData)
+            this.$store.dispatch('events/createFromEmbed', {...eventData, locale: this.locale})
                 .then(response => {
                     // Show success message
                     this.modal = {

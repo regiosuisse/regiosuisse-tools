@@ -31,7 +31,7 @@ export default {
     },
 
     createFromEmbed(payload) {
-        return axios.post(endpoint + '/embed', payload);
+        return axios.post(endpoint + '/embed/' + payload?.locale, payload);
     },
 
 };

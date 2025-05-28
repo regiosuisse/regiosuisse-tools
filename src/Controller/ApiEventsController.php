@@ -460,7 +460,7 @@ class ApiEventsController extends AbstractController
 
     }
 
-    #[Route('/embed', name: 'api_events_create_from_embed', methods: ['POST'])]
+    #[Route('/embed/{_locale}', name: 'api_events_create_from_embed', methods: ['POST'])]
     public function createFromEmbed(Request $request): Response
     {
         try {
