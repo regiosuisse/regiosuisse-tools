@@ -197,7 +197,7 @@
                     <div class="embed-circular-economy-projects-content-project-title">{{ project.title }}</div>
 
                     <div class="embed-circular-economy-projects-content-project-description" v-if="project.description">
-                        <div v-html="project.description"></div>
+                        <div v-html="translateField(project, 'description', locale)"></div>
                     </div>
 
                     <div class="embed-circular-economy-projects-content-project-videos" v-if="(translateField(project, 'videos', locale) || []).filter(e => e.value).length">
@@ -243,7 +243,7 @@
                         <div class="embed-circular-economy-projects-content-project-attributes-attribute"
                              v-if="project.topics?.length">
 
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Thema', locale) }}</div>
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Kategorie', locale) }}</div>
 
                             <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
                                 <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
@@ -271,7 +271,7 @@
                         <div class="embed-circular-economy-projects-content-project-attributes-attribute"
                              v-if="project.businessSectors?.length">
 
-                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Geschäftsfeld', locale) }}</div>
+                            <div class="embed-circular-economy-projects-content-project-attributes-attribute-label">{{ $t('Sektor / Branche', locale) }}</div>
 
                             <div class="embed-circular-economy-projects-content-project-attributes-attribute-values">
                                 <div class="embed-circular-economy-projects-content-project-attributes-attribute-values-value"
