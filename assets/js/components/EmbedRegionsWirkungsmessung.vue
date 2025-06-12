@@ -1791,6 +1791,7 @@ export default {
                 while(this.markers.length) {
                     this.markers.pop().remove();
                 }
+                let mouseLeaveTimeout = null;
                 for(let project of projects) {
                     let el = document.createElement('div');
                     el.className = 'embed-regions-content-map-marker';
@@ -1812,10 +1813,20 @@ export default {
                         event.stopPropagation();
                     });
                     el.addEventListener('mouseenter', (event) => {
+
+                        clearTimeout(mouseLeaveTimeout);
+
+                        for(let m of this.markers) {
+                            m.getElement().classList.remove('is-active');
+                        }
+
                         el.classList.add('is-active');
+
                     });
                     el.addEventListener('mouseleave', (event) => {
-                        el.classList.remove('is-active');
+                        mouseLeaveTimeout = setTimeout(() => {
+                            el.classList.remove('is-active');
+                        }, 2000);
                     });
                     el.addEventListener('click', () => {
                         this.map.flyTo({
