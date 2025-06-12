@@ -1811,18 +1811,13 @@ export default {
                     el.querySelector('a')?.addEventListener('click', (event) => {
                         event.stopPropagation();
                     });
-                    el.addEventListener('click', () => {
-
-                        if(el.classList.contains('is-active')) {
-                            el.classList.remove('is-active');
-                            return;
-                        }
-
-                        for(let m of this.markers) {
-                            m.getElement().classList.remove('is-active');
-                        }
-
+                    el.addEventListener('mouseenter', (event) => {
                         el.classList.add('is-active');
+                    });
+                    el.addEventListener('mouseleave', (event) => {
+                        el.classList.remove('is-active');
+                    });
+                    el.addEventListener('click', () => {
                         this.map.flyTo({
                             center: project.lngLat,
                             zoom: 9,
