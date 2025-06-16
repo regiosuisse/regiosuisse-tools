@@ -23,7 +23,8 @@ class CommunitySubmissionService
         private EventService $eventService,
         private ContactService $contactService,
         private Environment $twig,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private string $mailerFrom
     ) {}
 
     public function createPendingSubmission(array $submissionData, string $type = CommunitySubmission::TYPE_JOB): CommunitySubmission
@@ -183,7 +184,7 @@ class CommunitySubmissionService
         );
 
         $email = (new Email())
-            ->from('web@regiosuisse.ch')
+            ->from($this->mailerFrom)
             ->to($submission->getEmail())
             ->subject($subject)
             ->html($html);

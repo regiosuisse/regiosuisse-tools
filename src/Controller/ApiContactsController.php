@@ -853,7 +853,8 @@ class ApiContactsController extends AbstractController
     public function sendVerificationEmails(
         Request $request,
         MailerInterface $mailer,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        string $mailerFrom
     ) {
         $data = json_decode($request->getContent(), true);
         $emails = $data['emails'] ?? [];
@@ -890,7 +891,7 @@ class ApiContactsController extends AbstractController
                 };
 
                 $emailMessage = (new Email())
-                    ->from('no-reply@regiosuisse.ch')
+                    ->from($mailerFrom)
                     ->to($contact->getEmail())
                     ->subject($locale === 'fr' ? 'Confirmez vos coordonnées' : ($locale === 'it' ? 'Conferma i tuoi dati di contatto' : 'Bestätigen Sie Ihre Kontaktdaten'))
                     ->html(
