@@ -392,7 +392,7 @@ const data = [
             "UR"
         ],
         "Fördermassnahme": "NRP",
-        "Projekt": "Kompetenzzentrum Fischzucht Erstfeld",
+        "Projekt": "Kompetenzzentrum Fischzucht Erstfeld am Neuenburgersee",
         "Projektträgerschaft": "hub Neuchâtel",
         "Koordinaten Pin": [
             46.99262628441352,
@@ -1381,7 +1381,7 @@ const data = [
             "NE"
         ],
         "Fördermassnahme": "NRP",
-        "Projekt": "Pôle Suisse de Technologie Solaire  ",
+        "Projekt": "Pôle Suisse de Technologie Solaire",
         "Projektträgerschaft": "Service de l'économie (NECO)",
         "Koordinaten Pin": [
             46.99719970258096,
@@ -1398,7 +1398,7 @@ const data = [
             "Industrie & Gewerbe"
         ],
         "id": "b751b13a-55ad-40ca-885c-99e8972db591",
-        "Link": null
+        "Link": ""
     },
     {
         "Jahr": 2012,
