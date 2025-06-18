@@ -1378,31 +1378,6 @@ const data = [
     {
         "Jahr": 2012,
         "Kanton": [
-            "NE"
-        ],
-        "Fördermassnahme": "NRP",
-        "Projekt": "Pôle Suisse de Technologie Solaire",
-        "Projektträgerschaft": "Service de l'économie (NECO)",
-        "Koordinaten Pin": [
-            46.99719970258096,
-            6.938907444538985
-        ],
-        "Projektbeschreibung": null,
-        "Hinweise": "Projektsummary wurde im Mai 2013 nochmals aktualisiert",
-        "Start": 2012,
-        "End": 2013,
-        "Eval": 2012,
-        "Projektkosten": null,
-        "Anteil NRP in %": null,
-        "Tags": [
-            "Industrie & Gewerbe"
-        ],
-        "id": "b751b13a-55ad-40ca-885c-99e8972db591",
-        "Link": ""
-    },
-    {
-        "Jahr": 2012,
-        "Kanton": [
             "ZH"
         ],
         "Fördermassnahme": "NRP",
