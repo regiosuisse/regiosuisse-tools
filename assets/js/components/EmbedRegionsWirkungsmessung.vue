@@ -1780,7 +1780,7 @@ export default {
                         </div>
                     `;
                     if(parseInt(project.year) >= 2020) {
-                        el.querySelector('svg').style.fill = '#2b9db1';
+                        //el.querySelector('svg').style.fill = '#2b9db1';
                     }
                     let marker = new mapboxgl.Marker(el).setLngLat([project.lngLat[0], project.lngLat[1]]).addTo(this.map);
                     this.markers.push(marker);
