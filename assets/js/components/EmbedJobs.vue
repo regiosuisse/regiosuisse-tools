@@ -86,7 +86,7 @@
 
                 <div class="embed-jobs-list-item"
                      v-for="job in jobs" :id="'job-'+job.id"
-                     :class="{'is-draft': job.isPublic !== true}"
+                     :class="{'is-draft': job.isPublic !== true, 'has-image': job.images?.length}"
                      @click.stop="clickShowJob(job)">
 
                     <div class="embed-jobs-list-item-header" v-if="!disableThumbnails">

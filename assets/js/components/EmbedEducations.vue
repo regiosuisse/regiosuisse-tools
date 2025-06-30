@@ -107,7 +107,7 @@
 
                 <div class="embed-educations-list-item"
                      v-for="education in educations" :id="'education-'+education.id"
-                     :class="{'is-draft': education.isPublic !== true}"
+                     :class="{'is-draft': education.isPublic !== true, 'has-image': education.images?.length}"
                      @click.stop="clickShowEducation(education)">
 
                     <div class="embed-educations-list-item-header" v-if="!disableThumbnails">

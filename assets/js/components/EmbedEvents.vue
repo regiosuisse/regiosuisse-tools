@@ -104,7 +104,7 @@
                 <div class="embed-events-list-item"
                      v-for="event in events" :id="'event-'+event.id"
                      :key="event.id"
-                     :class="{'is-draft': event.isPublic !== true}"
+                     :class="{'is-draft': event.isPublic !== true, 'has-image': event.images?.length}"
                      @click.stop="clickShowEvent(event)">
                     <div class="embed-events-list-item-header">
                         <div class="embed-events-list-item-header-image" v-if="event.images.length" :style="{

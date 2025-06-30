@@ -57,7 +57,7 @@
 
                 <div class="embed-posts-list-item"
                      v-for="post in posts" :id="'post-'+post.id"
-                     :class="{'is-draft': post.isPublic !== true}"
+                     :class="{'is-draft': post.isPublic !== true, 'has-image': post.images?.length}"
                      @click.stop="clickShowPost(post)">
 
                     <div class="embed-posts-list-item-header" v-if="!disableThumbnails">

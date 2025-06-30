@@ -219,7 +219,7 @@
 
                 <div class="embed-projects-list-item"
                      v-for="project in projects" :id="'project-'+project.id"
-                     :class="{'is-draft': project.isPublic !== true}"
+                     :class="{'is-draft': project.isPublic !== true, 'has-image': project.images?.length}"
                      @click.stop="clickShowProject(project)">
 
                     <div class="embed-projects-list-item-header">
