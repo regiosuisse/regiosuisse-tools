@@ -145,7 +145,7 @@
         <JobModal v-if="showJobModal" @close="showJobModal = false">
             <div class="job-form-modal">
                 <div class="job-form-header">
-                    <img :src="$env.THEME_ICON" alt="regiosuisse Logo" class="regiosuisse-logo">
+                    <img :src="$env.THEME_LOGO" alt="regiosuisse Logo" class="regiosuisse-logo">
                     <h3 class="modal-title">{{ $t('job.submit.new', locale) }}</h3>
                     <p class="header-description">
                         {{ $t('job.submit.description', locale) }}

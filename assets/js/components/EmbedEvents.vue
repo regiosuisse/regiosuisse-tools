@@ -161,7 +161,7 @@
         <EventModal v-if="showEventModal" @close="showEventModal = false">
             <div class="event-form-modal">
                 <div class="event-form-header">
-                    <img :src="$env.THEME_ICON" alt="regiosuisse Logo" class="regiosuisse-logo">
+                    <img :src="$env.THEME_LOGO" alt="regiosuisse Logo" class="regiosuisse-logo">
                     <h3 class="modal-title">{{ $t('event.submit.new', locale) }}</h3>
                     <p class="header-description">
                         {{ $t('event.submit.description', locale) }}
