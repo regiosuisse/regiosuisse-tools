@@ -160,7 +160,7 @@ class ApiContactsController extends AbstractController
 
         if ($request->get('term')) {
             $qb
-                ->andWhere('(c.id LIKE :term OR c.companyName LIKE :term OR c.firstName LIKE :term OR c.lastName LIKE :term OR c.translations LIKE :term OR c.gender LIKE :term OR c.street LIKE :term OR c.zipCode LIKE :term OR c.city LIKE :term OR c.email LIKE :term OR c.phone LIKE :term OR c.website LIKE :term OR c.description LIKE :term)')
+                ->andWhere('(c.id LIKE :term OR c.companyName LIKE :term OR c.firstName LIKE :term OR c.lastName LIKE :term OR c.translations LIKE :term OR c.gender LIKE :term OR c.street LIKE :term OR c.zipCode LIKE :term OR c.city LIKE :term OR c.email LIKE :term OR c.phone LIKE :term OR c.linkedIn LIKE :term OR c.website LIKE :term OR c.description LIKE :term)')
                 ->setParameter('term', '%' . $request->get('term') . '%');
         }
 
@@ -549,9 +549,10 @@ class ApiContactsController extends AbstractController
                 'Sprache' => 'O',
                 'E-Mail' => 'P',
                 'Telefon' => 'Q',
-                'Website' => 'R',
-                'Beschreibung' => 'S',
-                'Kontaktgruppen' => 'T',
+                'LinkedIn' => 'R',
+                'Website' => 'S',
+                'Beschreibung' => 'T',
+                'Kontaktgruppen' => 'U',
             ];
 
             $row = 1;
@@ -607,7 +608,8 @@ class ApiContactsController extends AbstractController
 
                 $sheet->setCellValue($columns['E-Mail'] . $row, $contact->getEmail());
                 $sheet->setCellValue($columns['Telefon'] . $row, $contact->getPhone());
-                $sheet->setCellValue($columns['Website'] . $row, PvTrans::trans($contact, 'website', $locale));
+                $sheet->setCellValue($columns['LinkedIn'] . $row, $contact->getLinkedIn() ?: $basisEntity->getLinkedIn());
+                $sheet->setCellValue($columns['Website'] . $row, PvTrans::trans($contact->getWebsite() ? $contact : $basisEntity, 'website', $locale));
                 $sheet->setCellValue($columns['Beschreibung'] . $row, PvTrans::trans($contact, 'description', $locale));
 
                 $entity = $basisEntity->getCountry();
@@ -731,9 +733,10 @@ class ApiContactsController extends AbstractController
                 'Sprache' => 'O',
                 'E-Mail' => 'P',
                 'Telefon' => 'Q',
-                'Website' => 'R',
-                'Beschreibung' => 'S',
-                'Kontaktgruppen' => 'T',
+                'LinkedIn' => 'R',
+                'Website' => 'S',
+                'Beschreibung' => 'T',
+                'Kontaktgruppen' => 'U',
             ];
 
             $row = 1;
@@ -801,7 +804,8 @@ class ApiContactsController extends AbstractController
 
                     $sheet->setCellValue($columns['E-Mail'] . $row, $contact->getEmail());
                     $sheet->setCellValue($columns['Telefon'] . $row, $contact->getPhone());
-                    $sheet->setCellValue($columns['Website'] . $row, PvTrans::trans($contact, 'website', $locale));
+                    $sheet->setCellValue($columns['LinkedIn'] . $row, $contact->getLinkedIn() ?: $basisEntity->getLinkedIn());
+                    $sheet->setCellValue($columns['Website'] . $row, PvTrans::trans($contact->getWebsite() ? $contact : $basisEntity, 'website', $locale));
                     $sheet->setCellValue($columns['Beschreibung'] . $row, PvTrans::trans($contact, 'description', $locale));
 
                     $entity = $basisEntity->getCountry();
@@ -993,6 +997,7 @@ class ApiContactsController extends AbstractController
             'country' => $contact->getCountry(),
             'language' => $contact->getLanguage(),
             'city' => $contact->getCity(),
+            'linkedIn' => $contact->getLinkedIn(),
             'website' => $contact->getWebsite(),
             'description' => $contact->getDescription(),
             'translations' => $contact->getTranslations() ?: [],
@@ -1095,6 +1100,7 @@ class ApiContactsController extends AbstractController
                 'lastName' => $form->get('lastName')->getData(),
                 'email' => $form->get('email')->getData(),
                 'phone' => $form->get('phone')->getData(),
+                'linkedIn' => $form->get('linkedIn')->getData(),
                 'translations' => [
                     'de' => [
                         'website' => $form->get('website')->getData(),
@@ -1127,7 +1133,7 @@ class ApiContactsController extends AbstractController
 
 
 
-            foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender', 'userComment'] as $field) {
+            foreach (['firstName', 'lastName', 'email', 'phone',  'street', 'zipCode', 'academicTitle', 'gender', 'userComment', 'linkedIn'] as $field) {
                 if ($originalData[$field] != $newData[$field]) {
                     $diffData[$field] = $newData[$field];
                 }

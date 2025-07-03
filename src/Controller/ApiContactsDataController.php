@@ -149,7 +149,7 @@ class ApiContactsDataController extends AbstractController
         if($request->get('term')) {
             foreach(explode(' ', (string)$request->get('term')) as $term) {
                 $qb
-                    ->andWhere('(c.id LIKE :term OR c.companyName LIKE :term OR c.firstName LIKE :term OR c.lastName LIKE :term OR c.translations LIKE :term OR c.gender LIKE :term OR c.street LIKE :term OR c.zipCode LIKE :term OR c.city LIKE :term OR c.email LIKE :term OR c.phone LIKE :term OR c.website LIKE :term OR c.description LIKE :term)')
+                    ->andWhere('(c.id LIKE :term OR c.companyName LIKE :term OR c.firstName LIKE :term OR c.lastName LIKE :term OR c.translations LIKE :term OR c.gender LIKE :term OR c.street LIKE :term OR c.zipCode LIKE :term OR c.city LIKE :term OR c.email LIKE :term OR c.phone LIKE :term OR c.linkedIn LIKE :term OR c.website LIKE :term OR c.description LIKE :term)')
                     ->setParameter('term', '%'.$term.'%');
             }
         }
@@ -369,6 +369,7 @@ class ApiContactsDataController extends AbstractController
                     'state',
                     'phone',
                     'email',
+                    'linkedIn',
                     'website',
                     'translations',
                 ],

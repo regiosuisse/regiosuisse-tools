@@ -60,6 +60,9 @@
                             <template v-if="officialEmployment.company.email">
                                 {{ $t('Mail', locale) }}: <a :href="'tel:'+officialEmployment.company.email">{{ officialEmployment.company.email }}</a><br>
                             </template>
+                            <template v-if="officialEmployment.company.linkedIn">
+                                {{ $t('LinkedIn', locale) }}: <a target="_blank" :href="officialEmployment.company.linkedIn">{{ officialEmployment.company.linkedIn }}</a><br>
+                            </template>
                             <template v-if="officialEmployment.company.website">
                                 {{ $t('Website', locale) }}: <a target="_blank" :href="translateField(officialEmployment.company, 'website', locale)">{{ translateField(officialEmployment.company, 'website', locale) }}</a>
                             </template>
@@ -84,6 +87,9 @@
                             </template>
                             <template v-if="contact.email">
                                 {{ $t('Mail', locale) }}: <a :href="'mailto:'+contact.email">{{ contact.email }}</a><br>
+                            </template>
+                            <template v-if="contact.linkedIn">
+                                {{ $t('LinkedIn', locale) }}: <a target="_blank" :href="contact.linkedIn">{{ contact.linkedIn }}</a><br>
                             </template>
                             <template v-if="contact.website">
                                 {{ $t('Website', locale) }}: <a target="_blank" :href="translateField(contact, 'website', locale)">{{ translateField(contact, 'website', locale) }}</a>

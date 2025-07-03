@@ -88,6 +88,12 @@ class ContactTypePerson extends AbstractType
                 'required' => false,
                 'data' => $options['data']->getPhone(),
             ])
+            ->add('linkedIn', UrlType::class, [
+                'label' => 'LinkedIn',
+                'mapped' => false,
+                'required' => false,
+                'data' => $options['data']->getLinkedIn(),
+            ])
             ->add('website', UrlType::class, [
                 'label' => 'Website',
                 'mapped' => false,

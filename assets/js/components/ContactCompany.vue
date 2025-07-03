@@ -130,6 +130,13 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-md-3">
+                        <label for="linkedIn">LinkedIn</label>
+                        <input id="linkedIn" type="text" class="form-control" v-model="contact.linkedIn" :placeholder="translate('linkedIn', contact)">
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-3" v-if="locale === 'de'">
                         <label for="website">Website</label>
                         <input id="website" type="text" class="form-control" v-model="contact.website" :placeholder="translate('website', contact)">
@@ -243,6 +250,7 @@ export default {
                 language: null,
                 email: '',
                 phone: '',
+                linkedIn: '',
                 website: '',
                 description: '',
                 officialEmployment: null,

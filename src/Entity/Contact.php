@@ -102,6 +102,10 @@ class Contact
     #[Groups(['contact'])]
     private $phone;
 
+    #[ORM\Column(name: 'linkedIn', type: 'string', length: 128, nullable: true)]
+    #[Groups(['contact'])]
+    private $linkedIn;
+
     #[ORM\Column(name: 'website', type: 'string', length: 128, nullable: true)]
     #[Groups(['contact'])]
     private $website;
@@ -617,6 +621,30 @@ class Contact
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * Set linkedIn
+     *
+     * @param string $linkedIn
+     *
+     * @return Contact
+     */
+    public function setLinkedIn($linkedIn)
+    {
+        $this->linkedIn = $linkedIn;
+
+        return $this;
+    }
+
+    /**
+     * Get linkedIn
+     *
+     * @return string
+     */
+    public function getLinkedIn()
+    {
+        return $this->linkedIn;
     }
 
     /**
