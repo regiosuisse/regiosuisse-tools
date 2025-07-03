@@ -19,6 +19,9 @@
                         <template v-if="contact.email">
                             {{ $t('Mail', locale) }}: <a :href="'mailto:'+contact.email">{{ contact.email }}</a><br>
                         </template>
+                        <template v-if="contact.linkedIn">
+                            {{ $t('LinkedIn', locale) }}: <a target="_blank" :href="contact.linkedIn">{{ contact.linkedIn }}</a><br>
+                        </template>
                     </p>
 
                 </template>

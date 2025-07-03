@@ -121,7 +121,9 @@ class ContactTypePerson extends AbstractType
             ])
             ->add('country', EntityType::class, [
                 'class' => Country::class,
-                'choice_label' => 'name',
+                'choice_label' => function (Country $country) {
+                    return $this->trans('country.' . $country->getPosition());
+                },
                 'label' => 'Land',
                 'mapped' => false,
                 'required' => false,
@@ -140,7 +142,9 @@ class ContactTypePerson extends AbstractType
             // Additional Information
             ->add('language', EntityType::class, [
                 'class' => Language::class,
-                'choice_label' => 'name',
+                'choice_label' => function (Language $language) {
+                    return $language->getTranslations()[$this->locale] ?? $language->getName();
+                },
                 'label' => 'Sprache',
                 'mapped' => false,
                 'required' => false,
@@ -200,7 +204,7 @@ class ContactTypePerson extends AbstractType
                 'choices' => $options['topics'],
                 'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
                 'choice_label' => function (Topic $topic) {
-                    return $topic->getName();
+                    return $topic->getTranslations()[$this->locale] ?? $topic->getName();
                 },
                 'mapped' => false,
             ])

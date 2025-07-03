@@ -95,6 +95,20 @@ form.country_placeholder: "Wählen Sie ein Land"
 form.language_placeholder: "Wählen Sie eine Sprache"
 form.state_placeholder: "Wählen Sie einen Kanton"
 
+language.de: 'Deutsch'
+language.fr: 'Französisch'
+language.it: 'Italienisch'
+language.en: 'Englisch'
+
+country.1: 'Schweiz'
+country.2: 'Deutschland'
+country.3: 'Österreich'
+country.4: 'Liechtenstein'
+country.5: 'Frankreich'
+country.6: 'Italien'
+country.7: 'Vereinigtes Königreich'
+country.8: 'Belgien'
+
 # Job submission translations
 job.submit: 'Stellenausschreibung einreichen'
 job.submit.new: 'Neue Stellenausschreibung einreichen'

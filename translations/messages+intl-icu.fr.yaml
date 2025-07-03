@@ -110,6 +110,20 @@ form.country_placeholder: "Choisissez un pays"
 form.language_placeholder: "Choisissez une langue"
 form.state_placeholder: "Choisissez un canton"
 
+language.de: 'Allemand'
+language.fr: 'Français'
+language.it: 'Italien'
+language.en: 'Anglais'
+
+country.1: 'Suisse'
+country.2: 'Allemagne'
+country.3: 'Autriche'
+country.4: 'Liechtenstein'
+country.5: 'France'
+country.6: 'Italie'
+country.7: 'Royaume-Uni'
+country.8: 'Belgique'
+
 # Job submission translations
 job.submit: 'Publier une offre d''emploi'
 job.submit.new: 'Publier une nouvelle offre d''emploi'
