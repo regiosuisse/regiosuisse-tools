@@ -1474,6 +1474,18 @@ export default {
         return JSON.stringify(diffTopicIds) !== JSON.stringify(contactTopicIds);
       }
 
+      if (field === "language") {
+          const diffLanguageId = this.diff.language;
+          const contactLanguageId = this.contact.language?.id;
+          return diffLanguageId !== contactLanguageId;
+      }
+
+      if (field === "country") {
+        const diffCountryId = this.diff.country;
+        const contactCountryId = this.contact.country?.id;
+        return diffCountryId !== contactCountryId;
+      }
+
       const multilingualFields = ["website", "description", "city"];
       let diffValue, contactValue;
 
@@ -1554,6 +1566,7 @@ export default {
       }
 
       if (field === "language") {
+          console.log(this.contact.language);
         this.contact.language = this.getLanguageById(this.diff.language) || null;
       }
 
