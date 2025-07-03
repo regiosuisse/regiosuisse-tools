@@ -96,6 +96,7 @@ class ContactService {
             'state',
             'phone',
             'email',
+            'linkedIn',
             'website',
             'description',
             'parent',
@@ -191,6 +192,7 @@ class ContactService {
             ->setLanguage(null)
             ->setPhone($payload['phone'])
             ->setEmail($payload['email'])
+            ->setLinkedIn($payload['linkedIn'])
             ->setWebsite($payload['website'])
             ->setDescription($payload['description'])
             ->setOfficialEmployment(null)

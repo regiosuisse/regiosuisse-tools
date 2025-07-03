@@ -110,13 +110,16 @@
                             {{ contact.zipCode }} {{ contact.city }}
                         {% endif %}
                     </p>
-                    {% if contact.email|default or contact.phone|default or contact.web|default %}
+                    {% if contact.email|default or contact.phone|default or contact.linkedIn|default or contact.web|default %}
                         <p>
                             {% if contact.email|default %}
                                 {{ contact.email }}<br/>
                             {% endif %}
                             {% if contact.phone|default %}
                                 {{ contact.phone }}<br/>
+                            {% endif %}
+                            {% if contact.linkedIn|default %}
+                                {{ contact.linkedIn }}<br/>
                             {% endif %}
                             {% if contact.web|default %}
                                 {{ contact.web }}

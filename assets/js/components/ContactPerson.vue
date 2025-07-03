@@ -552,6 +552,48 @@
           </div>
         </div>
 
+        <!-- LinkedIn -->
+        <div class="contact-component-form-row">
+          <div class="contact-component-form-section">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="linkedIn">LinkedIn</label>
+                <input
+                  id="linkedIn"
+                  type="text"
+                  class="form-control"
+                  v-model="contact.linkedIn"
+                  :class="{ 'field-changed': isFieldChanged('linkedIn') }"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="contact-component-form-section">
+            <div v-if="diff && !isDeleteRequest" class="row">
+              <div class="col-md-6" :class="{ disabled: !isFieldChanged('linkedIn') }">
+                <label for="linkedInDiff">
+                  <span
+                    v-if="isFieldChanged('linkedIn')"
+                    class="material-icons"
+                    @click="mergeField('linkedIn')"
+                  >keyboard_backspace</span
+                  >
+                  LinkedIn
+                </label>
+                <input
+                  id="linkedInDiff"
+                  type="text"
+                  class="form-control"
+                  :value="
+                    isFieldChanged('linkedIn') ? diff.linkedIn : contact.linkedIn || ''
+                  "
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Website -->
         <div class="contact-component-form-row">
           <div class="contact-component-form-section">
@@ -969,6 +1011,7 @@ export default {
         language: null,
         email: "",
         phone: "",
+        linkedIn: "",
         website: "",
         description: "",
         officialEmployment: null,
@@ -1534,6 +1577,7 @@ export default {
         "country",
         "state",
         "language",
+        "linkedIn",
         "website",
         "description",
         "gender",
