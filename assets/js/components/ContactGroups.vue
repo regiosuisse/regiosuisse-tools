@@ -258,16 +258,16 @@
 
                 <!-- Email content -->
                 <div class="email-content">
-                    <p>Sehr geehrte Expertin, sehr geehrter Experte,</p>
-                    <p>Wir möchten sicherstellen, dass die Informationen in unserer regiosuisse Expertinnen- und Expertendatenbank aktuell und korrekt sind. Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten über folgenden Link zu überprüfen und gegebenenfalls anzupassen: <a href="#">Meine Kontaktdaten überprüfen und aktualisieren</a></p>
+                    <p>Guten Tag,</p>
+                    <p>wir möchten sicherstellen, dass die Informationen in unserer regiosuisse Expertinnen- und Expertendatenbank aktuell und korrekt sind. Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten über folgenden Link zu überprüfen und gegebenenfalls anzupassen: <a href="#">Meine Kontaktdaten überprüfen und aktualisieren</a></p>
                     <p>Sollten Sie wünschen, dass Ihre Daten aus unserer Datenbank gelöscht werden, können Sie dies ebenfalls über den oben genannten Link veranlassen.</p>
                     <p>Vielen Dank für Ihre Mithilfe!</p>
                 </div>
 
                 <!-- Footer -->
                 <div class="email-footer">
-                    <p>Herzliche Grüsse,</p>
-                    <p>Ihr regiosuisse-Team</p>
+                    <p>Herzliche Grüsse,<br>
+                    Ihr regiosuisse-Team</p>
                 </div>
               </div>
               <table id="send-email-table">
@@ -833,9 +833,8 @@ table th {
 }
 
 .email-footer {
-    font-size: 14px;
-    color: #666666;
+    font-size: 16px;
+    line-height: 1.6;
     margin-top: 20px;
-    text-align: center;
 }
 </style>
