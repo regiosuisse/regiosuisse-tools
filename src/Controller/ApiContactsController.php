@@ -871,9 +871,15 @@ class ApiContactsController extends AbstractController
                 
 
             if ($contact) {
+
+                if($contact->getOneTimeCode()) {
+                    $oneTimeCode = $contact->getOneTimeCode();
+                } else {
+                    $oneTimeCode = bin2hex(random_bytes(16));
+                    $contact->setOneTimeCode($oneTimeCode);
+                }
                 // Generate a one-time code
-                $oneTimeCode = bin2hex(random_bytes(16));
-                $contact->setOneTimeCode($oneTimeCode);
+
                 $contact->setVerificationEmailSentDate(new \DateTime());
 
                 $entityManager->persist($contact);
@@ -1145,13 +1151,13 @@ class ApiContactsController extends AbstractController
 
 
             if ($newData['language']) {
-                if ($originalData['language']->getId() != $newData['language']) {
+                if ($originalData['language']?->getId() != $newData['language']) {
                     $diffData['language'] = $newData['language'];
                 }
             }
 
             if ($newData['country']) {
-                if ($originalData['country']->getId() != $newData['country']) {
+                if ($originalData['country']?->getId() != $newData['country']) {
                     $diffData['country'] = $newData['country'];
                 }
             }
