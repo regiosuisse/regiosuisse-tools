@@ -1590,6 +1590,7 @@ export default {
         "topics",
         "state",
         "userComment",
+        "roles",
       ];
 
       const locales = ["de", "fr", "it"];
@@ -1599,6 +1600,12 @@ export default {
           // Handle topics specifically as an array of objects
           if (this.isFieldChanged("topics")) {
             this.mergeField("topics");
+          }
+        } else if(field === "roles") {
+          for(let employment of this.contact.employments) {
+            if(this.isEmploymentFieldChanged('role', employment.id, this.locale)) {
+              this.mergeField("role", this.locale, employment.id);
+            }
           }
         } else {
           // For other fields, handle multilingual fields
