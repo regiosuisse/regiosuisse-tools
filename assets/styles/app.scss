@@ -1762,7 +1762,6 @@ td {
 }
 
 .verification-header {
-  color: $theme-color-1;
   padding: 1rem 0;
 
   .container {
@@ -1830,7 +1829,6 @@ td {
     h2 {
       font-size: clamp(1.2em, 2vw, 1.5em);
       margin-bottom: 1rem;
-      color: $theme-color-1;
       font-weight: 600;
 
       @media screen and (max-width: 768px) {
@@ -1848,7 +1846,7 @@ td {
     .locale-btn {
       padding: 0.3em 0.6em;
       background-color: $white;
-      color: $color-regiosuisse;
+      color: $theme-color-2;
       border-radius: 3px;
       text-decoration: none;
       font-size: 0.9em;
@@ -1856,7 +1854,7 @@ td {
       min-width: unset!important;
 
       &:hover {
-        background-color: $color-regiosuisse;
+        background-color: $theme-color-2;
         color: $white;
       }
     }
@@ -1887,7 +1885,7 @@ td {
     justify-content: center;
     min-width: 120px;
     padding: 0.75em 1.5em;
-    background-color: $theme-color-1;
+    background-color: $theme-color-2;
     color: $white;
     border: none;
     border-radius: 5px;
@@ -1902,7 +1900,7 @@ td {
 
   .btn-secondary {
     background-color: $white;
-    color: $theme-color-1;
+    color: $theme-color-2;
     border: 1px solid $theme-color-1;
 
     &:hover {
@@ -1913,7 +1911,7 @@ td {
 }
 
 .verification-footer {
-  background-color: $theme-color-1;
+  background-color: $theme-color-2;
   color: $white;
   padding: 1rem 0;
   text-align: center;
