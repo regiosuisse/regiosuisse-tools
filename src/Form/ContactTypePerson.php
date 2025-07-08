@@ -7,6 +7,7 @@ use App\Entity\Country;
 use App\Entity\Language;
 use App\Entity\Topic;
 use App\Entity\State;
+use App\Util\PvTrans;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 // Form types
@@ -122,7 +123,7 @@ class ContactTypePerson extends AbstractType
             ->add('country', EntityType::class, [
                 'class' => Country::class,
                 'choice_label' => function (Country $country) {
-                    return $this->trans('country.' . $country->getPosition());
+                    return PvTrans::trans($country, 'name', $this->locale);
                 },
                 'label' => 'Land',
                 'mapped' => false,
@@ -143,7 +144,7 @@ class ContactTypePerson extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
                 'choice_label' => function (Language $language) {
-                    return $language->getTranslations()[$this->locale] ?? $language->getName();
+                    return PvTrans::trans($language, 'name', $this->locale);
                 },
                 'label' => 'Sprache',
                 'mapped' => false,
@@ -204,7 +205,7 @@ class ContactTypePerson extends AbstractType
                 'choices' => $options['topics'],
                 'data' => new ArrayCollection($options['data']->getTopics()->toArray()),
                 'choice_label' => function (Topic $topic) {
-                    return $topic->getTranslations()[$this->locale] ?? $topic->getName();
+                    return PvTrans::trans($topic, 'name', $this->locale);
                 },
                 'mapped' => false,
             ])
