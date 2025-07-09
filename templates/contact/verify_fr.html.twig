@@ -457,13 +457,14 @@
         ['description-de', 'description-fr', 'description-it'].forEach(function (id) {
             const element = document.querySelector(`#${id} .form-control`);
             if (element) {
-                ClassicEditor
-                    .create(element)
-                    .catch(error => {
-                        console.error(error);
-                    });
+                ClassicEditor.create(element, {
+                    removePlugins: [ 'MediaEmbed' ],
+                    toolbar: ['heading', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo']
+                }).catch(error => {
+                    console.error(error);
+                });
             }
-        });
+        })
     });
 
     document.addEventListener("DOMContentLoaded", function () {
