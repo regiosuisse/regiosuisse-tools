@@ -50,7 +50,7 @@
 
         <div class="inbox-component-section">
             <div class="inbox-component-section-title">
-                <h2>Publikationen</h2>
+                <h2>regioScience News</h2>
             </div>
 
             <div class="inbox-component-section-content">

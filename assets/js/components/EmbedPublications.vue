@@ -246,7 +246,7 @@
                             </div>
 
                             <div class="embed-publications-list-item-content-attributes-item">
-                                <p><strong>{{ $t('Attribution', locale) }}</strong></p>
+                                <p><strong>{{ $t('Nutzungsbedingungen', locale) }}</strong></p>
                                 <p v-if="publication.licenseType !== 'Other'">
                                     {{ translateField(licenseTypes.find(e => e.type === publication.licenseType), 'attribution', locale) || '-' }}
                                 </p>

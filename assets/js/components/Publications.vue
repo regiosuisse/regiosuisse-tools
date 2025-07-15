@@ -3,7 +3,7 @@
     <div class="publications-component">
 
         <div class="publications-component-title">
-            <h2>Publikationen</h2>
+            <h2>regioScience&nbsp;News</h2>
 
             <transition name="fade" mode="out-in">
                 <div class="loading-indicator" v-if="isLoading('publications')"></div>

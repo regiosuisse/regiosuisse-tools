@@ -266,7 +266,7 @@
                 <li v-if="hasRole('ROLE_EDITOR') && $env.PLUGIN_ENABLE_PUBLICATIONS">
                     <router-link to="/publications" :class="{'router-link-parent-active': this.$route.path.startsWith('/publications')}">
                         <span class="material-icons">library_books</span>
-                        <span class="label">Publikationen</span>
+                        <span class="label">regioScience News</span>
                     </router-link>
                     <ul>
                         <li>

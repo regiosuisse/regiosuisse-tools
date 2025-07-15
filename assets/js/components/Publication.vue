@@ -95,7 +95,7 @@
                             <date-picker mode="date"
                                          :is24hr="true"
                                          v-model="publication.startDate"
-                                         @update:modelValue="publication.endDate = publication.startDate"
+                                         @update:modelValue="!publication.endDate ? publication.endDate = publication.startDate : null"
                                          :locale="'de'">
                                 <template v-slot="{ inputValue, inputEvents }">
                                     <input type="text" class="form-control"
@@ -176,11 +176,11 @@
                             <input id="licenseUrl" type="text" class="form-control" v-model="publication.translations[locale].licenseUrl" :placeholder="translate('licenseUrl', publication)">
                         </div>
                         <div class="col-md-4" v-if="locale === 'de'">
-                            <label for="licenseAttribution">Lizenz-Attribution</label>
+                            <label for="licenseAttribution">Lizenz-Nutzungsbedingungen</label>
                             <input id="licenseAttribution" type="text" class="form-control" v-model="publication.licenseAttribution" :placeholder="translate('licenseAttribution', publication)">
                         </div>
                         <div class="col-md-4" v-else>
-                            <label for="licenseAttribution">Lizenz-Attribution (Übersetzung {{ locale.toUpperCase() }})</label>
+                            <label for="licenseAttribution">Lizenz-Nutzungsbedingungen (Übersetzung {{ locale.toUpperCase() }})</label>
                             <input id="licenseAttribution" type="text" class="form-control" v-model="publication.translations[locale].licenseAttribution" :placeholder="translate('licenseAttribution', publication)">
                         </div>
                     </div>
@@ -277,6 +277,7 @@ export default {
                 title: '',
                 keywords: '',
                 description: '',
+                email: '',
                 type: 'publication',
                 url: null,
                 startDate: null,
@@ -391,19 +392,9 @@ export default {
                 this.$store.commit('publications/set', {});
                 await this.$store.dispatch('publications/load', this.$route.params.id);
                 if (this.selectedPublication) {
-                    // Ensure translations object exists
-                    const translations = this.selectedPublication.translations || {
-                        fr: { links: [] },
-                        it: { links: [] }
-                    };
-                    
                     this.publication = {
                         ...this.publication, // Keep default structure
                         ...this.selectedPublication,
-                        translations: {
-                            fr: { ...this.publication.translations.fr, ...translations.fr },
-                            it: { ...this.publication.translations.it, ...translations.it }
-                        }
                     };
                 }
             } else if (this.inboxId) {

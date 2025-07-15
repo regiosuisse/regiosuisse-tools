@@ -171,6 +171,7 @@ class PublicationService {
         $inbox = new Inbox();
 
         $normalizedData = [
+            'isPublic' => $payload['isPublic'],
             'title' => $payload['title'],
             'description' => $payload['description'],
             'keywords' => $payload['keywords'] ?? null,
