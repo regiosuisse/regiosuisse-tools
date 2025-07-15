@@ -14,17 +14,17 @@ export default {
                 return this.formatDate(date);
             },
 
-            formatDateRange(from, to) {
+            formatDateRange(from, to, format = 'DD.MM.YYYY HH:mm') {
 
                 if(moment(from).isSame(moment(to), 'hour')) {
-                    return moment(from).format('DD.MM.YYYY HH:mm');
+                    return moment(from).format(format);
                 }
 
                 if(moment(from).isSame(moment(to), 'day')) {
-                    return moment(from).format('DD.MM.YYYY HH:mm')+' - '+moment(to).format('HH:mm');
+                    return moment(from).format(format)+' - '+moment(to).format('HH:mm');
                 }
 
-                return moment(from).format('DD.MM.YYYY HH:mm')+' - '+moment(to).format('DD.MM.YYYY HH:mm');
+                return moment(from).format(format)+' - '+moment(to).format(format);
             },
 
             formatCurrency(value, currency = 'CHF') {

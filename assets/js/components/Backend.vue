@@ -263,6 +263,26 @@
                         </li>
                     </ul>
                 </li>
+                <li v-if="hasRole('ROLE_EDITOR') && $env.PLUGIN_ENABLE_PUBLICATIONS">
+                    <router-link to="/publications" :class="{'router-link-parent-active': this.$route.path.startsWith('/publications')}">
+                        <span class="material-icons">library_books</span>
+                        <span class="label">Publikationen</span>
+                    </router-link>
+                    <ul>
+                        <li>
+                            <router-link to="/publications">
+                                <span class="material-icons">list</span>
+                                <span class="label">Liste anzeigen</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/publications/add">
+                                <span class="material-icons">create</span>
+                                <span class="label">Neuen Eintrag erfassen</span>
+                            </router-link>
+                        </li>
+                    </ul>
+                </li>
                 <li v-if="hasRole('ROLE_ADMIN')">
                     <router-link to="/settings/users" :class="{'router-link-parent-active': this.$route.path.startsWith('/settings')}">
                         <span class="material-icons">settings</span>

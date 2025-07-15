@@ -124,6 +124,18 @@
                                     </a>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Publikationen Posteingang</td>
+                                <td>Benachrichtigen bei neuen Publikationen-Einreichungen über die Website.</td>
+                                <td>
+                                    <a class="button success"
+                                       :class="{error: !user.notifications.includes('PUBLICATIONS_INBOX')}"
+                                       @click="!user.notifications.includes('PUBLICATIONS_INBOX') ? user.notifications.push('PUBLICATIONS_INBOX') : user.notifications.splice(user.notifications.indexOf('PUBLICATIONS_INBOX'), 1)">
+                                        <span v-if="user.notifications.includes('PUBLICATIONS_INBOX')">Aktiv</span>
+                                        <span v-else>Inaktiv</span>
+                                    </a>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

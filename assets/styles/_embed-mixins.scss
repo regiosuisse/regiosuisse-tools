@@ -429,6 +429,22 @@
                 border-radius: var(--#{$instance-id}-border-radius-2);
             }
         }
+
+        &-attributes {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: var(--#{$instance-id}-gutter-width);
+
+            &-item {
+                flex: 0 0 calc(100% / 4 - var(--#{$instance-id}-gutter-width) * 3 / 4);
+            }
+        }
+
+        &-buttons {
+            display: none;
+            flex-wrap: wrap;
+            gap: var(--#{$instance-id}-gutter-width);
+        }
     }
 
 }

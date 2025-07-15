@@ -36,6 +36,7 @@ import stints from './modules/stints';
 import posts from './modules/posts';
 import tags from './modules/tags';
 import circularEconomyProjects from './modules/circular-economy-projects';
+import publications from './modules/publications';
 
 //const debug = process.env.NODE_ENV !== 'production';
 const debug = false;
@@ -79,6 +80,7 @@ export default createStore({
         posts,
         tags,
         circularEconomyProjects,
+        publications,
     },
     strict: debug,
     plugins: debug ? [createLogger()] : []

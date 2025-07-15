@@ -48,6 +48,18 @@
             </div>
         </div>
 
+        <div class="inbox-component-section">
+            <div class="inbox-component-section-title">
+                <h2>Publikationen</h2>
+            </div>
+
+            <div class="inbox-component-section-content">
+                <inbox-card v-for="item in filterInboxItemsByType(inbox, 'publication')" :item="item"
+                            @click="clickPublication(item)"
+                            @onDismiss="clickDismiss(item)"></inbox-card>
+            </div>
+        </div>
+
         <div class="inbox-component-section" v-if="$env.PROJECTS_ENABLE_TOPICS">
             <div class="inbox-component-section-title">
                 <h2>Themen</h2>
@@ -191,6 +203,10 @@ export default {
         clickEvent(item) {
             this.saveScroll();
             this.$router.push("/events/add?inboxId=" + item.id);
+        },
+        clickPublication(item) {
+            this.saveScroll();
+            this.$router.push("/publications/add?inboxId=" + item.id);
         },
     },
 };

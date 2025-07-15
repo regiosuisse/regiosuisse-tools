@@ -21,6 +21,7 @@ class CommunitySubmissionService
         private UrlGeneratorInterface $urlGenerator,
         private JobService $jobService,
         private EventService $eventService,
+        private PublicationService $publicationService,
         private ContactService $contactService,
         private Environment $twig,
         private TranslatorInterface $translator,
@@ -80,6 +81,10 @@ class CommunitySubmissionService
 
             case CommunitySubmission::TYPE_EVENT:
                 $this->eventService->createEventInboxItemFromEmbed($submission->getSubmissionData());
+                break;
+
+            case CommunitySubmission::TYPE_PUBLICATION:
+                $this->publicationService->createPublicationInboxItemFromEmbed($submission->getSubmissionData());
                 break;
 
             case CommunitySubmission::TYPE_NEWSLETTER:
@@ -171,6 +176,7 @@ class CommunitySubmissionService
             },
             CommunitySubmission::TYPE_JOB => $this->translator->trans('Bestätigen Sie Ihre Stellenausschreibung - regiosuisse.ch'),
             CommunitySubmission::TYPE_EVENT => $this->translator->trans('Bestätigen Sie Ihre Veranstaltung - regiosuisse.ch'),
+            CommunitySubmission::TYPE_PUBLICATION => $this->translator->trans('Bestätigen Sie Ihre Publikation - regiosuisse.ch'),
             default => $this->translator->trans('Bestätigen Sie Ihre Eingabe - regiosuisse.ch'),
         };
 
@@ -216,6 +222,7 @@ class CommunitySubmissionService
         $title = match ($type) {
             CommunitySubmission::TYPE_JOB => $this->translator->trans('Bestätigen Sie Ihre Stellenausschreibung'),
             CommunitySubmission::TYPE_EVENT => $this->translator->trans('Bestätigen Sie Ihre Veranstaltung'),
+            CommunitySubmission::TYPE_PUBLICATION => $this->translator->trans('Bestätigen Sie Ihre Publikation'),
             CommunitySubmission::TYPE_NEWSLETTER => '', // filled below if newsletter
             default => $this->translator->trans('Bestätigen Sie Ihre Eingabe'),
         };
@@ -225,6 +232,8 @@ class CommunitySubmissionService
                 $this->translator->trans('Vielen Dank für Ihre Stellenausschreibung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
             CommunitySubmission::TYPE_EVENT =>
                 $this->translator->trans('Vielen Dank für das Einreichen Ihrer Veranstaltung auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
+            CommunitySubmission::TYPE_PUBLICATION =>
+                $this->translator->trans('Vielen Dank für das Einreichen Ihrer Publikation auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),
             CommunitySubmission::TYPE_NEWSLETTER => '', // filled below if newsletter
             default =>
                 $this->translator->trans('Vielen Dank für Ihre Eingabe auf regiosuisse.ch. Um die Veröffentlichung abzuschliessen,'),

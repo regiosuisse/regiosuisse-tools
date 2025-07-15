@@ -11,6 +11,7 @@ class CommunitySubmission
 {
     public const TYPE_JOB = 'job';
     public const TYPE_EVENT = 'event';
+    public const TYPE_PUBLICATION = 'publication';
     public const TYPE_NEWSLETTER = 'newsletter';
     // We can add more types here later
     // public const TYPE_PROJECT = 'project';

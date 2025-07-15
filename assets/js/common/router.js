@@ -32,6 +32,8 @@ import Posts from '../components/Posts';
 import Post from '../components/Post';
 import CircularEconomyProjects from "../components/CircularEconomyProjects";
 import CircularEconomyProject from "../components/CircularEconomyProject";
+import Publications from '../components/Publications';
+import Publication from '../components/Publication';
 
 const routes = [
     {
@@ -148,6 +150,21 @@ const routes = [
                 path: 'posts/:id/edit',
                 name: 'posts_edit',
                 component: Post,
+            },
+            {
+                path: 'publications',
+                name: 'publications',
+                component: Publications,
+            },
+            {
+                path: 'publications/add',
+                name: 'publications_add',
+                component: Publication,
+            },
+            {
+                path: 'publications/:id/edit',
+                name: 'publications_edit',
+                component: Publication,
             },
             {
                 path: 'circular-economy-projects',

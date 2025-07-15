@@ -33,6 +33,7 @@ import stints from './modules/stints';
 import posts from './modules/posts';
 import tags from './modules/tags';
 import circularEconomyProjects from './modules/circular-economy-projects';
+import publications from './modules/publications';
 
 export default {
     logs,
@@ -70,4 +71,5 @@ export default {
     posts,
     tags,
     circularEconomyProjects,
+    publications,
 }

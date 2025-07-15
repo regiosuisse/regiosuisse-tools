@@ -32,6 +32,7 @@ export default {
             PLUGIN_ENABLE_REGIONS: process.env.PLUGIN_ENABLE_REGIONS === 'true',
             PLUGIN_ENABLE_POSTS: process.env.PLUGIN_ENABLE_POSTS === 'true',
             PLUGIN_ENABLE_CIRCULAR_ECONOMY_PROJECTS: process.env.PLUGIN_ENABLE_CIRCULAR_ECONOMY_PROJECTS === 'true',
+            PLUGIN_ENABLE_PUBLICATIONS: process.env.PLUGIN_ENABLE_PUBLICATIONS === 'true',
 
             PROJECTS_ENABLE_COUNTRIES: process.env.PROJECTS_ENABLE_COUNTRIES === 'true',
             PROJECTS_ENABLE_PROGRAMS: process.env.PROJECTS_ENABLE_PROGRAMS === 'true',
