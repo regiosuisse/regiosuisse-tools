@@ -155,10 +155,13 @@ class ApiPublicationsController extends AbstractController
             $to = new \DateTime(max($years).'-12-31 23:59:59');
 
             $qb
-                ->andWhere('(e.startDate BETWEEN :dateFrom AND :dateTo) OR (e.endDate IS NOT NULL AND e.endDate BETWEEN :dateFrom AND :dateTo)')
+                ->andWhere('
+                    (e.startDate IS NULL OR e.startDate <= :dateTo)
+                    AND 
+                    (e.endDate IS NULL OR e.endDate >= :dateFrom)
+                ')
                 ->setParameter('dateFrom', $from, Types::DATETIME_MUTABLE)
-                ->setParameter('dateTo', $to, Types::DATETIME_MUTABLE)
-            ;
+                ->setParameter('dateTo', $to, Types::DATETIME_MUTABLE);
 
         }
 
