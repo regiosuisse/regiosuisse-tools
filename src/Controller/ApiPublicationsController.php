@@ -111,7 +111,7 @@ class ApiPublicationsController extends AbstractController
 
         if($request->get('term')) {
             $qb
-                ->andWhere('(e.name LIKE :term OR e.description LIKE :term OR e.translations LIKE :term)')
+                ->andWhere('(e.title LIKE :term OR e.description LIKE :term OR e.keywords LIKE :term OR e.authors LIKE :term OR e.organizations LIKE :term OR e.rightsHolder LIKE :term OR e.url LIKE :term OR e.translations LIKE :term)')
                 ->setParameter('term', '%'.$request->get('term').'%');
         }
 
