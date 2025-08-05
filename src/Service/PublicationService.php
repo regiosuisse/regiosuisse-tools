@@ -60,6 +60,7 @@ class PublicationService {
                 'startDate',
                 'endDate',
                 'email',
+                'files',
             ])) !== true) {
             return $errors;
         }
@@ -117,6 +118,7 @@ class PublicationService {
             ->setRightsHolder($payload['rightsHolder'])
             ->setAuthors($payload['authors'] ?: [])
             ->setOrganizations($payload['organizations'] ?: [])
+            ->setFiles($payload['files'] ?: [])
             ->setTranslations($payload['translations'] ?: [])
             ->setStartDate($payload['startDate'] ? new \DateTime($payload['startDate']) : null)
             ->setEndDate($payload['endDate'] ? new \DateTime($payload['endDate']) : null)
@@ -184,6 +186,7 @@ class PublicationService {
             'rightsHolder' => $payload['rightsHolder'] ?? null,
             'authors' => $payload['authors'] ?? [],
             'organizations' => $payload['organizations'] ?? [],
+            'files' => $payload['files'] ?? [],
             'translations' => $payload['translations'] ?? [],
             'topics' => $payload['topics'] ?? [],
             'geographicRegions' => $payload['geographicRegions'] ?? [],
@@ -247,6 +250,7 @@ class PublicationService {
             ->setRightsHolder($payload['rightsHolder'] ?? null)
             ->setAuthors($payload['authors'] ?? [])
             ->setOrganizations($payload['organizations'] ?? [])
+            ->setFiles($payload['files'] ?: [])
             ->setTranslations($payload['translations'] ?? [])
             ->setStartDate($payload['startDate'] ? new \DateTime($payload['startDate']) : null)
             ->setEndDate($payload['endDate'] ? new \DateTime($payload['endDate']) : null);

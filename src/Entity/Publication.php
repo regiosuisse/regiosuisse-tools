@@ -125,6 +125,20 @@ class Publication
     #[Groups(['publication'])]
     private $endDate;
 
+    #[ORM\Column(name: 'files', type: 'json')]
+    #[Groups(['publication'])]
+    #[OA\Property(type: 'array', items: new OA\Items(
+        properties: [
+            new OA\Property(property: 'id', type: 'integer'),
+            new OA\Property(property: 'name', type: 'string'),
+            new OA\Property(property: 'extension', type: 'string'),
+            new OA\Property(property: 'mimeType', type: 'string'),
+            new OA\Property(property: 'description', type: 'string'),
+        ],
+        type: 'object'
+    ))]
+    private $files = [];
+
     #[ORM\Column(name: 'translations', type: 'json')]
     #[Groups(['publication'])]
     #[OA\Property(properties: [
@@ -709,6 +723,30 @@ class Publication
     public function getEndDate()
     {
         return $this->endDate;
+    }
+
+    /**
+     * Set files
+     *
+     * @param array $files
+     *
+     * @return Event
+     */
+    public function setFiles($files)
+    {
+        $this->files = $files;
+
+        return $this;
+    }
+
+    /**
+     * Get files
+     *
+     * @return array
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 
     /**

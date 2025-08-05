@@ -141,6 +141,19 @@
 
                 <div class="publication-component-form-section-group">
 
+                    <div class="publication-component-form-section-group-headline">Zusatzdokumente</div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="files">Dokumente</label>
+                            <file-selector id="files" :items="publication.files || []" :locale="locale" :allowedTypes="'.pdf,.jpg,.jpeg,.png'" @changed="updateFiles"></file-selector>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="publication-component-form-section-group">
+
                     <div class="publication-component-form-section-group-headline">Lizenz</div>
 
                     <div class="row">
@@ -292,6 +305,7 @@ export default {
                 geographicRegions: [],
                 authors: [],
                 organizations: [],
+                files: [],
                 translations: {
                     fr: {},
                     it: {},
@@ -400,6 +414,9 @@ export default {
             } else if (this.inboxId) {
                 await this.loadInboxPublication();
             }
+        },
+        updateFiles(files) {
+            this.publication.files = files;
         },
         translate(property, context) {
             if (!context || !context.translations) {

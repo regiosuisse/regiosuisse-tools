@@ -201,8 +201,8 @@
 
                             <div class="embed-publications-list-item-content-attributes-item">
                                 <p><strong>{{ $t('Typ', locale) }}</strong></p>
-                                <p v-if="publication.type === 'project'">Projekt</p>
-                                <p v-else>Publikation</p>
+                                <p v-if="publication.type === 'project'">{{ $t('Projekt', locale) }}</p>
+                                <p v-else>{{ $t('Publikation', locale) }}</p>
                             </div>
 
                             <div class="embed-publications-list-item-content-attributes-item">
@@ -261,6 +261,15 @@
                             <div class="embed-publications-list-item-content-attributes-item">
                                 <p><strong>{{ $t('Tags', locale) }}</strong></p>
                                 <p>{{ (translateField(publication, 'keywords', locale) || '').split(',').map(e => e.trim()).join(', ') || '-' }}</p>
+                            </div>
+
+                            <div class="embed-publications-list-item-content-attributes-item" v-if="(publication.files || []).length">
+                                <p><strong>{{ $t('Zusatzdokumente', locale) }}</strong></p>
+                                <p>
+                                    <template v-for="file in (publication.files || [])">
+                                        <a :href="$env.HOST+'/api/v1/files/download/'+file.id+'.'+file.extension" :download="file.name + '.' + file.extension" @click.stop>{{ file.name }}</a><br>
+                                    </template>
+                                </p>
                             </div>
 
                         </div>
@@ -339,6 +348,17 @@
                                                v-on="inputEvents">
                                     </template>
                                 </date-picker>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ $t('publication.files', locale) }}</label>
+                                <small class="help-text">{{ $t('publication.files.help', locale) }}</small>
+                                <file-selector
+                                    :items="newPublication.files"
+                                    :addLabel="$t('publication.files.upload', locale)"
+                                    :cancel-label="$t('publication.cancel', locale)"
+                                    :allowedTypes="'.pdf,.jpg,.jpeg,.png'"
+                                    @changed="updateFiles">
+                                </file-selector>
                             </div>
                             <div class="form-group">
                                 <label>{{ $t('publication.authors', locale) }}</label>
@@ -503,6 +523,7 @@ export default {
                 topics: [],
                 languages: [],
                 geographicRegions: [],
+                files: [],
                 authors: [],
                 organizations: [],
                 translations: {
@@ -891,6 +912,7 @@ export default {
                         topics: [],
                         languages: [],
                         geographicRegions: [],
+                        files: [],
                         authors: [],
                         organizations: [],
                         translations: {
