@@ -307,9 +307,15 @@ export default {
                 organizations: [],
                 files: [],
                 translations: {
-                    fr: {},
-                    it: {},
-                    en: {},
+                    fr: {
+                        title: '',
+                    },
+                    it: {
+                        title: '',
+                    },
+                    en: {
+                        title: '',
+                    },
                 },
             },
             inboxId: null,

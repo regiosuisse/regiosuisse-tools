@@ -144,6 +144,7 @@ class Publication
     #[OA\Property(properties: [
         new OA\Property(property: 'fr', type: 'object'),
         new OA\Property(property: 'it', type: 'object'),
+        new OA\Property(property: 'en', type: 'object'),
     ], type: 'object')]
     private $translations = [];
 

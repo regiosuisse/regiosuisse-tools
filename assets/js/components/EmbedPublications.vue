@@ -527,9 +527,15 @@ export default {
                 authors: [],
                 organizations: [],
                 translations: {
-                    fr: {},
-                    it: {},
-                    en: {},
+                    fr: {
+                        title: '',
+                    },
+                    it: {
+                        title: '',
+                    },
+                    en: {
+                        title: '',
+                    },
                 },
             },
         };
@@ -916,9 +922,15 @@ export default {
                         authors: [],
                         organizations: [],
                         translations: {
-                            fr: {},
-                            it: {},
-                            en: {},
+                            fr: {
+                                title: '',
+                            },
+                            it: {
+                                title: '',
+                            },
+                            en: {
+                                title: '',
+                            },
                         },
                     };
                 })
