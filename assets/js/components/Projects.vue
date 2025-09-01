@@ -11,6 +11,7 @@
             </transition>
 
             <div class="projects-component-title-actions">
+                <a class="button" @click="clickChmosModal()">CHMOS Abfrage</a>
                 <a href="/api/v1/projects.xlsx" class="button" download>XLSX</a>
                 <router-link :to="'/projects/add'" class="button primary">Neuen Eintrag erstellen</router-link>
             </div>
@@ -205,6 +206,46 @@
 
         </div>
 
+        <Modal
+            v-if="chmosModal"
+            :config="{
+                title: 'CHMOS Abfrage',
+                description: 'Nutzen Sie dieses Formular um ein CHMOS Projekt über den Projektcode in den Posteingang zu importieren. Achten Sie auf eine exakte Schreibweise (z.B.: BE_1234)',
+                actions: [
+                    ...(!chmosModal.isLoading ? [{
+                        label: 'Abbrechen',
+                        onClick: () => chmosModal = null,
+                    }] : []),
+                    ...(!chmosModal.result?.message && !chmosModal.isLoading && chmosModal.id ? [{
+                        label: 'Abfrage starten',
+                        class: 'success',
+                        onClick: () => clickChmosModal(),
+                    }] : []),
+                    ...(!chmosModal.result?.message && chmosModal.isLoading ? [{
+                        label: 'Wird geladen...',
+                        class: 'success disabled',
+                        onClick: () => null,
+                    }] : []),
+                    ...(chmosModal.result?.message ? [{
+                        label: 'Neue Abfrage',
+                        class: 'warning',
+                        onClick: () => chmosModal.result = null,
+                    }] : []),
+                    ...(chmosModal.result?.inboxItem?.id ? [{
+                        label: 'Zum Projekt',
+                        class: 'success',
+                        onClick: () => $router.push('/inbox/projects/'+chmosModal.result.inboxItem.id),
+                    }] : []),
+                ]
+            }">
+            <template v-slot:content>
+                <p v-if="chmosModal.result?.message" :class="chmosModal.result?.type" style="white-space: pre-wrap; word-break: break-all; border: 1px solid; padding: 1em;">{{ chmosModal.result.message }}</p>
+                <div class="form-group" v-else-if="!chmosModal.isLoading">
+                    <input type="text" class="form-control" v-model="chmosModal.id" placeholder="CHMOS Projektcode">
+                </div>
+            </template>
+        </Modal>
+
     </div>
 
 </template>
@@ -213,8 +254,10 @@
     import {mapGetters, mapState} from 'vuex';
     import moment from 'moment';
     import {translateField} from '../utils/filters';
+    import Modal from './Modal.vue';
 
     export default {
+        components: {Modal},
         data () {
             return {
                 projects: [],
@@ -223,6 +266,7 @@
                 limit: 100,
                 offset: 0,
                 isLoadedFully: false,
+                chmosModal: null,
             };
         },
         computed: {
@@ -342,6 +386,52 @@
             loadFilter () {
                 this.filters = JSON.parse(window.sessionStorage.getItem('regiosuisse.projects.filters') || '[]');
                 this.term = window.sessionStorage.getItem('regiosuisse.projects.term') || '';
+            },
+            async clickChmosModal() {
+
+                if(this.chmosModal) {
+
+                    this.chmosModal.result = null;
+                    this.chmosModal.isLoading = true;
+
+                    const response = await fetch('/api/v1/projects/chmos/sync/'+this.chmosModal.id, {
+                        method: 'POST',
+                    });
+                    const json = await response.json();
+
+                    this.chmosModal.isLoading = false;
+
+                    if(response.status === 200) {
+                        this.chmosModal.result = {
+                            type: 'success',
+                            message: 'Projekt "'+(json?.title || 'Unbekannt')+'" wurden erfolgreich geladen',
+                            inboxItem: json,
+                        };
+                        return;
+                    }
+
+                    if(response.status === 404) {
+                        this.chmosModal.result = {
+                            type: 'error',
+                            message: 'Projekt wurde gelöscht.',
+                        };
+                        return;
+                    }
+
+                    this.chmosModal.result = {
+                        type: 'error',
+                        message: json?.exception || 'Ein unbekannter Fehler ist aufgetreten.',
+                    };
+
+                    return;
+
+                }
+
+                this.chmosModal = {
+                    id: '',
+                    isLoading: false,
+                    result: null,
+                };
             },
         },
         created () {

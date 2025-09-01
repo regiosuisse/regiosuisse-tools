@@ -4,6 +4,7 @@
         <div class="modal-component-modal">
             <h1>{{ config.title }}</h1>
             <p>{{ config.description }}</p>
+            <slot name="content"></slot>
             <div class="modal-component-modal-actions">
                 <a class="button" v-for="action in config.actions" :class="action.class" @click="action.onClick">
                     {{ action.label }}

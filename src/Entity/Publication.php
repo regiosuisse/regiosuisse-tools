@@ -79,12 +79,12 @@ class Publication
 
     #[ORM\Column(name: 'authors', type: 'json')]
     #[Groups(['publication'])]
-    #[OA\Property(type: 'array')]
+    #[OA\Property(type: 'array', items: new OA\Items(type: 'string'))]
     private $authors = [];
 
     #[ORM\Column(name: 'organizations', type: 'json')]
     #[Groups(['publication'])]
-    #[OA\Property(type: 'array')]
+    #[OA\Property(type: 'array', items: new OA\Items(type: 'string'))]
     private $organizations = [];
 
     /**

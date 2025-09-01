@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\ChmosService;
 use App\Service\ProjectService;
 use App\Util\PvTrans;
 use Doctrine\DBAL\Types\Types;
@@ -1335,6 +1336,40 @@ class ApiProjectsController extends AbstractController
         });
 
         return $this->json($geojson);
+    }
+
+    #[Route(path: '/chmos/sync/{id}', name: 'chmos_sync', methods: ['POST'])]
+    #[IsGranted('ROLE_EDITOR')]
+    #[OA\Response(
+        response: 200,
+        description: 'Sync CHMOS project',
+        content: new OA\JsonContent(
+            ref: new Model(type: Inbox::class, groups: ['id', 'inbox'])
+        )
+    )]
+    #[OA\Tag(name: 'Projects')]
+    #[Security(name: 'cookieAuth')]
+    public function chmosSync(Request $request, EntityManagerInterface $em, NormalizerInterface $normalizer, ChmosService $chmosService): JsonResponse
+    {
+        try {
+
+            $inboxItem = $chmosService->performProjectUpdate($request->get('id'), false);
+
+            if(!$inboxItem) {
+                return $this->json([], 404);
+            }
+
+            $result = $normalizer->normalize($inboxItem, null, [
+                'groups' => ['id', 'inbox'],
+            ]);
+
+            return $this->json($result);
+
+        } catch (\Exception $exception) {
+            return $this->json([
+                'exception' => $exception->getMessage(),
+            ], 400);
+        }
     }
     
 }
