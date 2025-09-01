@@ -79,18 +79,30 @@ class ChmosService {
         }
 
         $inboxItems = [];
+        $exceptions = [];
 
         foreach($chmosProjects as $chmosProject) {
 
             try {
-                $inboxItems[] = $this->performProjectUpdate($chmosProject['id'], $autoMerge);
+                $inboxItems[] = [
+                    'inboxItem' => $this->performProjectUpdate($chmosProject['id'], $autoMerge),
+                    'chmosProject' => $chmosProject,
+                ];
             } catch (\Exception $exception) {
                 echo ($exception->getMessage().PHP_EOL);
+                $exceptions[] = [
+                    'exception' => $exception,
+                    'chmosProject' => $chmosProject,
+                ];
                 // delete project
             }
+
         }
 
-        return $inboxItems;
+        return [
+            'inboxItems' => $inboxItems,
+            'exceptions' => $exceptions,
+        ];
     }
 
     public function performProjectUpdate ($id, $autoMerge = false)
@@ -144,7 +156,15 @@ class ChmosService {
                 return;
             }
 
-            throw new \Exception('Could not load: '.$endpoint);
+            if($response->getStatusCode() === 200) {
+                throw new \Exception('Ressource enthält ungültige Daten: '.$endpoint.' (Status: '.$response->getStatusCode().', Länge: '.strlen($content ?? '').')'.(strlen($content ?? '') > 0 ? PHP_EOL.'Inhalt: '.substr(preg_replace('/\s+/', ' ', $content), 0, 2048) : ''));
+            }
+
+            if($response->getStatusCode() === 503) {
+                throw new \Exception('Ressource befindet sich im Wartungsmodus: '.$endpoint.' (Status: '.$response->getStatusCode().')');
+            }
+
+            throw new \Exception('Ressource konnte nicht geladen werden: '.$endpoint.' (Status: '.$response->getStatusCode().')');
 
         }
 

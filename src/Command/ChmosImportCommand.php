@@ -103,7 +103,7 @@ class ChmosImportCommand extends Command
 
         }
 
-        $inboxItems = $this->chmosService->performUpdate($since, $till, $merge);
+        $result = $this->chmosService->performUpdate($since, $till, $merge);
 
         if($till) {
             file_put_contents($lastSyncFile, $till->format('Y-m-d'));
@@ -111,32 +111,57 @@ class ChmosImportCommand extends Command
             file_put_contents($lastSyncFile, $lastSync->format('Y-m-d'));
         }
 
-        if(!$skipNotification && count($inboxItems) && count($notificationRecipients)) {
+        if(!$skipNotification && (count($result['inboxItems']) || count($result['exceptions'])) && count($notificationRecipients)) {
+
+            $text = 'Hallo!'.PHP_EOL;
+            $text.= PHP_EOL;
+
+            if(count($result['inboxItems'])) {
+                $text.= sprintf('✅ Es sind %s neue Elemente im Posteingang verfügbar:', count($result['inboxItems'])).PHP_EOL;
+                $text.= PHP_EOL;
+
+                foreach($result['inboxItems'] as $inboxItem) {
+
+                    if(!$inboxItem['inboxItem']) {
+                        $text.= sprintf('– Projekt "%s" wurde gelöscht', $inboxItem['chmosProject']['id'] ?? '???').PHP_EOL;
+                        continue;
+                    }
+
+                    $text.= sprintf('– Projekt "%s" (Titel: "%s")', $inboxItem['chmosProject']['id'] ?? '???', $inboxItem['inboxItem']->getTitle() ?? '???').PHP_EOL;
+
+                }
+
+                $text.= PHP_EOL;
+            }
+
+            if(count($result['exceptions'])) {
+                $text.= sprintf('❌ Es sind %s Fehler aufgetreten:', count($result['exceptions'])).PHP_EOL;
+                $text.= PHP_EOL;
+
+                foreach($result['exceptions'] as $exception) {
+                    $text.= sprintf('Projekt "%s":'.PHP_EOL.'%s', $inboxItem['chmosProject']['id'] ?? '???', $exception['exception']->getMessage()).PHP_EOL;
+                    $text.= PHP_EOL;
+                }
+
+                $text.= PHP_EOL;
+            }
+
+            $text.= sprintf('Öffne den Posteingang (%s/#/inbox) um die Inhalte zu überprüfen und freizugeben.', $this->host).PHP_EOL;
+            $text.= PHP_EOL;
+            $text.= 'Liebe Grüsse';
 
             $email = (new Email())
                 ->from($this->mailerFrom)
                 ->to(...$notificationRecipients)
-                ->subject(sprintf('📥 %s neue Elemente im Posteingang verfügbar', count($inboxItems)))
-                ->text(
-                    trim(sprintf('
-                    
-Hallo!
-
-Es sind %s neue Elemente im Posteingang verfügbar.
-
-Öffne den Posteingang (%s/#/inbox) um die Inhalte zu überprüfen und freizugeben.
-
-Liebe Grüsse
-
-                    ', count($inboxItems), $this->host)),
-                )
+                ->subject(sprintf('📥 %s neue Elemente im Posteingang verfügbar / %s Fehler', count($result['inboxItems']), count($result['exceptions'])))
+                ->text(trim($text))
             ;
 
             $this->mailer->send($email);
 
         }
 
-        $io->success(sprintf('CHMOS sync completed. %s new items were found.', count($inboxItems)));
+        $io->success(sprintf('CHMOS sync completed at %s. %s new items were found. %s exceptions occurred.', (new \DateTime())->format('Y-m-d H:i:s'), count($result['inboxItems']), count($result['exceptions'])));
 
         return 0;
     }
