@@ -139,7 +139,7 @@ class ChmosImportCommand extends Command
                 $text.= PHP_EOL;
 
                 foreach($result['exceptions'] as $exception) {
-                    $text.= sprintf('Projekt "%s":'.PHP_EOL.'%s', $inboxItem['chmosProject']['id'] ?? '???', $exception['exception']->getMessage()).PHP_EOL;
+                    $text.= sprintf('Projekt "%s":'.PHP_EOL.'%s', $exception['chmosProject']['id'] ?? '???', $exception['exception']->getMessage()).PHP_EOL;
                     $text.= PHP_EOL;
                 }
 

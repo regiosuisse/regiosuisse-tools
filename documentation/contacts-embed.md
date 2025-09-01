@@ -101,6 +101,9 @@ Basic styles can be overwritten using CSS variables:
             // mapContactGroups
             // filterContactGroups
             // sortContactGroups
+            // mapTopics
+            // filterTopics
+            // sortTopics
         },
     });
 </script>

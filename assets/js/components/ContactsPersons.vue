@@ -76,6 +76,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="topic">Thema</label>
+                        <div class="select-wrapper">
+                            <select id="topic" class="form-control" @change="addFilter({ type: 'topic', value: $event.target.value }); $event.target.value = null;">
+                                <option></option>
+                                <option v-for="topic in topics.filter(topic => !topic.context || topic.context === 'contact')">{{ topic.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="contacts-component-filter-tags">
@@ -84,6 +95,7 @@
                     <strong v-if="filter.type === 'contactGroup'">Kontaktgruppe:</strong>
                     <strong v-if="filter.type === 'country'">Land:</strong>
                     <strong v-if="filter.type === 'language'">Sprache:</strong>
+                    <strong v-if="filter.type === 'topic'">Thema:</strong>
                     <template v-if="['status'].includes(filter.type)">
                         &nbsp;{{ filter.value === 'public' ? 'Öffentlich' : 'Privat' }}
                     </template>
@@ -109,6 +121,7 @@
                     <th>Telefon</th>
                     <th>Organisation</th>
                     <th>Kontaktgruppe</th>
+                    <th>Thema</th>
                     <th>Erstellt</th>
                     <th>Geändert</th>
                 </tr>
@@ -129,6 +142,7 @@
                     <td>{{ contact.phone }}</td>
                     <td><template v-for="company of getCompanies(contact)">{{ company.name }}<br></template></td>
                     <td v-html="formatOneToManyGroups(contact.contactGroups, getContactGroupById)"></td>
+                    <td>{{ formatOneToMany(contact.topics, getTopicById) }}</td>
                     <td>{{ formatDateTime(contact.createdAt) }}</td>
                     <td>{{ formatDateTime(contact.updatedAt) }}</td>
                 </tr>
@@ -200,11 +214,13 @@ export default {
             contactGroups: state => state.contactGroups.all,
             countries: state => state.countries.all,
             languages: state => state.languages.all,
+            topics: state => state.topics.all,
         }),
         ...mapGetters({
             isLoading: 'loaders/isLoading',
             getContactGroupById: 'contactGroups/getById',
             getContactById: 'contacts/getById',
+            getTopicById: 'topics/getById',
         }),
         contactGroupOptions() {
             let contactGroupOptions = [];

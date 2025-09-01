@@ -70,6 +70,31 @@
 
             </transition>
 
+            <div class="embed-contacts-filters-select" data-filter-type="topics">
+
+                <div class="embed-contacts-filters-select-label"
+                     @click.stop="clickFilterSelect('topic')">{{ $t('Thema', locale) }}</div>
+
+                <div class="embed-contacts-filters-select-icon"
+                     :class="{'is-active': activeFilterSelect === 'topic'}"></div>
+
+                <transition name="embed-contacts-filters-select-options" mode="out-in">
+
+                    <div class="embed-contacts-filters-select-options" v-if="activeFilterSelect === 'topic'">
+
+                        <div class="embed-contacts-filters-select-options-item"
+                             v-for="topic in topics"
+                             :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
+                             @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
+                            {{ translateField(topic, 'name', locale) }}
+                        </div>
+
+                    </div>
+
+                </transition>
+
+            </div>
+
             <div class="embed-contacts-filters-select" data-filter-type="states">
 
                 <div class="embed-contacts-filters-select-label"
@@ -151,18 +176,14 @@
 
                         </div>
 
-                        <!--div class="embed-contacts-list-item-content-tags">
+                        <div class="embed-contacts-list-item-content-tags">
 
                             <div class="embed-contacts-list-item-content-tags-item"
-                                 v-for="contactGroup in contact.contactGroups?.filter(e => getContactGroupById(e.id))">
-                                {{ translateField(getContactGroupById(contactGroup.id), 'name', locale) }}
+                                 v-for="topic in contact.topics?.map(e => topics.find(t => t.id === e.id)).filter(e => e)">
+                                {{ translateField(topic, 'name', locale) }}
                             </div>
 
-                            <div class="embed-contacts-list-item-content-tags-item" v-if="contact.language">
-                                {{ translateField(contact.language, 'name', locale) }}
-                            </div>
-
-                        </div-->
+                        </div>
 
                     </div>
 
@@ -260,6 +281,13 @@ export default {
             return this.contactGroups.filter(contactSubGroup => contactSubGroup.parent.id === contactGroup.entity.id);
         },
         ...mapState({
+            topics: function (state) {
+                return state.topics.all
+                    .filter(e => !e.context || e.context === 'contact')
+                    .map(this.$clientOptions?.middleware?.mapTopics || (e => e))
+                    .filter(this.$clientOptions?.middleware?.filterTopics || (e => e.isPublic))
+                    .sort(this.$clientOptions?.middleware?.sortTopics || ((a, b) => a.position - b.position));
+            },
             states: function (state) {
                 return state.states.all
                     .filter(e => !e.context || e.context === 'contact')
@@ -561,7 +589,7 @@ export default {
 
                 let k = key.split('[')[0];
 
-                if(!['states', 'contactGroups', 'contactGroupsParents'].includes(k)) {
+                if(!['states', 'contactGroups', 'contactGroupsParents', 'topics'].includes(k)) {
                     result[k] = value;
                     continue;
                 }
@@ -610,7 +638,7 @@ export default {
 
             let filters = [];
 
-            ['state', 'contactGroup', 'contactGroupsParent'].forEach((key) => {
+            ['state', 'contactGroup', 'contactGroupsParent', 'topic'].forEach((key) => {
 
                 let collection = key+'s';
 
@@ -744,12 +772,13 @@ export default {
 
         Promise.all([
             this.$store.dispatch('states/loadAll'),
+            this.$store.dispatch('topics/loadAll'),
             this.$store.dispatch('contactGroups/loadFiltered', { status: ['public'] }),
         ]).then(() => {
 
             this.filters = this.filters
                 .filter((filter) => {
-                    return ['state', 'contactGroup', 'contactGroupsParent'].includes(filter.type);
+                    return ['state', 'contactGroup', 'contactGroupsParent', 'topic'].includes(filter.type);
                 })
                 .map((filter) => {
                     return {

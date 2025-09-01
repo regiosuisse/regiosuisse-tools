@@ -64,6 +64,13 @@ class ApiContactsDataController extends AbstractController
         schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
     )]
     #[OA\Parameter(
+        name: 'topic[]',
+        description: 'Include only specific topics (both name or id are valid values)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+    )]
+    #[OA\Parameter(
         name: 'state[]',
         description: 'Include only specific states (both name or id are valid values)',
         in: 'query',
@@ -216,6 +223,29 @@ class ApiContactsDataController extends AbstractController
 
             $qb
                 ->andWhere(implode(' OR ', $contactGroupQuery))
+            ;
+        }
+
+        if($request->get('topic') && is_array($request->get('topic')) && count($request->get('topic'))) {
+
+            $topicQuery = [];
+
+            foreach($request->get('topic') as $key => $topic) {
+
+                $qb
+                    ->leftJoin('c.topics', 'topic'.$key)
+                ;
+
+                $topicQuery[] = '(topic'.$key.'.name = :topic'.$key.' OR topic'.$key.'.id = :topicId'.$key.')';
+
+                $qb
+                    ->setParameter('topic'.$key, $topic)
+                    ->setParameter('topicId'.$key, $topic)
+                ;
+            }
+
+            $qb
+                ->andWhere(implode(' AND ', $topicQuery))
             ;
         }
 

@@ -36,6 +36,11 @@
                     <div class="embed-contacts-view-content-description" v-html="translateField(contact, 'description', locale)"></div><br>
                 </div>
 
+                <!--div class="embed-contacts-view-content-text" v-if="topicsHTML">
+                    <strong>{{ $t('Thema', locale) }}:</strong><br>
+                    <div class="embed-contacts-view-content-description" v-html="topicsHTML"></div><br>
+                </div-->
+
                 <div class="embed-contacts-view-content-text">
 
                     <template v-if="contact.type === 'person'&& officialEmployment?.id && officialEmployment?.company?.id">
@@ -149,6 +154,7 @@ export default {
     computed: {
         ...mapState({
             states: state => state.states.all,
+            topics: state => state.topics.all,
             employments: state => state.employments.all,
         }),
         ...mapGetters({
@@ -156,6 +162,7 @@ export default {
             getContactById: 'contacts/getById',
             getEmploymentById: 'employments/getById',
             getLanguageById: 'languages/getById',
+            getTopicById: 'topics/getById',
         }),
         contactHTML () {
 
@@ -187,6 +194,19 @@ export default {
             });
 
             return result.join('<br>');
+        },
+        topicsHTML () {
+            let result = [];
+
+            this.contact.topics.forEach((item) => {
+
+                let row = this.translateField(this.getTopicById(item.id), 'name', this.locale);
+
+                result.push(row);
+
+            });
+
+            return result.join(', ');
         },
     },
 
