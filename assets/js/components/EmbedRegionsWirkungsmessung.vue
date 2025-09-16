@@ -101,6 +101,32 @@ import swissmaptiles from "../../../config/gis/swissmaptiles.json";
 
 const data = [
     {
+        "Jahr": 2025,
+        "Kanton": [
+            "GL"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Pilotbetrieb MINTGL",
+        "Projektträgerschaft": "Kanton Glarus, Kontaktstelle für Wirtschaft",
+        "Koordinaten Pin": [
+            47.0412,
+            9.06642
+        ],
+        "Projektbeschreibung": "Die erarbeitete Leitidee für Politik, Wirtschaft und Gesellschaft im Kanton Glarus möchte den Anstoss geben, dass durch eine MINT-Frühförderung heute begeisterte Fachkräfte von morgen entstehen.",
+        "Hinweise": null,
+        "Start": 2022,
+        "End": 2023,
+        "Eval": 2025,
+        "Projektkosten": 155000.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Industrie & Gewerbe",
+            "Bildung"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf708",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-09/Wirkungsmessung_2025_GL_MINTGL_def.pdf"
+    },
+    {
         "Jahr": 2024,
         "Kanton": [
             "BE"
