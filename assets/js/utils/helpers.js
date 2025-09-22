@@ -20,7 +20,7 @@ export default {
                     return moment(from).format(format);
                 }
 
-                if(moment(from).isSame(moment(to), 'day')) {
+                if(moment(from).isSame(moment(to), 'day') && format.endsWith('HH:mm')) {
                     return moment(from).format(format)+' - '+moment(to).format('HH:mm');
                 }
 
