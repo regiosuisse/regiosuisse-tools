@@ -433,7 +433,7 @@
         &-attributes {
             display: flex;
             flex-wrap: wrap;
-            column-gap: var(--#{$instance-id}-gutter-width);
+            gap: var(--#{$instance-id}-gutter-width);
 
             &-item {
                 flex: 0 0 calc(100% / 4 - var(--#{$instance-id}-gutter-width) * 3 / 4);
