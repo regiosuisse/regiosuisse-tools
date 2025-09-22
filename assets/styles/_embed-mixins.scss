@@ -437,6 +437,15 @@
 
             &-item {
                 flex: 0 0 calc(100% / 4 - var(--#{$instance-id}-gutter-width) * 3 / 4);
+
+                .is-responsive & {
+                    @include tablet {
+                      flex: 0 0 calc(100% / 2 - var(--#{$instance-id}-gutter-width) * 1 / 2);
+                    }
+                    @include mobile {
+                      flex: 0 0 calc(100% / 1 - var(--#{$instance-id}-gutter-width) * 0 / 1);
+                    }
+                }
             }
         }
 
