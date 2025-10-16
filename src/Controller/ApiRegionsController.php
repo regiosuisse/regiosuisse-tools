@@ -326,6 +326,16 @@ class ApiRegionsController extends AbstractController
 
                     $item->expiresAt(new \DateTime('+720 days'));
 
+                    $tags = [];
+
+                    foreach($region->getTags() as $tag) {
+                        if(!$tag->isPublic()) {
+                            continue;
+                        }
+
+                        $tags[] = $tag;
+                    }
+
                     $feature = [
                         'id' => $region->getId(),
                         'type' => 'Feature',
@@ -333,7 +343,7 @@ class ApiRegionsController extends AbstractController
                             'id' => $region->getId(),
                             'name' => PvTrans::trans($region, 'name', $request->getLocale()),
                             'color' => $region->getColor(),
-                            'tags' => $normalizer->normalize($region->getTags(), null, [
+                            'tags' => $normalizer->normalize($tags, null, [
                                 'groups' => ['id', 'tag'],
                             ]),
                             'cities' => [],
