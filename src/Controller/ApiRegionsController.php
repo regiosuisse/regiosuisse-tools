@@ -329,7 +329,7 @@ class ApiRegionsController extends AbstractController
                     $tags = [];
 
                     foreach($region->getTags() as $tag) {
-                        if(!$tag->isPublic()) {
+                        if(!$tag->getIsPublic()) {
                             continue;
                         }
 
