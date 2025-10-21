@@ -48,6 +48,8 @@ webpack_encore:
         embed-circular-economy-projects-latest: '%kernel.project_dir%/public/embed/circular-economy-projects-latest'
         embed-publications: '%kernel.project_dir%/public/embed/publications'
         embed-publications-latest: '%kernel.project_dir%/public/embed/publications-latest'
+        embed-financial-supports: '%kernel.project_dir%/public/embed/financial-supports'
+        embed-financial-supports-latest: '%kernel.project_dir%/public/embed/financial-supports-latest'
         # pass "frontend" as the 3rg arg to the Twig functions
         # {{ encore_entry_script_tags('entry1', null, 'frontend') }}
 

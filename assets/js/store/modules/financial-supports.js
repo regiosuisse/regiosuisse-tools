@@ -24,6 +24,7 @@ const actions = {
         return api.financialSupports.getAll().then((response) => {
             commit('loaders/hideLoader', 'financialSupports', { root: true });
             commit('setAll', response.data);
+            return response.data;
         });
     },
 
@@ -32,6 +33,7 @@ const actions = {
         return api.financialSupports.getFiltered(params).then((response) => {
             commit('loaders/hideLoader', 'financialSupports', { root: true });
             commit('setFiltered', response.data);
+            return response.data;
         });
     },
 
@@ -40,6 +42,7 @@ const actions = {
         return api.financialSupports.get(id).then((response) => {
             commit('loaders/hideLoader', 'financialSupports/'+id, { root: true });
             commit('set', response.data);
+            return response.data;
         });
     },
 

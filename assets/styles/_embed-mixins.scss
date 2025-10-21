@@ -130,10 +130,26 @@
             padding: .25em .75em;
             border: 1px solid var(--#{$instance-id}-grey-light);
             color: var(--#{$instance-id}-black);
+            display: flex;
 
             &::placeholder {
                 color: var(--#{$instance-id}-grey-mid);
                 opacity: 1;
+            }
+
+            &-count {
+                display: inline-flex;
+                vertical-align: middle;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
+                margin-right: 1.6em;
+                width: 1.6em;
+                height: 1.6em;
+                line-height: 1em;
+                background: var(--#{$instance-id}-primary-color);
+                color: var(--#{$instance-id}-black);
+                border-radius: 100%;
             }
         }
 
@@ -725,6 +741,22 @@
 
             }
         }
+
+        &-contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--#{$instance-id}-gutter-width);
+
+            h2 {
+                flex: 0 0 100%;
+                margin-bottom: 0;
+            }
+
+            &-contact {
+                flex: 1 1 calc(50% - var(--#{$instance-id}-gutter-width));
+            }
+        }
+
     }
 
     &-sidebar {
