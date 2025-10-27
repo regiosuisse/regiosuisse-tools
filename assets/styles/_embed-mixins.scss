@@ -437,12 +437,25 @@
             flex-wrap: wrap;
 
             &-item {
+                display: flex;
                 margin-right: .5em;
                 margin-bottom: .5em;
                 line-height: 1em;
                 padding: .5em 1em;
                 background: var(--#{$instance-id}-secondary-color);
                 border-radius: var(--#{$instance-id}-border-radius-2);
+                column-gap: .25em;
+                align-items: center;
+
+                &-icon {
+                    width: 1em;
+
+                    svg {
+                        display: block;
+                        width: 100%;
+                        height: auto;
+                    }
+                }
             }
         }
 

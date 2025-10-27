@@ -100,9 +100,18 @@ Basic styles can be overwritten using CSS variables:
             // mapTopics
             // filterTopics
             // sortTopics
-            // mapLanguages
-            // filterLanguages
-            // sortLanguages
+            // mapProjectTypes
+            // filterProjectTypes
+            // sortProjectTypes
+            // mapBeneficiaries
+            // filterBeneficiaries
+            // sortBeneficiaries
+            // mapInstruments
+            // filterInstruments
+            // sortInstruments
+            // mapStates
+            // filterStates
+            // sortStates
         },
     });
 </script>

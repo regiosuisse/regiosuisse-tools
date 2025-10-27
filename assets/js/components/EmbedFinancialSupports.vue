@@ -223,8 +223,13 @@
                         <div class="embed-financial-supports-list-item-content-tags">
 
                             <div class="embed-financial-supports-list-item-content-tags-item"
-                                 v-for="topic in financialSupport.topics.filter(e => getTopicById(e.id))">
-                                {{ translateField(getTopicById(topic.id), 'name', locale) }}
+                                 v-for="topic in financialSupport.topics.map(e => getTopicById(e.id)).filter(e => e).filter(e => topics.find(t => t.id === e.id))">
+                                <template v-if="topic.icon">
+                                    <div class="embed-financial-supports-list-item-content-tags-item-icon"
+                                         v-html="topic.icon">
+                                    </div>
+                                </template>
+                                {{ translateField(topic, 'name', locale) }}
                             </div>
 
                         </div>
