@@ -103,6 +103,32 @@ const data = [
     {
         "Jahr": 2025,
         "Kanton": [
+            "UR"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Kompetenzzentrum Industrielackierer (KIL)",
+        "Projektträgerschaft": "Genossenschaft KIL",
+        "Koordinaten Pin": [
+            46.79111724968352,
+            8.670285579118142
+        ],
+        "Projektbeschreibung": "Ziel des Projekts war, die Sicherstellung des Angebots von hochwertigen Ausbildungskursen im Bereich der Industrielackiererei mit einer vorbildlichen Infrastruktur.",
+        "Hinweise": null,
+        "Start": 2022,
+        "End": 2023,
+        "Eval": 2025,
+        "Projektkosten": 1490000.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Industrie & Gewerbe",
+            "Bildung"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf708",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-10/Wirkungsmessung_2025_UR_KIL_def.pdf"
+    },
+    {
+        "Jahr": 2025,
+        "Kanton": [
             "GL"
         ],
         "Fördermassnahme": "NRP",
@@ -124,7 +150,7 @@ const data = [
             "Bildung"
         ],
         "id": "82818419-1b68-4fe8-9477-df1c576bf708",
-        "Link": "https://regiosuisse.ch/sites/default/files/2025-09/Wirkungsmessung_2025_GL_MINTGL_def.pdf"
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-10/Wirkungsmessung_2025_GL_MINTGL_def_kor_2.pdf"
     },
     {
         "Jahr": 2024,
@@ -418,11 +444,11 @@ const data = [
             "UR"
         ],
         "Fördermassnahme": "NRP",
-        "Projekt": "Kompetenzzentrum Fischzucht Erstfeld am Neuenburgersee",
+        "Projekt": "Kompetenzzentrum Fischzucht Erstfeld",
         "Projektträgerschaft": "hub Neuchâtel",
         "Koordinaten Pin": [
-            46.99262628441352,
-            6.930419479614409
+            46.834322074624595,
+            8.646445708624798
         ],
         "Projektbeschreibung": null,
         "Hinweise": null,
