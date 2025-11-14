@@ -445,7 +445,7 @@ const data = [
         ],
         "Fördermassnahme": "NRP",
         "Projekt": "Kompetenzzentrum Fischzucht Erstfeld",
-        "Projektträgerschaft": "hub Neuchâtel",
+        "Projektträgerschaft": "Basis 57",
         "Koordinaten Pin": [
             46.834322074624595,
             8.646445708624798
