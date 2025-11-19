@@ -103,6 +103,31 @@ const data = [
     {
         "Jahr": 2025,
         "Kanton": [
+            "SH"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "go tec! Labor",
+        "Projektträgerschaft": "Stiftung go tec Schaffhausen",
+        "Koordinaten Pin": [
+            47.6781590649707,
+            8.622250112749564
+        ],
+        "Projektbeschreibung": "Ziel des NRP-Projekts war die interkantonalen Partnerschaften zu stärken, die überregionale Ausstrahlung des go tec! Labors weiter zu fördern und das Kursangebot für Kinder und Jugendliche auszubauen. So soll das Projekt weiterhin dem Fachkräftemangel im MINT-Bereich entgegenwirken.",
+        "Hinweise": null,
+        "Start": 2019,
+        "End": 2023,
+        "Eval": 2025,
+        "Projektkosten": 2500000.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Bildung"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf709",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-11/Wirkungsmessung_2025_SH_goTec_def.pdf"
+    },
+    {
+        "Jahr": 2025,
+        "Kanton": [
             "UR"
         ],
         "Fördermassnahme": "NRP",
@@ -176,7 +201,7 @@ const data = [
             "Digitalisierung",
             "Lokale Wirtschaft"
         ],
-        "id": "82818419-1b68-4fe8-9477-df1c576bb708",
+        "id": "82818419-1b68-4fe8-9477-df1c576bb707",
         "Link": "https://regiosuisse.ch/sites/default/files/2025-02/Wirkungsmessung_2024_BE_DigitaleDorfstrasse.pdf"
     },
     {
