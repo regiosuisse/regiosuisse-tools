@@ -103,6 +103,31 @@ const data = [
     {
         "Jahr": 2025,
         "Kanton": [
+            "NE"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Swiss Electronic Cluster",
+        "Projektträgerschaft": "CapQua",
+        "Koordinaten Pin": [
+            46.99617711465888,
+            6.9446031020983074,
+        ],
+        "Projektbeschreibung": "L’objectif du Swiss Electronics Cluster est d’améliorer la compétitivité et la productivité de ses membres, assurer la promotion des technologies de l’électronique, de la qualité et des standards internationaux (IPC), proposer des formations continues et favoriser les partenariats public-privé et les opportunités de réseautage pour ses membres",
+        "Hinweise": null,
+        "Start": 2020,
+        "End": 2022,
+        "Eval": 2025,
+        "Projektkosten": 992844.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Industrie & Gewerbe"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf710",
+        "Link": "https://regiosuisse.ch/sites/default/files/2025-11/L3_SEC_RapportEvaluation_WM2025_V2.pdf"
+    },
+    {
+        "Jahr": 2025,
+        "Kanton": [
             "SH"
         ],
         "Fördermassnahme": "NRP",
