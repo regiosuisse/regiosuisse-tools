@@ -1593,9 +1593,27 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         ...mapState({
-            topics: state => state.topics.all,
-            states: state => state.states.all,
-            programs: state => state.programs.all,
+            topics: function (state) {
+                return state.topics.all
+                    .filter(e => !e.context || e.context === 'project')
+                    .map(this.$clientOptions?.middleware?.mapTopics || (e => e))
+                    .filter(this.$clientOptions?.middleware?.filterTopics || (e => e.isPublic))
+                    .sort(this.$clientOptions?.middleware?.sortTopics || ((a, b) => a.position - b.position));
+            },
+            states: function (state) {
+                return state.states.all
+                    .filter(e => !e.context || e.context === 'project')
+                    .map(this.$clientOptions?.middleware?.mapStates || (e => e))
+                    .filter(this.$clientOptions?.middleware?.filterStates || (e => e.isPublic))
+                    .sort(this.$clientOptions?.middleware?.sortStates || ((a, b) => translateField(a, 'name', this.locale).localeCompare(translateField(b, 'name', this.locale))));
+            },
+            programs: function (state) {
+                return state.programs.all
+                    .filter(e => !e.context || e.context === 'project')
+                    .map(this.$clientOptions?.middleware?.mapPrograms || (e => e))
+                    .filter(this.$clientOptions?.middleware?.filterPrograms || (e => e.isPublic))
+                    .sort(this.$clientOptions?.middleware?.sortPrograms || ((a, b) => a.position - b.position));
+            },
         }),
         ...mapGetters({
             getTopicById: 'topics/getById',
@@ -1609,8 +1627,7 @@ export default {
                     name: project['Projekt'],
                     topics: this.topics
                         .filter(e => !e.context || e.context === 'project')
-                        .filter(topic => project['Tags'].includes(topic.name))
-                        .sort((a, b) => a.position - b.position),
+                        .filter(topic => project['Tags'].includes(topic.name)),
                     states: this.states
                         .filter(e => !e.context || e.context === 'project')
                         .filter(state => project['Kanton'].includes(state.code)),
