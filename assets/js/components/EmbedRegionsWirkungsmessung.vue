@@ -145,7 +145,7 @@ const data = [
         "Projektkosten": 2500000.0,
         "Anteil NRP in %": null,
         "Tags": [
-            "Bildung"
+            "Industrie & Gewerbe"
         ],
         "id": "82818419-1b68-4fe8-9477-df1c576bf709",
         "Link": "https://regiosuisse.ch/sites/default/files/2025-11/Wirkungsmessung_2025_SH_goTec_def.pdf"
@@ -171,7 +171,6 @@ const data = [
         "Anteil NRP in %": null,
         "Tags": [
             "Industrie & Gewerbe",
-            "Bildung"
         ],
         "id": "82818419-1b68-4fe8-9477-df1c576bf708",
         "Link": "https://regiosuisse.ch/sites/default/files/2025-10/Wirkungsmessung_2025_UR_KIL_def.pdf"
@@ -197,7 +196,6 @@ const data = [
         "Anteil NRP in %": null,
         "Tags": [
             "Industrie & Gewerbe",
-            "Bildung"
         ],
         "id": "82818419-1b68-4fe8-9477-df1c576bf708",
         "Link": "https://regiosuisse.ch/sites/default/files/2025-10/Wirkungsmessung_2025_GL_MINTGL_def_kor_2.pdf"
@@ -1611,7 +1609,8 @@ export default {
                     name: project['Projekt'],
                     topics: this.topics
                         .filter(e => !e.context || e.context === 'project')
-                        .filter(topic => project['Tags'].includes(topic.name)),
+                        .filter(topic => project['Tags'].includes(topic.name))
+                        .sort((a, b) => a.position - b.position),
                     states: this.states
                         .filter(e => !e.context || e.context === 'project')
                         .filter(state => project['Kanton'].includes(state.code)),
@@ -1629,7 +1628,7 @@ export default {
                 return this.filters.every(filter => {
                     return project[filter.type+'s']?.find(f => f.id === filter.entity.id);
                 });
-            });
+            }).reverse();
         },
         filteredTopics() {
             return this.topics.filter(e => this.projects.find(project => project.topics.find(ee => ee.id === e.id)));
@@ -1881,8 +1880,8 @@ export default {
                             ${project.link ? `<p><a href="${project.link}" target="_blank">${this.$t('Zum Kurzbericht', this.locale)}</a></p>` : ``}
                         </div>
                     `;
-                    if(parseInt(project.year) >= 2020) {
-                        //el.querySelector('svg').style.fill = '#2b9db1';
+                    if(parseInt(project.year) >= 2025) {
+                        el.querySelector('svg').style.fill = '#FF0000';
                     }
                     let marker = new mapboxgl.Marker(el).setLngLat([project.lngLat[0], project.lngLat[1]]).addTo(this.map);
                     this.markers.push(marker);
@@ -1898,6 +1897,12 @@ export default {
                         }
 
                         el.classList.add('is-active');
+
+                        if(el.getBoundingClientRect().y - this.$refs.mapContainer.getBoundingClientRect().y < 200) {
+                            el.classList.add('is-inversed');
+                        } else {
+                            el.classList.remove('is-inversed');
+                        }
 
                     });
                     el.addEventListener('mouseleave', (event) => {

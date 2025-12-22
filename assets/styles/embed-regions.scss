@@ -108,6 +108,11 @@
                     transition: opacity .25s, visibility .25s;
                     padding: 1em 2em;
 
+                    .is-inversed & {
+                        bottom: auto;
+                        top: 75%;
+                    }
+
                     &::after {
                         content: '';
                         position: absolute;
@@ -117,6 +122,13 @@
                         border-width: 1em 1em 0;
                         border-style: solid;
                         border-color: var(--#{$instance-id}-white) transparent transparent;
+
+                        .is-inversed & {
+                            bottom: auto;
+                            top: 0;
+                            translate: -50% -100%;
+                            rotate: 180deg;
+                        }
                     }
                 }
 
