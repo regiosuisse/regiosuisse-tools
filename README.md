@@ -66,7 +66,7 @@ cd swissBOUNDARIES3D
 
 ogr2ogr -f GeoJSON -s_srs swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.prj \
     -t_srs EPSG:4326 \
-    -simplify 150 \
+    -simplify 75 \
     -dim 2 \
     -dialect SQLITE \
     -sql "SELECT BFS_NUMMER AS GMDNR, NAME AS GMDNAME, geometry FROM swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET" \
