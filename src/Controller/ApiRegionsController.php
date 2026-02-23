@@ -372,16 +372,68 @@ class ApiRegionsController extends AbstractController
                                 continue;
                             }
 
-                            $feature['geometry'] = json_decode(
-                                shell_exec(
-                                    sprintf(
-                                        '%s %s union %s %s',
-                                        $nodeJs,
-                                        __DIR__.'/../../bin/gis-util',
-                                        escapeshellarg(json_encode($feature['geometry'])),
-                                        escapeshellarg(json_encode($geojsonCity['geometry'])))
-                                )
-                            , true)['geometry'];
+                            $geom1Json = json_encode($feature['geometry'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                            $geom2Json = json_encode($geojsonCity['geometry'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+                            if ($geom1Json === false || $geom2Json === false) {
+                                throw new \RuntimeException('Failed to encode geometry JSON: ' . json_last_error_msg());
+                            }
+
+                            $tmp1 = tempnam(sys_get_temp_dir(), 'gis-geom1-');
+                            $tmp2 = tempnam(sys_get_temp_dir(), 'gis-geom2-');
+                            $tmp3 = tempnam(sys_get_temp_dir(), 'gis-geom3-');
+
+                            if ($tmp1 === false || $tmp2 === false) {
+                                throw new \RuntimeException('Failed to create temp files.');
+                            }
+
+                            try {
+
+                                if (file_put_contents($tmp1, $geom1Json) === false) {
+                                    throw new \RuntimeException('Failed to write temp geometry 1 file.');
+                                }
+
+                                if (file_put_contents($tmp2, $geom2Json) === false) {
+                                    throw new \RuntimeException('Failed to write temp geometry 2 file.');
+                                }
+
+                                $cmd = sprintf(
+                                    '%s %s union %s %s > %s',
+                                    escapeshellcmd($nodeJs),
+                                    escapeshellarg(__DIR__ . '/../../bin/gis-util'),
+                                    escapeshellarg('@' . $tmp1),
+                                    escapeshellarg('@' . $tmp2),
+                                    escapeshellarg($tmp3)
+                                );
+
+                                shell_exec($cmd);
+
+                                $out = file_get_contents($tmp3);
+                                if (!$out) {
+                                    throw new \RuntimeException('gis-util execution failed (output file has no content).');
+                                }
+
+                                $decoded = json_decode($out, true);
+                                if (!is_array($decoded)) {
+                                    throw new \RuntimeException('Invalid JSON output from gis-util: '.$out);
+                                }
+                                if (!array_key_exists('geometry', $decoded)) {
+                                    throw new \RuntimeException('gis-util output missing geometry field.');
+                                }
+
+                                $feature['geometry'] = $decoded['geometry'];
+
+                            } finally {
+                                if (is_string($tmp1) && file_exists($tmp1)) {
+                                    @unlink($tmp1);
+                                }
+                                if (is_string($tmp2) && file_exists($tmp2)) {
+                                    @unlink($tmp2);
+                                }
+                                if (is_string($tmp3) && file_exists($tmp3)) {
+                                    @unlink($tmp3);
+                                }
+                            }
 
                         }
 

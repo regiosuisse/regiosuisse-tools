@@ -1,29 +1,54 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
 const union = require('@turf/union').default;
-
 const argv = require('minimist')(process.argv.slice(2));
 
-if(!argv._[0]) {
+function readArgJson(arg, label) {
+    if (!arg) {
+        console.error(`${label} missing.`);
+        process.exit(1);
+    }
+
+    let jsonText = arg;
+
+    if (typeof arg === 'string' && arg.startsWith('@')) {
+        const filePath = arg.slice(1);
+        try {
+            jsonText = fs.readFileSync(filePath, 'utf8');
+        } catch (e) {
+            console.error(`${label} file read failed: ${filePath}`);
+            process.exit(1);
+        }
+    }
+
+    try {
+        return JSON.parse(jsonText);
+    } catch (e) {
+        console.error(`${label} is not valid JSON.`);
+        process.exit(1);
+    }
+}
+
+if (!argv._[0]) {
     console.error('No method given.');
     process.exit(1);
 }
 
-if(argv._[0] === 'union') {
+if (argv._[0] === 'union') {
+    const feature1 = readArgJson(argv._[1], 'Feature 1');
+    const feature2 = readArgJson(argv._[2], 'Feature 2');
 
-    if(!argv._[1]) {
-        console.error('Feature 1 missing.');
+    const result = union(feature1, feature2);
+
+    if (!result) {
+        console.error('Union returned null (non-overlapping or invalid inputs).');
         process.exit(1);
     }
 
-    if(!argv._[2]) {
-        console.error('Feature 2 missing.');
-        process.exit(1);
-    }
-
-    let feature1 = JSON.parse(argv._[1]);
-    let feature2 = JSON.parse(argv._[2]);
-
-    console.log(JSON.stringify(union(feature1, feature2)));
-
+    process.stdout.write(JSON.stringify(result));
+    process.exit(0);
 }
+
+console.error(`Unknown method: ${argv._[0]}`);
+process.exit(1);
