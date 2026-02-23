@@ -59,9 +59,21 @@ You're now ready to import projects from CHMOS.
 
 ### Update GeoJSON
 
+Download *.shp from https://www.swisstopo.admin.ch/de/landschaftsmodell-swissboundaries3d
+
 ```
-cd ./config/gis
-ogr2ogr -f GeoJSON -s_srs *.prj -t_srs EPSG:4326 cities.json *.shp
+cd swissBOUNDARIES3D
+
+ogr2ogr -f GeoJSON -s_srs swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.prj \
+    -t_srs EPSG:4326 \
+    -simplify 150 \
+    -dim 2 \
+    -dialect SQLITE \
+    -sql "SELECT BFS_NUMMER AS GMDNR, NAME AS GMDNAME, geometry FROM swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET" \
+    cities.json \
+    swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp
+    
+cp ./cities.json ./config/gis/cities.json
 ```
 
 ### Import cities XLSX
