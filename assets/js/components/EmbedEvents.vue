@@ -113,7 +113,7 @@
                         <div class="embed-events-list-item-header-image" v-else></div>
                     </div>
                     <div class="embed-events-list-item-content">
-                        <h3 class="embed-events-list-item-content-title" :style="event.type !== 'external' && event.color ? 'color:'+event.color : null">
+                        <h3 class="embed-events-list-item-content-title">
                             {{ translateField(event, 'title', locale) }}
                         </h3>
                         <h4 class="embed-events-list-item-content-subtitle" v-if="event.startDate && event.endDate">
