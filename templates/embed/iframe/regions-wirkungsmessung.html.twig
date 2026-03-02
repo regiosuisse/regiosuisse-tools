@@ -44,29 +44,6 @@
         });
     </script>
 
-    <script>
-
-        var currentHeight = 0;
-
-        function checkDocumentHeight () {
-
-            var newHeight = document.documentElement.offsetHeight;
-
-            if(newHeight !== currentHeight) {
-                var payload = {
-                    type: '{{ env.INSTANCE_ID }}Regions:offsetHeight',
-                    value: newHeight,
-                };
-                (window.parent || window).postMessage(payload, '*');
-                currentHeight = newHeight;
-            }
-
-            setTimeout(checkDocumentHeight, 100);
-
-        }
-
-        checkDocumentHeight();
-
-    </script>
+    {% include 'embed/iframe-resizer.html.twig' with { instanceName: env.INSTANCE_ID ~ 'RegionsWirkungsmessung' } %}
 
 {% endblock %}

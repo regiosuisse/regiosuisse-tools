@@ -1,0 +1,61 @@
+<script>
+
+    var currentWidth = 0;
+    var currentHeight = 0;
+    var timerId = null;
+
+    function checkDocumentHeight () {
+
+        var newWidth  = Math.ceil(document.documentElement.getBoundingClientRect().width);
+        var newHeight = Math.ceil(document.documentElement.getBoundingClientRect().height);
+
+        if(newWidth !== currentWidth || newHeight !== currentHeight) {
+
+            (window.parent || window).postMessage({
+                type: '{{ instanceName }}:offsetHeight',
+                value: newHeight,
+            }, '*');
+
+            (window.parent || window).postMessage({
+                type: 'iframe-resized',
+                height: newHeight,
+                width: newWidth,
+            }, '*');
+
+            currentWidth = newWidth;
+            currentHeight = newHeight;
+
+        }
+
+        if(timerId !== null) {
+            clearTimeout(timerId);
+        }
+        timerId = setTimeout(checkDocumentHeight, 100);
+
+    }
+
+    checkDocumentHeight();
+
+    window.addEventListener('message', function (e) {
+
+        if (!e.data || typeof e.data !== 'object') {
+            return;
+        }
+
+        if (e.data.type !== 'iframe-child-init') {
+            return;
+        }
+
+        if (e.data.bodyPadding && document.body) {
+            document.body.style.padding = e.data.bodyPadding;
+        }
+
+        if (e.data.bodyMargin && document.body) {
+            document.body.style.margin = e.data.bodyMargin;
+        }
+
+        checkDocumentHeight();
+
+    });
+
+</script>
