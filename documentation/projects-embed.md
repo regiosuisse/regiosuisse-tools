@@ -53,6 +53,7 @@ Basic styles can be overwritten using CSS variables:
     --%INSTANCE_ID%-gutter-width: 1em;
     --%INSTANCE_ID%-primary-color: #0059be;
     --%INSTANCE_ID%-secondary-color: #92bae2;
+    --%INSTANCE_ID%-accessibility-color: #F00;
     --%INSTANCE_ID%-border-radius-1: 0;
     --%INSTANCE_ID%-border-radius-2: 0;
 }

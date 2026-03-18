@@ -10,6 +10,7 @@
 
     --#{$instance-id}-primary-color: #{$primary-color};
     --#{$instance-id}-secondary-color: #{$secondary-color};
+    --#{$instance-id}-accessibility-color: var(--#{$instance-id}-primary-color);
 
     --#{$instance-id}-black: #{$black};
     --#{$instance-id}-white: #{$white};
@@ -114,7 +115,7 @@
     }
 
     &:focus-visible {
-        outline: 2px solid currentColor;
+        outline: 2px solid var(--#{$instance-id}-accessibility-color);
         outline-offset: 2px;
     }
 
