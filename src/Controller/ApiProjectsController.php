@@ -533,6 +533,7 @@ class ApiProjectsController extends AbstractController
 
         } else if ($request->get('randomize')) {
             $qb
+                ->addOrderBy('SUBSTRING(p.startDate, 1, 4)', 'DESC')
                 ->addOrderBy('p.random', 'DESC')
             ;
         } else {

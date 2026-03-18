@@ -7,6 +7,7 @@
 .embed-projects {
     @include embed-variables;
     @include embed-base;
+    @include embed-a11y;
 
     &-search, &-filters {
         @include embed-filters;

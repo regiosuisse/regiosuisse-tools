@@ -67,6 +67,7 @@
     }
 
     & &-button {
+        all: unset;
         line-height: 1em;
         padding: .5em 1em;
         background: var(--#{$instance-id}-primary-color);
@@ -74,6 +75,8 @@
         color: var(--#{$instance-id}-black);
         text-decoration: none;
         display: inline-block;
+
+        @include embed-a11y-outline;
 
         &:active, &:hover {
             background: var(--#{$instance-id}-secondary-color);
@@ -84,6 +87,35 @@
             opacity: .25;
             pointer-events: none;
         }
+    }
+
+}
+
+@mixin embed-a11y () {
+
+    &-sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+}
+
+@mixin embed-a11y-outline () {
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
     }
 
 }
@@ -102,6 +134,13 @@
     flex-wrap: wrap;
     align-items: center;
 
+    &-toggle {
+        all: unset;
+        display: flex;
+
+        @include embed-a11y-outline;
+    }
+
     &-input, &-select, &-toggle {
         position: relative;
         flex: 0 0 calc(100% / 3 - var(--#{$instance-id}-gutter-width));
@@ -117,6 +156,13 @@
             @include mobile {
                 flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
             }
+        }
+
+        &-label {
+            all: unset;
+            display: block;
+
+            @include embed-a11y-outline;
         }
 
         input, &-label {
@@ -137,6 +183,8 @@
                 opacity: 1;
             }
 
+            @include embed-a11y-outline;
+
             &-count {
                 display: inline-flex;
                 vertical-align: middle;
@@ -154,6 +202,8 @@
         }
 
         &-icon {
+            all: unset;
+            display: block;
             position: absolute;
             right: .75em;
             top: 50%;
@@ -163,6 +213,8 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
+
+            @include embed-a11y-outline;
         }
     }
 
@@ -203,10 +255,6 @@
     &-select {
         @include disable-select;
 
-        &-label {
-            cursor: pointer;
-        }
-
         &-options {
             position: absolute;
             left: 0;
@@ -222,6 +270,10 @@
             max-height: 19em;
 
             &-item {
+                all: unset;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
                 padding: .5em 1em;
                 padding-right: 2em;
                 margin: .25em 0;
@@ -230,6 +282,8 @@
                 cursor: pointer;
                 transition: background .25s;
                 position: relative;
+
+                @include embed-a11y-outline;
 
                 &.is-selected, &:hover {
                     background: var(--#{$instance-id}-secondary-color);
@@ -335,6 +389,8 @@
     padding: calc(var(--#{$instance-id}-gutter-width) / 4) calc(var(--#{$instance-id}-gutter-width) / 2);
 
     &-item {
+        all: unset;
+        display: block;
         margin-right: .5em;
         margin-bottom: .5em;
         line-height: 1em;
@@ -342,6 +398,8 @@
         background: var(--#{$instance-id}-secondary-color);
         border-radius: var(--#{$instance-id}-border-radius-2);
         cursor: pointer;
+
+        @include embed-a11y-outline;
     }
 
 }
@@ -354,6 +412,7 @@
     transition: opacity .25s, transform .25s;
 
     &-item {
+        all: unset;
         flex: 0 0 calc(100% / 3 - var(--#{$instance-id}-gutter-width));
     }
 
@@ -361,6 +420,8 @@
 
 @mixin embed-list-item () {
 
+    display: flex;
+    flex-direction: column;
     margin-top: calc(var(--#{$instance-id}-gutter-width) / 2);
     margin-bottom: calc(var(--#{$instance-id}-gutter-width) / 2);
     margin-left: calc(var(--#{$instance-id}-gutter-width) / 2);
@@ -373,6 +434,8 @@
     cursor: pointer;
     transform: scale(1);
     transition: transform .25s;
+
+    @include embed-a11y-outline;
 
     .is-responsive & {
         @include tablet {
@@ -394,8 +457,10 @@
     &-header {
         padding-bottom: 50%;
         position: relative;
+        display: block;
 
         &-image {
+            display: block;
             position: absolute;
             top: 0;
             width: 100%;
@@ -409,6 +474,7 @@
     }
 
     &-content {
+        display: block;
         padding: 1em;
 
         &-title {

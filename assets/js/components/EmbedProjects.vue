@@ -6,22 +6,30 @@
 
         <div class="embed-projects-search">
 
+            <label class="embed-projects-sr-only" :for="`${$env.INSTANCE_ID}-projects-search`">{{ $t('Suchbegriff', locale) }}</label>
+
             <div class="embed-projects-search-input">
                 <input type="text" :placeholder="$t('Suchbegriff', locale)" v-model="term"
                        :class="{'has-value': term}"
+                       :id="`${$env.INSTANCE_ID}-projects-search`"
                        @change="changeSearchTerm()"
                        @keyup="$event.keyCode === 13 ? changeSearchTerm() : null">
-                <div class="embed-projects-search-input-icon" @click.stop="term = null; changeSearchTerm()"></div>
+                <button class="embed-projects-search-input-icon"
+                        @click.stop="term = null; changeSearchTerm()"></button>
             </div>
 
-            <div class="embed-projects-search-toggle"
-                 v-if="$clientOptions?.mapboxApiToken"
-                 data-filter-type="map"
-                 @click="clickToggleMap()" :class="{ 'is-active': isMapEnabled }">
-                <div class="embed-projects-search-toggle-button"></div>
-                <div class="embed-projects-search-toggle-label">{{ $t('Karte anzeigen (NRP und Interreg)', locale) }}</div>
-                <div v-if="templateHook('mapToggleAfter', null)" v-html="templateHook('mapToggleAfter', null)"></div>
-            </div>
+            <button class="embed-projects-search-toggle"
+                    v-if="$clientOptions?.mapboxApiToken"
+                    data-filter-type="map"
+                    @click="clickToggleMap()"
+                    :class="{ 'is-active': isMapEnabled }"
+                    :aria-pressed="isMapEnabled ? 'true' : 'false'"
+                    :aria-label="$t('Karte anzeigen (NRP und Interreg)', locale)"
+            >
+                <span class="embed-projects-search-toggle-button"></span>
+                <span class="embed-projects-search-toggle-label">{{ $t('Karte anzeigen (NRP und Interreg)', locale) }}</span>
+                <span v-if="templateHook('mapToggleAfter', null)" v-html="templateHook('mapToggleAfter', null)"></span>
+            </button>
 
         </div>
 
@@ -29,23 +37,30 @@
 
             <div class="embed-projects-filters-select" data-filter-type="states">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('state')">{{ $t('Kanton', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'state' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-state`"
+                        @click.stop="clickFilterSelect('state')">{{ $t('Kanton', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'state'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'state'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-state`"
+                         role="group"
+                         :aria-label="$t('Kanton', locale)"
+                         v-if="activeFilterSelect === 'state'">
 
-                        <div class="embed-projects-filters-select-options-item"
-                             v-for="state in states"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'state', entity: state }) }"
-                             @click.stop="clickToggleFilter({ type: 'state', entity: state })">
+                        <button class="embed-projects-filters-select-options-item"
+                                v-for="state in states"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'state', entity: state }) }"
+                                :aria-pressed="isFilterSelected({ type: 'state', entity: state }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'state', entity: state })">
                             {{ translateField(state, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'state', state)" v-html="templateHook('filterSelectOptionsItemAfter', 'state', state)"></div>
-                        </div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'state', state)" v-html="templateHook('filterSelectOptionsItemAfter', 'state', state)"></span>
+                        </button>
 
                     </div>
 
@@ -55,23 +70,30 @@
 
             <div class="embed-projects-filters-select" data-filter-type="topics">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('topic')">{{ $t('Thema', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'topic' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-topic`"
+                        @click.stop="clickFilterSelect('topic')">{{ $t('Thema', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'topic'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'topic'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-topic`"
+                         role="group"
+                         :aria-label="$t('Thema', locale)"
+                         v-if="activeFilterSelect === 'topic'">
 
-                        <div class="embed-projects-filters-select-options-item"
-                             v-for="topic in topics"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
-                             @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
+                        <button class="embed-projects-filters-select-options-item"
+                                v-for="topic in topics"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
+                                :aria-pressed="isFilterSelected({ type: 'topic', entity: topic }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
                             {{ translateField(topic, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'topic', topic)" v-html="templateHook('filterSelectOptionsItemAfter', 'topic', topic)"></div>
-                        </div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'topic', topic)" v-html="templateHook('filterSelectOptionsItemAfter', 'topic', topic)"></span>
+                        </button>
 
                     </div>
 
@@ -81,28 +103,35 @@
 
             <div class="embed-projects-filters-select" data-filter-type="programs">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('program')">{{ $t('Programm', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'program' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-program`"
+                        @click.stop="clickFilterSelect('program')">{{ $t('Programm', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'program'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'program'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-program`"
+                         role="group"
+                         :aria-label="$t('Programm', locale)"
+                         v-if="activeFilterSelect === 'program'">
 
-                        <div class="embed-projects-filters-select-options-item"
-                             v-for="program in programs"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'program', entity: program }) }"
-                             @click.stop="clickToggleFilter({ type: 'program', entity: program })">
+                        <button class="embed-projects-filters-select-options-item"
+                                v-for="program in programs"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'program', entity: program }) }"
+                                :aria-pressed="isFilterSelected({ type: 'program', entity: program }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'program', entity: program })">
                             {{ translateField(program, 'longName', locale) || translateField(program, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'program', program)" v-html="templateHook('filterSelectOptionsItemAfter', 'program', program)"></div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'program', program)" v-html="templateHook('filterSelectOptionsItemAfter', 'program', program)"></span>
                             <template v-else-if="translateField(program, 'url', locale)">
                                 <a class="embed-projects-filters-select-options-item-icon"
                                    :href="translateField(program, 'url', locale)"
                                    target="_blank" @click.stop data-nosnippet></a>
                             </template>
-                        </div>
+                        </button>
 
                     </div>
 
@@ -112,23 +141,30 @@
 
             <div class="embed-projects-filters-select" data-filter-type="startDates">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('startDate')">{{ $t('Projektstart', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'startDate' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-startDate`"
+                        @click.stop="clickFilterSelect('startDate')">{{ $t('Projektstart', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'startDate'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'startDate'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-startDate`"
+                         role="group"
+                         :aria-label="$t('Projektstart', locale)"
+                         v-if="activeFilterSelect === 'startDate'">
 
-                        <div class="embed-projects-filters-select-options-item"
-                             v-for="startDate in years"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'startDate', entity: startDate }) }"
-                             @click.stop="clickToggleFilter({ type: 'startDate', entity: startDate })">
+                        <button class="embed-projects-filters-select-options-item"
+                                v-for="startDate in years"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'startDate', entity: startDate }) }"
+                                :aria-pressed="isFilterSelected({ type: 'startDate', entity: startDate }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'startDate', entity: startDate })">
                             {{ translateField(startDate, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)" v-html="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)"></div>
-                        </div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)" v-html="templateHook('filterSelectOptionsItemAfter', 'startDate', startDate)"></span>
+                        </button>
 
                     </div>
 
@@ -138,23 +174,30 @@
 
             <div class="embed-projects-filters-select" data-filter-type="instruments">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('instrument')">{{ $t('Finanzierung', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'instrument' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-instrument`"
+                        @click.stop="clickFilterSelect('instrument')">{{ $t('Finanzierung', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'instrument'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'instrument'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-instrument`"
+                         role="group"
+                         :aria-label="$t('Finanzierung', locale)"
+                         v-if="activeFilterSelect === 'instrument'">
 
-                        <div class="embed-projects-filters-select-options-item"
+                        <button class="embed-projects-filters-select-options-item"
                              v-for="instrument in instruments"
                              :class="{ 'is-selected': isFilterSelected({ type: 'instrument', entity: instrument }) }"
+                             :aria-pressed="isFilterSelected({ type: 'instrument', entity: instrument }) ? 'true' : 'false'"
                              @click.stop="clickToggleFilter({ type: 'instrument', entity: instrument })">
                             {{ translateField(instrument, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)" v-html="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)"></div>
-                        </div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)" v-html="templateHook('filterSelectOptionsItemAfter', 'instrument', instrument)"></span>
+                        </button>
 
                     </div>
 
@@ -164,23 +207,30 @@
 
             <div class="embed-projects-filters-select" data-filter-type="cooperations">
 
-                <div class="embed-projects-filters-select-label"
-                     @click.stop="clickFilterSelect('cooperation')">{{ $t('Kooperation', locale) }}</div>
+                <button class="embed-projects-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'cooperation' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-cooperation`"
+                        @click.stop="clickFilterSelect('cooperation')">{{ $t('Kooperation', locale) }}</button>
 
                 <div class="embed-projects-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'cooperation'}"></div>
 
                 <transition name="embed-projects-filters-select-options" mode="out-in">
 
-                    <div class="embed-projects-filters-select-options" v-if="activeFilterSelect === 'cooperation'">
+                    <div class="embed-projects-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-cooperation`"
+                         role="group"
+                         :aria-label="$t('Kooperation', locale)"
+                         v-if="activeFilterSelect === 'cooperation'">
 
-                        <div class="embed-projects-filters-select-options-item"
-                             v-for="cooperation in cooperations"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'cooperation', entity: cooperation }) }"
-                             @click.stop="clickToggleFilter({ type: 'cooperation', entity: cooperation })">
+                        <button class="embed-projects-filters-select-options-item"
+                                v-for="cooperation in cooperations"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'cooperation', entity: cooperation }) }"
+                                :aria-pressed="isFilterSelected({ type: 'cooperation', entity: cooperation }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'cooperation', entity: cooperation })">
                             {{ translateField(cooperation, 'name', locale) }}
-                            <div v-if="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)" v-html="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)"></div>
-                        </div>
+                            <span v-if="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)" v-html="templateHook('filterSelectOptionsItemAfter', 'cooperation', cooperation)"></span>
+                        </button>
 
                     </div>
 
@@ -190,9 +240,10 @@
 
             <div class="embed-projects-filters-list">
 
-                <div class="embed-projects-filters-list-item"
-                     v-for="filter in filters"
-                     @click.stop="clickToggleFilter(filter)">{{ translateField(filter.entity, 'name', locale) }}</div>
+                <button class="embed-projects-filters-list-item"
+                        v-for="filter in filters"
+                        :aria-label="`${$t('Filter entfernen', locale)}: ${translateField(filter.entity, 'name', locale)}`"
+                        @click.stop="clickToggleFilter(filter)">{{ translateField(filter.entity, 'name', locale) }}</button>
 
             </div>
 
@@ -217,22 +268,23 @@
 
             <div class="embed-projects-list" v-if="!isLoading">
 
-                <div class="embed-projects-list-item"
-                     v-for="project in projects" :id="'project-'+project.id"
-                     :class="{'is-draft': project.isPublic !== true, 'has-image': project.images?.length}"
-                     @click.stop="clickShowProject(project)">
+                <button class="embed-projects-list-item"
+                        v-for="project in projects" :id="'project-'+project.id"
+                        :class="{'is-draft': project.isPublic !== true, 'has-image': project.images?.length}"
+                        :aria-label="translateField(project, 'title', locale)"
+                        @click.stop="clickShowProject(project)">
 
-                    <div class="embed-projects-list-item-header">
+                    <span class="embed-projects-list-item-header" aria-hidden="true">
 
-                        <div class="embed-projects-list-item-header-image" v-if="project.images.length" :style="{
+                        <span class="embed-projects-list-item-header-image" v-if="project.images.length" :style="{
                             backgroundImage: 'url('+$env.HOST+'/api/v1/files/view/'+ project.images[0].id +'.' + project.images[0].extension+')'
-                        }"></div>
+                        }"></span>
 
-                        <div class="embed-projects-list-item-header-image" v-else></div>
+                        <span class="embed-projects-list-item-header-image" v-else></span>
 
-                    </div>
+                    </span>
 
-                    <div class="embed-projects-list-item-content">
+                    <span class="embed-projects-list-item-content">
 
                         <h3 class="embed-projects-list-item-content-title">
                             {{ translateField(project, 'title', locale) }}
@@ -242,32 +294,32 @@
                             {{ $helpers.textExcerpt($helpers.stripHTML(translateField(project, 'description', locale)), 168, '...') }}
                         </p>
 
-                        <div class="embed-projects-list-item-content-tags">
+                        <span class="embed-projects-list-item-content-tags">
 
-                            <div class="embed-projects-list-item-content-tags-item"
+                            <span class="embed-projects-list-item-content-tags-item"
                                  v-for="topic in project.topics.filter(e => getTopicById(e.id)).filter(e => topics.find(ee => ee.id === e.id))">
                                 {{ translateField(getTopicById(topic.id), 'name', locale) }}
-                            </div>
+                            </span>
 
-                            <div class="embed-projects-list-item-content-tags-item"
+                            <span class="embed-projects-list-item-content-tags-item"
                                  v-for="program in project.programs.filter(e => getProgramById(e.id)).filter(e => programs.find(ee => ee.id === e.id))">
                                 {{ translateField(getProgramById(program.id), 'name', locale) }}
-                            </div>
+                            </span>
 
-                            <div class="embed-projects-list-item-content-tags-item"
+                            <span class="embed-projects-list-item-content-tags-item"
                                  v-for="state in project.states.filter(e => getStateById(e.id)).filter(e => states.find(ee => ee.id === e.id))">
                                 {{ translateField(getStateById(state.id), 'name', locale) }}
-                            </div>
+                            </span>
 
-                            <div class="embed-projects-list-item-content-tags-item" v-if="project.startDate">
+                            <span class="embed-projects-list-item-content-tags-item" v-if="project.startDate">
                                 {{ $helpers.formatDate(project.startDate, 'YYYY') }}
-                            </div>
+                            </span>
 
-                        </div>
+                        </span>
 
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -277,8 +329,11 @@
 
             <div class="embed-projects-actions-item" v-if="!isLoadedFully">
 
-                <a class="embed-projects-button" @click="clickLoadMore()" v-if="!isLoadingMore">{{ $t('Mehr Projekte laden', locale) }}</a>
-                <a class="embed-projects-button is-disabled" v-else>{{ $t('Projekte werden geladen...', locale) }}</a>
+                <button class="embed-projects-button" @click="clickLoadMore()" v-if="!isLoadingMore">{{ $t('Mehr Projekte laden', locale) }}</button>
+                <button class="embed-projects-button is-disabled"
+                        disabled="true"
+                        aria-disabled="true"
+                        v-else>{{ $t('Projekte werden geladen...', locale) }}</button>
 
             </div>
 
@@ -286,7 +341,12 @@
 
         <transition name="embed-projects-overlay" mode="out-in">
 
-            <div class="embed-projects-overlay" v-if="project" @click="clickHideProject()">
+            <div class="embed-projects-overlay" v-if="project" @click="clickHideProject()"
+                 role="dialog"
+                 aria-modal="true"
+                 ref="projectDialog"
+                 tabindex="-1"
+                 :aria-label="translateField(project, 'title', locale)">
 
                 <EmbedProjectsView :project="project" :locale="locale" @click.stop
                                    @clickClose="clickHideProject()"></EmbedProjectsView>
@@ -331,6 +391,7 @@ export default {
             project: null,
             isMapEnabled: false,
             mapProjects: [],
+            lastFocusedElement: null,
         };
     },
 
@@ -469,9 +530,11 @@ export default {
 
         keyUp (event) {
 
-            if(event.keyCode === 27) {
+            if(event.key === 'Escape') {
                 this.activeFilterSelect = null;
-                this.project = null;
+                if(this.project) {
+                    this.clickHideProject();
+                }
             }
 
         },
@@ -675,6 +738,8 @@ export default {
 
         clickShowProject(project) {
 
+            this.lastFocusedElement = document.activeElement;
+
             if(this.history) {
                 window.history.pushState(null, null, this.getHistoryQueryString(project));
             }
@@ -687,6 +752,12 @@ export default {
             }
 
             this.project = project;
+
+            this.$nextTick(() => {
+                if(this.$refs.projectDialog) {
+                    this.$refs.projectDialog.focus();
+                }
+            });
 
         },
 
@@ -704,6 +775,12 @@ export default {
             }
 
             this.project = null;
+
+            this.$nextTick(() => {
+                if(this.lastFocusedElement && typeof this.lastFocusedElement.focus === 'function') {
+                    this.lastFocusedElement.focus();
+                }
+            });
 
         },
 
