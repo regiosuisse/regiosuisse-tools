@@ -150,13 +150,11 @@
         margin-left: calc(var(--#{$instance-id}-gutter-width) / 2);
         margin-right: calc(var(--#{$instance-id}-gutter-width) / 2);
 
-        .is-responsive & {
-            @include tablet {
-                flex-basis: calc(50% - var(--#{$instance-id}-gutter-width));
-            }
-            @include mobile {
-                flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
-            }
+        @include tablet {
+            flex-basis: calc(50% - var(--#{$instance-id}-gutter-width));
+        }
+        @include mobile {
+            flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
         }
 
         &-label {
@@ -221,6 +219,14 @@
 
     &-input {
         flex: 0 0 calc(100% / 3 - var(--#{$instance-id}-gutter-width));
+
+        @include tablet {
+            flex-basis: calc(100% / 2 - var(--#{$instance-id}-gutter-width));
+        }
+
+        @include mobile {
+            flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
+        }
 
         &-result {
             position: absolute;
@@ -313,10 +319,8 @@
         align-items: center;
         cursor: pointer;
 
-        .is-responsive & {
-            @include tablet {
-                flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
-            }
+        @include tablet {
+            flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
         }
 
         &-button {
@@ -341,7 +345,7 @@
             }
         }
 
-        .is-active &-button {
+        &-button.is-active {
             border-color: var(--#{$instance-id}-primary-color);
 
             &::before {
@@ -355,7 +359,7 @@
             border: none;
         }
 
-        .is-active &-label {
+        &-label.is-active {
             color: var(--#{$instance-id}-primary-color);
         }
     }
@@ -438,13 +442,11 @@
 
     @include embed-a11y-outline;
 
-    .is-responsive & {
-        @include tablet {
-            flex-basis: calc(50% - var(--#{$instance-id}-gutter-width));
-        }
-        @include mobile {
-            flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
-        }
+    @include tablet {
+        flex-basis: calc(50% - var(--#{$instance-id}-gutter-width));
+    }
+    @include mobile {
+        flex-basis: calc(100% - var(--#{$instance-id}-gutter-width));
     }
 
     &:hover {
@@ -534,13 +536,11 @@
             &-item {
                 flex: 0 0 calc(100% / 4 - var(--#{$instance-id}-gutter-width) * 3 / 4);
 
-                .is-responsive & {
-                    @include tablet {
-                      flex: 0 0 calc(100% / 2 - var(--#{$instance-id}-gutter-width) * 1 / 2);
-                    }
-                    @include mobile {
-                      flex: 0 0 calc(100% / 1 - var(--#{$instance-id}-gutter-width) * 0 / 1);
-                    }
+                @include tablet {
+                  flex: 0 0 calc(100% / 2 - var(--#{$instance-id}-gutter-width) * 1 / 2);
+                }
+                @include mobile {
+                  flex: 0 0 calc(100% / 1 - var(--#{$instance-id}-gutter-width) * 0 / 1);
                 }
             }
         }
@@ -585,13 +585,11 @@
     backdrop-filter: blur(.5em);
     padding: calc(var(--#{$instance-id}-gutter-width) * 2);
 
-    .is-responsive & {
-        @include tablet {
-            padding: calc(var(--#{$instance-id}-gutter-width));
-        }
-        @include mobile {
-            padding: 0;
-        }
+    @include tablet {
+        padding: calc(var(--#{$instance-id}-gutter-width));
+    }
+    @include mobile {
+        padding: 0;
     }
 
 }
@@ -606,10 +604,8 @@
     border-radius: var(--#{$instance-id}-border-radius-2);
     box-shadow: var(--#{$instance-id}-shadow-2);
 
-    .is-responsive & {
-        @include mobile {
-            border-radius: 0;
-        }
+    @include mobile {
+        border-radius: 0;
     }
 
     &-header, &-content, &-sidebar {
@@ -623,11 +619,9 @@
         padding: calc(var(--#{$instance-id}-gutter-width) * 2);
         padding-right: calc(var(--#{$instance-id}-gutter-width) * 2.5);
 
-        .is-responsive & {
-            @include mobile {
-                padding: var(--#{$instance-id}-gutter-width);
-                padding-right: calc(var(--#{$instance-id}-gutter-width) * 2);
-            }
+        @include mobile {
+            padding: var(--#{$instance-id}-gutter-width);
+            padding-right: calc(var(--#{$instance-id}-gutter-width) * 2);
         }
 
         &-title {
@@ -656,11 +650,9 @@
             background-position: center center;
             background-image: var(--#{$instance-id}-icon-close);
 
-            .is-responsive & {
-                @include mobile {
-                    right: var(--#{$instance-id}-gutter-width);
-                    top: var(--#{$instance-id}-gutter-width);
-                }
+            @include mobile {
+                right: var(--#{$instance-id}-gutter-width);
+                top: var(--#{$instance-id}-gutter-width);
             }
         }
     }
@@ -676,13 +668,11 @@
             max-width: unset;
         }
 
-        .is-responsive & {
-            @include mobile {
-                flex-basis: 100%;
-                max-width: 100%;
-                padding: var(--#{$instance-id}-gutter-width);
-                padding-top: 0;
-            }
+        @include mobile {
+            flex-basis: 100%;
+            max-width: 100%;
+            padding: var(--#{$instance-id}-gutter-width);
+            padding-top: 0;
         }
 
         @include headlines() {
@@ -845,13 +835,11 @@
         padding-right: calc(var(--#{$instance-id}-gutter-width) * 2);
         padding-bottom: calc(var(--#{$instance-id}-gutter-width) * 2);
 
-        .is-responsive & {
-            @include mobile {
-                flex-basis: 100%;
-                max-width: 100%;
-                padding: var(--#{$instance-id}-gutter-width);
-                padding-top: 0;
-            }
+        @include mobile {
+            flex-basis: 100%;
+            max-width: 100%;
+            padding: var(--#{$instance-id}-gutter-width);
+            padding-top: 0;
         }
 
         @include headlines() {

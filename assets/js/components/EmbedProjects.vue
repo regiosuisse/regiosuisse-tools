@@ -22,12 +22,13 @@
                     v-if="$clientOptions?.mapboxApiToken"
                     data-filter-type="map"
                     @click="clickToggleMap()"
-                    :class="{ 'is-active': isMapEnabled }"
                     :aria-pressed="isMapEnabled ? 'true' : 'false'"
                     :aria-label="$t('Karte anzeigen (NRP und Interreg)', locale)"
             >
-                <span class="embed-projects-search-toggle-button"></span>
-                <span class="embed-projects-search-toggle-label">{{ $t('Karte anzeigen (NRP und Interreg)', locale) }}</span>
+                <span class="embed-projects-search-toggle-button"
+                      :class="{ 'is-active': isMapEnabled }"></span>
+                <span class="embed-projects-search-toggle-label"
+                      :class="{ 'is-active': isMapEnabled }">{{ $t('Karte anzeigen (NRP und Interreg)', locale) }}</span>
                 <span v-if="templateHook('mapToggleAfter', null)" v-html="templateHook('mapToggleAfter', null)"></span>
             </button>
 
