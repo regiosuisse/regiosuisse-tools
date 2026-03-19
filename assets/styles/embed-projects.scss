@@ -9,15 +9,15 @@
     @include embed-base;
     @include embed-a11y;
 
-    &-search, &-filters {
+    & &-search, & &-filters {
         @include embed-filters;
     }
 
-    &-filters-list {
+    & &-filters-list {
         @include embed-filters-list;
     }
 
-    &-list {
+    & &-list {
         @include embed-list;
 
         &-item {
@@ -25,15 +25,15 @@
         }
     }
 
-    &-actions {
+    & &-actions {
         @include embed-actions;
     }
 
-    &-overlay {
+    & &-overlay {
         @include embed-overlay;
     }
 
-    &-map {
+    & &-map {
         @include embed-section;
         max-width: var(--#{$instance-id}-max-width);
         position: relative;
