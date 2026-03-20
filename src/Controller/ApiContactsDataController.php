@@ -154,10 +154,10 @@ class ApiContactsDataController extends AbstractController
         }
 
         if($request->get('term')) {
-            foreach(explode(' ', (string)$request->get('term')) as $term) {
+            foreach(explode(' ', (string)$request->get('term')) as $key => $term) {
                 $qb
-                    ->andWhere('(c.id LIKE :term OR c.companyName LIKE :term OR c.firstName LIKE :term OR c.lastName LIKE :term OR c.translations LIKE :term OR c.gender LIKE :term OR c.street LIKE :term OR c.zipCode LIKE :term OR c.city LIKE :term OR c.email LIKE :term OR c.phone LIKE :term OR c.linkedIn LIKE :term OR c.website LIKE :term OR c.description LIKE :term)')
-                    ->setParameter('term', '%'.$term.'%');
+                    ->andWhere('(c.id LIKE :term'.$key.' OR c.companyName LIKE :term'.$key.' OR c.firstName LIKE :term'.$key.' OR c.lastName LIKE :term'.$key.' OR c.translations LIKE :term'.$key.' OR c.gender LIKE :term'.$key.' OR c.street LIKE :term'.$key.' OR c.zipCode LIKE :term'.$key.' OR c.city LIKE :term'.$key.' OR c.email LIKE :term'.$key.' OR c.phone LIKE :term'.$key.' OR c.linkedIn LIKE :term'.$key.' OR c.website LIKE :term'.$key.' OR c.description LIKE :term'.$key.')')
+                    ->setParameter('term'.$key, '%'.$term.'%');
             }
         }
 
@@ -203,110 +203,87 @@ class ApiContactsDataController extends AbstractController
             $qb->andWhere('c.isPublic = TRUE');
         }
 
-        if($request->get('contactGroup') && is_array($request->get('contactGroup')) && count($request->get('contactGroup'))) {
+        $filters = [
+            'contactGroup' => ['path' => 'c.contactGroups', 'alias' => 'contactGroup'],
+            'state'        => ['path' => 'c.state',         'alias' => 'state'],
+            'country'      => ['path' => 'c.country',       'alias' => 'country'],
+            'language'     => ['path' => 'c.language',      'alias' => 'language'],
+        ];
 
-            $contactGroupQuery = [];
+        foreach ($filters as $requestKey => $config) {
+            $values = $request->get($requestKey);
 
-            $qb
-                ->leftJoin('c.contactGroups', 'contactGroup')
-            ;
-
-            foreach($request->get('contactGroup') as $key => $contactGroup) {
-
-                $contactGroupQuery[] = 'contactGroup.name = :contactGroup'.$key.' OR contactGroup.id = :contactGroupId'.$key;
-
-                $qb
-                    ->setParameter('contactGroup'.$key, $contactGroup)
-                    ->setParameter('contactGroupId'.$key, $contactGroup)
-                ;
+            if (!is_array($values)) {
+                continue;
             }
 
-            $qb
-                ->andWhere(implode(' OR ', $contactGroupQuery))
-            ;
+            $values = array_values(array_unique(array_filter(
+                $values,
+                static fn ($v) => $v !== null && $v !== ''
+            )));
+
+            if (!$values) {
+                continue;
+            }
+
+            $alias = $config['alias'];
+
+            $qb->leftJoin($config['path'], $alias);
+
+            $orX = $qb->expr()->orX();
+
+            foreach ($values as $key => $value) {
+                $nameParam = sprintf('%sName%d', $requestKey, $key);
+                $idParam   = sprintf('%sId%d', $requestKey, $key);
+
+                $orX->add(
+                    $qb->expr()->orX(
+                        $qb->expr()->eq($alias . '.name', ':' . $nameParam),
+                        $qb->expr()->eq($alias . '.id', ':' . $idParam)
+                    )
+                );
+
+                $qb->setParameter($nameParam, $value);
+                $qb->setParameter($idParam, $value);
+            }
+
+            $qb->andWhere($orX);
         }
 
-        if($request->get('topic') && is_array($request->get('topic')) && count($request->get('topic'))) {
+        $topics = $request->get('topic');
 
-            $topicQuery = [];
+        if (is_array($topics)) {
+            $topics = array_values(array_unique(array_filter(
+                $topics,
+                static fn ($v) => $v !== null && $v !== ''
+            )));
 
-            foreach($request->get('topic') as $key => $topic) {
+            if ($topics) {
+                $qb->innerJoin('c.topics', 'topic');
+
+                $orX = $qb->expr()->orX();
+
+                foreach ($topics as $key => $topic) {
+                    $nameParam = 'topicName' . $key;
+                    $idParam   = 'topicId' . $key;
+
+                    $orX->add(
+                        $qb->expr()->orX(
+                            $qb->expr()->eq('topic.name', ':' . $nameParam),
+                            $qb->expr()->eq('topic.id', ':' . $idParam)
+                        )
+                    );
+
+                    $qb->setParameter($nameParam, $topic);
+                    $qb->setParameter($idParam, $topic);
+                }
 
                 $qb
-                    ->leftJoin('c.topics', 'topic'.$key)
-                ;
-
-                $topicQuery[] = '(topic'.$key.'.name = :topic'.$key.' OR topic'.$key.'.id = :topicId'.$key.')';
-
-                $qb
-                    ->setParameter('topic'.$key, $topic)
-                    ->setParameter('topicId'.$key, $topic)
-                ;
+                    ->andWhere($orX)
+                    ->groupBy('c.id')
+                    ->having('COUNT(DISTINCT topic.id) = :topicCount')
+                    ->setParameter('topicCount', count($topics));
             }
-
-            $qb
-                ->andWhere(implode(' AND ', $topicQuery))
-            ;
-        }
-
-        if($request->get('state') && is_array($request->get('state')) && count($request->get('state'))) {
-
-            $stateQuery = [];
-
-            foreach($request->get('state') as $key => $state) {
-
-                $stateQuery[] = 'state'.$key.'.name = :state'.$key.' OR state'.$key.'.id = :stateId'.$key;
-
-                $qb
-                    ->leftJoin('c.state', 'state'.$key)
-                    ->setParameter('state'.$key, $state)
-                    ->setParameter('stateId'.$key, $state)
-                ;
-            }
-
-            $qb
-                ->andWhere(implode(' OR ', $stateQuery))
-            ;
-        }
-
-        if($request->get('country') && is_array($request->get('country')) && count($request->get('country'))) {
-
-            $countryQuery = [];
-
-            foreach($request->get('country') as $key => $country) {
-
-                $countryQuery[] = 'country'.$key.'.name = :country'.$key.' OR country'.$key.'.id = :countryId'.$key;
-
-                $qb
-                    ->leftJoin('c.country', 'country'.$key)
-                    ->setParameter('country'.$key, $country)
-                    ->setParameter('countryId'.$key, $country)
-                ;
-            }
-
-            $qb
-                ->andWhere(implode(' OR ', $countryQuery))
-            ;
-        }
-
-        if($request->get('language') && is_array($request->get('language')) && count($request->get('language'))) {
-
-            $languageQuery = [];
-
-            foreach($request->get('language') as $key => $language) {
-
-                $languageQuery[] = 'language'.$key.'.name = :language'.$key.' OR language'.$key.'.id = :languageId'.$key;
-
-                $qb
-                    ->leftJoin('c.language', 'language'.$key)
-                    ->setParameter('language'.$key, $language)
-                    ->setParameter('languageId'.$key, $language)
-                ;
-            }
-
-            $qb
-                ->andWhere(implode(' OR ', $languageQuery))
-            ;
         }
 
         if($request->get('limit')) {
