@@ -71,11 +71,12 @@
         all: unset;
         line-height: 1em;
         padding: .5em 1em;
-        background: var(--#{$instance-id}-primary-color);
+        background: var(--#{$instance-id}-secondary-color);
         border-radius: 1em;
         color: var(--#{$instance-id}-black);
         text-decoration: none;
         display: inline-block;
+        cursor: pointer;
 
         @include embed-a11y-outline;
 
