@@ -14,20 +14,6 @@
 
             <div class="embed-projects-view-content-text" v-html="translateField(project, 'description', locale)"></div>
 
-            <div class="embed-projects-view-content-downloads" v-if="translateField(project, 'files', locale)?.length">
-
-                <h4>{{ $t('Downloads', locale) }}</h4>
-
-                <div class="embed-projects-view-content-downloads-download" v-for="(file, index) in translateField(project, 'files', locale)">
-
-                    <a :href="$env.HOST+'/api/v1/files/download/'+file.id+'.'+file.extension" download>
-                        {{ file.description || 'Datei '+(index+1) }}
-                    </a>
-
-                </div>
-
-            </div>
-
             <div class="embed-projects-view-content-contacts" v-if="translateField(project, 'contacts', locale)?.length">
 
                 <h4>{{ $t('Kontakt', locale) }}</h4>
@@ -143,6 +129,11 @@
             <template v-if="linksHTML">
                 <h3>{{ $t('Links', locale) }}</h3>
                 <p v-html="linksHTML"></p>
+            </template>
+
+            <template v-if="filesHTML">
+                <h3>{{ $t('Downloads', locale) }}</h3>
+                <p v-html="filesHTML"></p>
             </template>
 
             <div v-if="templateHook('projectSidebarAfter', project)" v-html="templateHook('projectSidebarAfter', project)"></div>
@@ -287,6 +278,21 @@ export default {
                 let url = item.url.split('://').length > 1 ? item.url : 'http://'+item.url;
 
                 let row = '<a href="'+url+'" target="_blank">'+item.label+'</a>';
+
+                result.push(row);
+
+            });
+
+            return result.join('<br>');
+        },
+        filesHTML () {
+            let result = [];
+
+            translateField(this.project, 'files', this.locale).forEach((item, idx) => {
+
+                let url = this.$env.HOST+'/api/v1/files/download/'+item.id+'.'+item.extension;
+
+                let row = '<a href="'+url+'" download>'+(item.name || ('Datei ' + (idx + 1)))+'</a>';
 
                 result.push(row);
 
