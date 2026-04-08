@@ -244,6 +244,8 @@
             max-height: 19em;
 
             &-item {
+                all: unset;
+                display: block;
                 padding: .5em 1em;
                 padding-right: 2em;
                 margin: .25em 0;
@@ -252,6 +254,10 @@
                 cursor: pointer;
                 transition: background .25s;
                 position: relative;
+                width: 100%;
+                box-sizing: border-box;
+
+                @include embed-a11y-outline;
 
                 &.is-selected, &:hover {
                     background: var(--#{$instance-id}-secondary-color);

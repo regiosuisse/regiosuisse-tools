@@ -248,6 +248,7 @@
                 }
 
                 &-item {
+                    all: unset;
                     display: flex;
                     flex: 1;
                     background: var(--#{$instance-id}-grey-ultralight);
@@ -256,6 +257,8 @@
                     align-items: center;
                     padding: 1em 1em;
                     border-right: 1px solid var(--#{$instance-id}-white);
+
+                    @include embed-a11y-outline;
 
                     &:last-child {
                         border-right: 0;

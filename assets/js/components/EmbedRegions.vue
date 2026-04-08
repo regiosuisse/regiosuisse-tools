@@ -12,10 +12,10 @@
                 <div class="embed-regions-search-input-icon" @click.stop="viewMode = 'map'" v-if="!term && viewMode === 'city'"></div>
                 <div class="embed-regions-search-input-icon" @click.stop="term = null" v-else></div>
                 <div class="embed-regions-search-input-result" v-if="term">
-                    <div class="embed-regions-search-input-result-item"
-                         v-for="city in searchResultItems" @click="clickSearchResultItem(city)">
-                        {{ city.name }}
-                    </div>
+                    <button class="embed-regions-search-input-result-item"
+                            v-for="city in searchResultItems" @click="clickSearchResultItem(city)">
+                            {{ city.name }}
+                    </button>
                     <div v-if="!searchResultItems.length">
                         <em>{{ $t('Keine Ergebnisse', locale) }}</em>
                     </div>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="embed-regions-search-input" v-if="viewMode === 'city'">
-                <a @click="viewMode = 'map'">{{ $t('Zurück zur Kartenansicht', locale) }}</a>
+                <button class="embed-regions-button" @click="viewMode = 'map'">{{ $t('Zurück zur Kartenansicht', locale) }}</button>
             </div>
 
         </div>
@@ -52,11 +52,15 @@
                                     {{ idx === 0 ? '' : ', ' }}
                                     {{ getCityById(city.id)?.name }}
                                 </template>
-                                <template v-if="region.cities.length > 10">
-                                    /
-                                    <a v-if="!showRegionCities[region.id]" @click="showRegionCities[region.id] = true">{{ $t('Weitere {count} Gemeinden anzeigen', locale, {count: region.cities.length - 10}) }}</a>
-                                    <a v-else-if="showRegionCities[region.id]" @click="showRegionCities[region.id] = false">{{ $t('Weniger anzeigen', locale) }}</a>
-                                </template>
+                            </p>
+
+                            <p v-if="region.cities.length > 10">
+                                <button v-if="!showRegionCities[region.id]"
+                                        @click="showRegionCities[region.id] = true"
+                                        class="embed-regions-button">{{ $t('Weitere {count} Gemeinden anzeigen', locale, {count: region.cities.length - 10}) }}</button>
+                                <button v-else-if="showRegionCities[region.id]"
+                                        @click="showRegionCities[region.id] = false"
+                                        class="embed-regions-button">{{ $t('Weniger anzeigen', locale) }}</button>
                             </p>
 
                         </div>
@@ -122,10 +126,10 @@
 
                     <div class="embed-regions-content-context-nav" v-if="regionTypes.length > 1">
 
-                        <a class="embed-regions-content-context-nav-item"
-                           v-for="rt in regionTypes"
-                           @click="clickRegionType(rt.id)"
-                           :class="{'active': regionType === rt.id}">{{ $t(rt.name, locale) }}</a>
+                        <button class="embed-regions-content-context-nav-item"
+                                v-for="rt in regionTypes"
+                                @click="clickRegionType(rt.id)"
+                                :class="{'active': regionType === rt.id}">{{ $t(rt.name, locale) }}</button>
 
                     </div>
 
