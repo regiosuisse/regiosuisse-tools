@@ -4,12 +4,16 @@
 
         <div class="embed-financial-supports-search">
 
+            <label class="embed-financial-supports-sr-only" :for="`${$env.INSTANCE_ID}-financial-supports`">{{ $t('Suchbegriff', locale) }}</label>
+
             <div class="embed-financial-supports-search-input">
                 <input type="text" :placeholder="$t('Suchbegriff', locale)" v-model="term"
                        :class="{'has-value': term}"
+                       :id="`${$env.INSTANCE_ID}-financial-supports-search`"
                        @change="changeSearchTerm()"
                        @keyup="$event.keyCode === 13 ? changeSearchTerm() : null">
-                <div class="embed-financial-supports-search-input-icon" @click.stop="term = null; changeSearchTerm()"></div>
+                <button class="embed-financial-supports-search-input-icon"
+                        @click.stop="term = null; changeSearchTerm()"></button>
             </div>
 
         </div>
@@ -18,26 +22,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="projectTypes">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('projectType')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'projectType' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-projectType`"
+                        @click.stop="clickFilterSelect('projectType')">
                     {{ $t('Projekttyp', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'projectType')">{{ filters.filter(f => f.type === 'projectType').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                          v-if="filters.find(f => f.type === 'projectType')">{{ filters.filter(f => f.type === 'projectType').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'projectType'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'projectType'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-projectType`"
+                         role="group"
+                         :aria-label="$t('Projekttyp', locale)"
+                         v-if="activeFilterSelect === 'projectType'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="projectType in projectTypes"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'projectType', entity: projectType }) }"
-                             @click.stop="clickToggleFilter({ type: 'projectType', entity: projectType })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="projectType in projectTypes"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'projectType', entity: projectType }) }"
+                                :aria-pressed="isFilterSelected({ type: 'projectType', entity: projectType }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'projectType', entity: projectType })">
                             {{ translateField(projectType, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -47,26 +58,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="beneficiaries">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('beneficiary')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'beneficiary' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-beneficiary`"
+                        @click.stop="clickFilterSelect('beneficiary')">
                     {{ $t('Begünstigte', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'beneficiary')">{{ filters.filter(f => f.type === 'beneficiary').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                          v-if="filters.find(f => f.type === 'beneficiary')">{{ filters.filter(f => f.type === 'beneficiary').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'beneficiary'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'beneficiary'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-beneficiary`"
+                         role="group"
+                         :aria-label="$t('Begünstigte', locale)"
+                         v-if="activeFilterSelect === 'beneficiary'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="beneficiary in beneficiaries"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'beneficiary', entity: beneficiary }) }"
-                             @click.stop="clickToggleFilter({ type: 'beneficiary', entity: beneficiary })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="beneficiary in beneficiaries"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'beneficiary', entity: beneficiary }) }"
+                                :aria-pressed="isFilterSelected({ type: 'beneficiary', entity: beneficiary }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'beneficiary', entity: beneficiary })">
                             {{ translateField(beneficiary, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -76,26 +94,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="topics">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('topic')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'topic' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-topic`"
+                        @click.stop="clickFilterSelect('topic')">
                     {{ $t('Thema', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'topic')">{{ filters.filter(f => f.type === 'topic').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                         v-if="filters.find(f => f.type === 'topic')">{{ filters.filter(f => f.type === 'topic').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'topic'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'topic'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-topic`"
+                         role="group"
+                         :aria-label="$t('Thema', locale)"
+                         v-if="activeFilterSelect === 'topic'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="topic in topics"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
-                             @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="topic in topics"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'topic', entity: topic }) }"
+                                :aria-pressed="isFilterSelected({ type: 'topic', entity: topic }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'topic', entity: topic })">
                             {{ translateField(topic, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -105,26 +130,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="instruments">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('instrument')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'instrument' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-instrument`"
+                        @click.stop="clickFilterSelect('instrument')">
                     {{ $t('Unterstützungsarten', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'instrument')">{{ filters.filter(f => f.type === 'instrument').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                          v-if="filters.find(f => f.type === 'instrument')">{{ filters.filter(f => f.type === 'instrument').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'instrument'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'instrument'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-instrument`"
+                         role="group"
+                         :aria-label="$t('Unterstützungsarten', locale)"
+                         v-if="activeFilterSelect === 'instrument'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="instrument in instruments"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'instrument', entity: instrument }) }"
-                             @click.stop="clickToggleFilter({ type: 'instrument', entity: instrument })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="instrument in instruments"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'instrument', entity: instrument }) }"
+                                :aria-pressed="isFilterSelected({ type: 'instrument', entity: instrument }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'instrument', entity: instrument })">
                             {{ translateField(instrument, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -134,26 +166,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="geographicRegions">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('geographicRegion')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'geographicRegion' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-geographicRegion`"
+                        @click.stop="clickFilterSelect('geographicRegion')">
                     {{ $t('Geographische Region', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'geographicRegion')">{{ filters.filter(f => f.type === 'geographicRegion').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                          v-if="filters.find(f => f.type === 'geographicRegion')">{{ filters.filter(f => f.type === 'geographicRegion').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'geographicRegion'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'geographicRegion'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-geographicRegion`"
+                         role="group"
+                         :aria-label="$t('Geographische Region', locale)"
+                         v-if="activeFilterSelect === 'geographicRegion'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="geographicRegion in geographicRegions"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'geographicRegion', entity: geographicRegion }) }"
-                             @click.stop="clickToggleFilter({ type: 'geographicRegion', entity: geographicRegion })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="geographicRegion in geographicRegions"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'geographicRegion', entity: geographicRegion }) }"
+                                :aria-pressed="isFilterSelected({ type: 'geographicRegion', entity: geographicRegion }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'geographicRegion', entity: geographicRegion })">
                             {{ translateField(geographicRegion, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -163,26 +202,33 @@
 
             <div class="embed-financial-supports-filters-select" data-filter-type="states">
 
-                <div class="embed-financial-supports-filters-select-label"
-                     @click.stop="clickFilterSelect('state')">
+                <button class="embed-financial-supports-filters-select-label"
+                        :aria-expanded="activeFilterSelect === 'state' ? 'true' : 'false'"
+                        :aria-controls="`${$env.INSTANCE_ID}-filter-state`"
+                        @click.stop="clickFilterSelect('state')">
                     {{ $t('Kantonale Finanzhilfen', locale) }}
-                    <div class="embed-financial-supports-filters-select-label-count"
-                         v-if="filters.find(f => f.type === 'state')">{{ filters.filter(f => f.type === 'state').length }}</div>
-                </div>
+                    <span class="embed-financial-supports-filters-select-label-count"
+                          v-if="filters.find(f => f.type === 'state')">{{ filters.filter(f => f.type === 'state').length }}</span>
+                </button>
 
                 <div class="embed-financial-supports-filters-select-icon"
                      :class="{'is-active': activeFilterSelect === 'state'}"></div>
 
                 <transition name="embed-financial-supports-filters-select-options" mode="out-in">
 
-                    <div class="embed-financial-supports-filters-select-options" v-if="activeFilterSelect === 'state'">
+                    <div class="embed-financial-supports-filters-select-options"
+                         :id="`${$env.INSTANCE_ID}-filter-state`"
+                         role="group"
+                         :aria-label="$t('Kantonale Finanzhilfen', locale)"
+                         v-if="activeFilterSelect === 'state'">
 
-                        <div class="embed-financial-supports-filters-select-options-item"
-                             v-for="state in states"
-                             :class="{ 'is-selected': isFilterSelected({ type: 'state', entity: state }) }"
-                             @click.stop="clickToggleFilter({ type: 'state', entity: state })">
+                        <button class="embed-financial-supports-filters-select-options-item"
+                                v-for="state in states"
+                                :class="{ 'is-selected': isFilterSelected({ type: 'state', entity: state }) }"
+                                :aria-pressed="isFilterSelected({ type: 'state', entity: state }) ? 'true' : 'false'"
+                                @click.stop="clickToggleFilter({ type: 'state', entity: state })">
                             {{ translateField(state, 'name', locale) }}
-                        </div>
+                        </button>
 
                     </div>
 
@@ -192,10 +238,11 @@
 
             <div class="embed-financial-supports-filters-list">
 
-                <div class="embed-financial-supports-filters-list-item"
-                     v-for="filter in filters"
-                     :data-filter-type="filter.type"
-                     @click.stop="clickToggleFilter(filter)">{{ translateField(filter.entity, 'name', locale) }}</div>
+                <button class="embed-financial-supports-filters-list-item"
+                        v-for="filter in filters"
+                        :data-filter-type="filter.type"
+                        :aria-label="`${$t('Filter entfernen', locale)}: ${translateField(filter.entity, 'name', locale)}`"
+                        @click.stop="clickToggleFilter(filter)">{{ translateField(filter.entity, 'name', locale) }}</button>
 
             </div>
 
@@ -205,12 +252,13 @@
 
             <div class="embed-financial-supports-list" v-if="!isLoading">
 
-                <div class="embed-financial-supports-list-item"
-                     v-for="financialSupport in financialSupports" :id="'financialSupport-'+financialSupport.id"
-                     :class="{'is-draft': financialSupport.isPublic !== true}"
-                     @click.stop="clickShowFinancialSupport(financialSupport)">
+                <button class="embed-financial-supports-list-item"
+                        v-for="financialSupport in financialSupports" :id="'financialSupport-'+financialSupport.id"
+                        :class="{'is-draft': financialSupport.isPublic !== true}"
+                        :aria-label="translateField(financialSupport, 'name', locale)"
+                        @click.stop="clickShowFinancialSupport(financialSupport)">
 
-                    <div class="embed-financial-supports-list-item-content">
+                    <span class="embed-financial-supports-list-item-content">
 
                         <h3 class="embed-financial-supports-list-item-content-title">
                             {{ translateField(financialSupport, 'name', locale) }}
@@ -220,23 +268,23 @@
                             {{ $helpers.textExcerpt(stripHtml(translateField(financialSupport, 'description', locale)), 173) }}
                         </p>
 
-                        <div class="embed-financial-supports-list-item-content-tags">
+                        <span class="embed-financial-supports-list-item-content-tags">
 
-                            <div class="embed-financial-supports-list-item-content-tags-item"
-                                 v-for="topic in financialSupport.topics.map(e => getTopicById(e.id)).filter(e => e).filter(e => topics.find(t => t.id === e.id))">
+                            <span class="embed-financial-supports-list-item-content-tags-item"
+                                  v-for="topic in financialSupport.topics.map(e => getTopicById(e.id)).filter(e => e).filter(e => topics.find(t => t.id === e.id))">
                                 <template v-if="topic.icon">
                                     <div class="embed-financial-supports-list-item-content-tags-item-icon"
                                          v-html="topic.icon">
                                     </div>
                                 </template>
                                 {{ translateField(topic, 'name', locale) }}
-                            </div>
+                            </span>
 
-                        </div>
+                        </span>
 
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -246,7 +294,12 @@
 
             <div class="embed-financial-supports-overlay" 
                  v-if="financialSupport" 
-                 @click="clickHideFinancialSupport()">
+                 @click="clickHideFinancialSupport()"
+                 role="dialog"
+                 aria-modal="true"
+                 ref="financialSupportDialog"
+                 tabindex="-1"
+                 :aria-label="translateField(financialSupport, 'name', locale)">
 
                 <EmbedFinancialSupportsView :financialSupport="financialSupport" :locale="locale" @click.stop
                                    @clickClose="clickHideFinancialSupport()"></EmbedFinancialSupportsView>
@@ -280,6 +333,7 @@ export default {
             filters: [],
             activeFilterSelect: null,
             financialSupport: null,
+            lastFocusedElement: null,
         };
     },
 
@@ -369,9 +423,11 @@ export default {
 
         keyUp (event) {
 
-            if(event.keyCode === 27) {
+            if(event.key === 'Escape') {
                 this.activeFilterSelect = null;
-                this.financialSupport = null;
+                if(this.financialSupport) {
+                    this.clickHideFinancialSupport();
+                }
             }
 
         },
@@ -487,6 +543,8 @@ export default {
 
         clickShowFinancialSupport(financialSupport) {
 
+            this.lastFocusedElement = document.activeElement;
+
             if(this.history) {
                 window.history.pushState(null, null, this.getHistoryQueryString(financialSupport));
             }
@@ -499,6 +557,12 @@ export default {
             }
 
             this.financialSupport = financialSupport;
+
+            this.$nextTick(() => {
+                if(this.$refs.financialSupportDialog) {
+                    this.$refs.financialSupportDialog.focus();
+                }
+            });
 
         },
 
@@ -516,6 +580,12 @@ export default {
             }
 
             this.financialSupport = null;
+
+            this.$nextTick(() => {
+                if(this.lastFocusedElement && typeof this.lastFocusedElement.focus === 'function') {
+                    this.lastFocusedElement.focus();
+                }
+            });
 
         },
 
