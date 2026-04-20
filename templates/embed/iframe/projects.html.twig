@@ -35,12 +35,15 @@
     <script>
         window.addEventListener('load', function () {
             {{ env.INSTANCE_ID }}Projects('#app', {
+                {% if app.request.query.get('displayMode') == 'iframe-resizer' %}
+                    displayMode: 'iframe-resizer',
+                {% endif %}
                 locale: '{{ app.request.locale }}',
                 history: {
                     mode: 'query',
                     base: '{{ url('embed_iframe_projects') }}'
                 },
-                {% if env.MAPBOX_API_TOKEN %}
+                {% if env.MAPBOX_API_TOKEN and not app.request.query.get('mapDisabled') %}
                     mapboxApiToken: '{{ env.MAPBOX_API_TOKEN }}',
                 {% endif %}
             });

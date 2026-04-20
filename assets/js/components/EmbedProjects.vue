@@ -1,6 +1,6 @@
 <template>
 
-    <div class="embed-projects" :class="[$env.INSTANCE_ID+'-projects', {'is-responsive': responsive}]" @click.stop="clickInside">
+    <div class="embed-projects" ref="embed" :class="[$env.INSTANCE_ID+'-projects', {'is-responsive': responsive}]" @click.stop="clickInside">
 
         <div v-if="templateHook('projectsBefore', locale)" v-html="templateHook('projectsBefore', locale)"></div>
 
@@ -270,7 +270,9 @@
             <div class="embed-projects-list" v-if="!isLoading">
 
                 <button class="embed-projects-list-item"
-                        v-for="project in projects" :id="'project-'+project.id"
+                        v-for="project in projects"
+                        :id="'project-'+project.id"
+                        :ref="'project-'+project.id"
                         :class="{'is-draft': project.isPublic !== true, 'has-image': project.images?.length}"
                         :aria-label="translateField(project, 'title', locale)"
                         @click.stop="clickShowProject(project)">
@@ -757,6 +759,17 @@ export default {
             this.$nextTick(() => {
                 if(this.$refs.projectDialog) {
                     this.$refs.projectDialog.focus();
+
+                    if(this.$clientOptions.displayMode === 'iframe-resizer' && this.$refs['project-'+project.id][0]) {
+                        let projectItem = this.$refs['project-'+project.id][0];
+
+                        if(projectItem.offsetTop + this.$refs.projectDialog.offsetHeight + 200 > this.$refs.embed.offsetHeight) {
+                            this.$refs.projectDialog.children[0].style.marginBottom = 0;
+                        } else {
+                            this.$refs.projectDialog.children[0].style.marginTop = projectItem.offsetTop + 'px';
+                        }
+                    }
+
                 }
             });
 
