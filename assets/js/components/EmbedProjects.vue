@@ -760,10 +760,10 @@ export default {
                 if(this.$refs.projectDialog) {
                     this.$refs.projectDialog.focus();
 
-                    if(this.$clientOptions.displayMode === 'iframe-resizer' && this.$refs['project-'+project.id][0]) {
+                    if(this.$clientOptions?.displayMode === 'iframe-resizer' && this.$refs['project-'+project.id]?.[0]) {
                         let projectItem = this.$refs['project-'+project.id][0];
 
-                        if(projectItem.offsetTop + this.$refs.projectDialog.offsetHeight + 200 > this.$refs.embed.offsetHeight) {
+                        if(projectItem.offsetTop + this.$refs.projectDialog.children[0].offsetHeight + 200 > this.$refs.embed.offsetHeight) {
                             this.$refs.projectDialog.children[0].style.marginBottom = 0;
                         } else {
                             this.$refs.projectDialog.children[0].style.marginTop = projectItem.offsetTop + 'px';
