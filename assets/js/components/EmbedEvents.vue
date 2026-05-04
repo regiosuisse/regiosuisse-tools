@@ -82,17 +82,31 @@
         </div>
 
         <div class="embed-events-filters">
-            <div class="embed-events-filters-toggle" data-filter-type="type"
-                 @click="clickToggleType()" :class="{ 'is-active': type === 'regiosuisse' }">
-                <div class="embed-events-filters-toggle-button"></div>
-                <div class="embed-events-filters-toggle-label">{{ $t('Nur regiosuisse-Veranstaltungen anzeigen', locale) }}</div>
-            </div>
 
-            <div class="embed-events-filters-toggle" data-filter-type="archive"
-                 @click="clickToggleArchive()" :class="{ 'is-active': archive }">
-                <div class="embed-events-filters-toggle-button"></div>
-                <div class="embed-events-filters-toggle-label">{{ $t('Vergangene Veranstaltungen anzeigen', locale) }}</div>
-            </div>
+            <button class="embed-events-filters-toggle"
+                    data-filter-type="type"
+                    @click="clickToggleType()"
+                    :aria-pressed="type === 'regiosuisse' ? 'true' : 'false'"
+                    :aria-label="$t('Nur regiosuisse-Veranstaltungen anzeigen', locale)"
+            >
+                <span class="embed-events-filters-toggle-button"
+                      :class="{ 'is-active': type === 'regiosuisse' }"></span>
+                <span class="embed-events-filters-toggle-label"
+                      :class="{ 'is-active': type === 'regiosuisse' }">{{ $t('Nur regiosuisse-Veranstaltungen anzeigen', locale) }}</span>
+            </button>
+
+            <button class="embed-events-filters-toggle"
+                    data-filter-type="type"
+                    @click="clickToggleArchive()"
+                    :aria-pressed="archive ? 'true' : 'false'"
+                    :aria-label="$t('Vergangene Veranstaltungen anzeigen', locale)"
+            >
+                <span class="embed-events-filters-toggle-button"
+                      :class="{ 'is-active': archive }"></span>
+                <span class="embed-events-filters-toggle-label"
+                      :class="{ 'is-active': archive }">{{ $t('Vergangene Veranstaltungen anzeigen', locale) }}</span>
+            </button>
+            
         </div>
 
         <div class="embed-events-filterbar">
