@@ -15,7 +15,10 @@
             <template v-else>
                 <div
                     class="tag-selector-component-selection-tag"
-                    v-for="option in (model || []).map((option) => options.find((o) => o.id === option.id)).filter(o => !context || o.context === context)"
+                    v-for="option in (model || [])
+                        .map((option) => options.find((o) => o.id === option.id))
+                        .filter(o => !context || o.context === context)
+                        .sort((a, b) => (translateField(a, label, locale) || a[label] || '').localeCompare((translateField(b, label, locale) || b[label] || '')))"
                     @click="removeOption(option)"
                     v-if="showSelection"
                 >
