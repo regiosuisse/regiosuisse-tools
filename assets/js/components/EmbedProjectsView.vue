@@ -113,7 +113,7 @@
                 <p v-html="instrumentsHTML"></p>
             </template>
 
-            <template v-if="project.projectCosts">
+            <template v-if="project.projectCosts && parseFloat(project.projectCosts)">
                 <h3>{{ $t('Projektkosten', locale) }}</h3>
                 <p>{{ $helpers.formatCurrency(project.projectCosts) }}</p>
             </template>
