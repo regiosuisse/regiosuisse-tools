@@ -121,7 +121,9 @@
 
                 {% if images[0]|default %}
                     <img style="width: 100%;margin-top:10px" src="{{ images[0] }}" alt="">
+                    {% if project.images[0].copyright|default %}
                     <p style="margin-top: .25em; margin-bottom: 1em; font-size: .75em; font-style: italic; text-align: right;">© {{ project.images[0].copyright }}</p>
+                    {% endif %}
                 {% endif %}
 
                 {% if project.states|length %}
