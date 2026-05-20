@@ -429,7 +429,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'project-id';
+            return this.$clientOptions?.history?.primaryKey || 'project-id';
         },
         types () {
             return this.$clientOptions?.types || ['project', 'exemplary'];

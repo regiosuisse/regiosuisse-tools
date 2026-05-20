@@ -567,7 +567,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'publication-id';
+            return this.$clientOptions?.history?.primaryKey || 'publication-id';
         },
         ...mapState({
             geographicRegions: function (state) {

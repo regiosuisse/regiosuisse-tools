@@ -162,7 +162,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'post-id';
+            return this.$clientOptions?.history?.primaryKey || 'post-id';
         },
         ...mapState({
             topics: function (state) {

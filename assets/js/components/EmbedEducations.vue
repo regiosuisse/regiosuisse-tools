@@ -222,7 +222,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'education-id';
+            return this.$clientOptions?.history?.primaryKey || 'education-id';
         },
         ...mapState({
             educationTypes: function (state) {

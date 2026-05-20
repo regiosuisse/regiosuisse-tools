@@ -348,7 +348,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'job-id';
+            return this.$clientOptions?.history?.primaryKey || 'job-id';
         },
         ...mapState({
             locations: function (state) {

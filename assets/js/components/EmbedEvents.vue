@@ -429,7 +429,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'event-id';
+            return this.$clientOptions?.history?.primaryKey || 'event-id';
         },
         ...mapState({
             topics: function (state) {

@@ -363,7 +363,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'financial-support-id';
+            return this.$clientOptions?.history?.primaryKey || 'financial-support-id';
         },
         ...mapState({
             projectTypes: function (state) {

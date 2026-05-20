@@ -421,7 +421,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'project-id';
+            return this.$clientOptions?.history?.primaryKey || 'project-id';
         },
         ...mapState({
             states: function (state) {

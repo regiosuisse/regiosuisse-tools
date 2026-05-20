@@ -272,7 +272,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'contact-id';
+            return this.$clientOptions?.history?.primaryKey || 'contact-id';
         },
         contactSubGroups () {
             let contactGroup = this.filters.find(e => e.type === 'contactGroupsParent');

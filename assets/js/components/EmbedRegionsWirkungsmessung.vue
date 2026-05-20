@@ -1593,7 +1593,7 @@ export default {
             return this.$clientOptions?.history?.base || '';
         },
         historyPrimaryKey () {
-            return this.$clientOptions?.history?.historyPrimaryKey || 'region-id';
+            return this.$clientOptions?.history?.primaryKey || 'region-id';
         },
         ...mapState({
             topics: function (state) {
