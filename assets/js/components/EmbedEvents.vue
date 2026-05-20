@@ -428,6 +428,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'event-id';
+        },
         ...mapState({
             topics: function (state) {
                 return state.topics.all
@@ -653,8 +656,8 @@ export default {
         popState(event) {
             this.event = null;
 
-            if(this.getUrlParams()['event-id']) {
-                this.$store.dispatch('events/load', this.getUrlParams()['event-id']).then((event) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('events/load', this.getUrlParams()[this.historyPrimaryKey]).then((event) => {
                     this.event = event;
                 });
             }
@@ -955,8 +958,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['event-id']) {
-            this.$store.dispatch('events/load', this.getUrlParams()['event-id']).then((event) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('events/load', this.getUrlParams()[this.historyPrimaryKey]).then((event) => {
                 this.event = event;
             });
         }

@@ -221,6 +221,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'education-id';
+        },
         ...mapState({
             educationTypes: function (state) {
                 return state.educationTypes.all
@@ -411,8 +414,8 @@ export default {
 
             this.education = null;
 
-            if(this.getUrlParams()['education-id']) {
-                this.$store.dispatch('educations/load', this.getUrlParams()['education-id']).then((education) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('educations/load', this.getUrlParams()[this.historyPrimaryKey]).then((education) => {
                     this.education = education;
                 });
             }
@@ -567,8 +570,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['education-id']) {
-            this.$store.dispatch('educations/load', this.getUrlParams()['education-id']).then((education) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('educations/load', this.getUrlParams()[this.historyPrimaryKey]).then((education) => {
                 this.education = education;
             });
         }

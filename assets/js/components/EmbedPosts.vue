@@ -161,6 +161,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'post-id';
+        },
         ...mapState({
             topics: function (state) {
                 return state.topics.all
@@ -335,8 +338,8 @@ export default {
 
             this.post = null;
 
-            if(this.getUrlParams()['post-id']) {
-                this.$store.dispatch('posts/load', this.getUrlParams()['post-id']).then((post) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('posts/load', this.getUrlParams()[this.historyPrimaryKey]).then((post) => {
                     this.post = post;
                 });
             }
@@ -489,8 +492,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['post-id']) {
-            this.$store.dispatch('posts/load', this.getUrlParams()['post-id']).then((post) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('posts/load', this.getUrlParams()[this.historyPrimaryKey]).then((post) => {
                 this.post = post;
             });
         }

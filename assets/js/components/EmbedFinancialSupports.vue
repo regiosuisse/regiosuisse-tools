@@ -362,6 +362,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'financial-support-id';
+        },
         ...mapState({
             projectTypes: function (state) {
                 return state.projectTypes.all
@@ -593,8 +596,8 @@ export default {
 
             this.financialSupport = null;
 
-            if(this.getUrlParams()['financial-support-id']) {
-                this.$store.dispatch('financialSupports/load', this.getUrlParams()['financial-support-id']).then((financialSupport) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('financialSupports/load', this.getUrlParams()[this.historyPrimaryKey]).then((financialSupport) => {
                     this.financialSupport = financialSupport;
                 });
             }
@@ -636,7 +639,7 @@ export default {
             let result = [];
 
             if(financialSupport) {
-                result.push('financial-support-id='+financialSupport.id+'&name='+encodeURIComponent(translateField(financialSupport, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+financialSupport.id+'&name='+encodeURIComponent(translateField(financialSupport, 'name', this.locale)));
             }
 
             if(this.term) {
@@ -769,8 +772,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['financial-support-id']) {
-            this.$store.dispatch('financialSupports/load', this.getUrlParams()['financial-support-id']).then((financialSupport) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('financialSupports/load', this.getUrlParams()[this.historyPrimaryKey]).then((financialSupport) => {
                 this.financialSupport = financialSupport;
             });
         }

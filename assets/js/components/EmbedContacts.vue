@@ -271,6 +271,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'contact-id';
+        },
         contactSubGroups () {
             let contactGroup = this.filters.find(e => e.type === 'contactGroupsParent');
 
@@ -567,8 +570,8 @@ export default {
 
             this.contact = null;
 
-            if(this.getUrlParams()['contact-id']) {
-                this.$store.dispatch('contacts/load', this.getUrlParams()['contact-id']).then((contact) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('contacts/load', this.getUrlParams()[this.historyPrimaryKey]).then((contact) => {
                     this.contact = contact;
                 });
             }
@@ -803,8 +806,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['contact-id']) {
-            this.$store.dispatch('contacts/load', this.getUrlParams()['contact-id']).then((contact) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('contacts/load', this.getUrlParams()[this.historyPrimaryKey]).then((contact) => {
                 this.contact = contact;
             });
         }

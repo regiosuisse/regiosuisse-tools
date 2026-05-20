@@ -420,6 +420,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'project-id';
+        },
         ...mapState({
             states: function (state) {
                 return state.states.all
@@ -833,8 +836,8 @@ export default {
 
             this.project = null;
 
-            if(this.getUrlParams()['project-id']) {
-                this.$store.dispatch('projects/load', this.getUrlParams()['project-id']).then((project) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('projects/load', this.getUrlParams()[this.historyPrimaryKey]).then((project) => {
                     this.project = project;
                 });
             }
@@ -1007,8 +1010,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['project-id']) {
-            this.$store.dispatch('projects/load', this.getUrlParams()['project-id']).then((project) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('projects/load', this.getUrlParams()[this.historyPrimaryKey]).then((project) => {
                 this.project = project;
             });
         }

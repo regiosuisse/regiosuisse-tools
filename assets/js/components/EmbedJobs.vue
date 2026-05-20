@@ -347,6 +347,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'job-id';
+        },
         ...mapState({
             locations: function (state) {
                 return state.locations.all
@@ -531,8 +534,8 @@ export default {
 
             this.job = null;
 
-            if(this.getUrlParams()['job-id']) {
-                this.$store.dispatch('jobs/load', this.getUrlParams()['job-id']).then((job) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('jobs/load', this.getUrlParams()[this.historyPrimaryKey]).then((job) => {
                     this.job = job;
                 });
             }
@@ -768,8 +771,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['job-id']) {
-            this.$store.dispatch('jobs/load', this.getUrlParams()['job-id']).then((job) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('jobs/load', this.getUrlParams()[this.historyPrimaryKey]).then((job) => {
                 this.job = job;
             });
         }

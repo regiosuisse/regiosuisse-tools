@@ -566,6 +566,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'publication-id';
+        },
         ...mapState({
             geographicRegions: function (state) {
                 return state.geographicRegions.all
@@ -778,8 +781,8 @@ export default {
 
             this.publication = null;
 
-            if(this.getUrlParams()['publication-id']) {
-                this.$store.dispatch('publications/load', this.getUrlParams()['publication-id']).then((publication) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('publications/load', this.getUrlParams()[this.historyPrimaryKey]).then((publication) => {
                     this.publication = publication;
                 });
             }
@@ -999,8 +1002,8 @@ export default {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
 
-        if(this.history && this.getUrlParams()['publication-id']) {
-            this.$store.dispatch('publications/load', this.getUrlParams()['publication-id']).then((publication) => {
+        if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
+            this.$store.dispatch('publications/load', this.getUrlParams()[this.historyPrimaryKey]).then((publication) => {
                 this.publication = publication;
             });
         }

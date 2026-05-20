@@ -1592,6 +1592,9 @@ export default {
         historyBase () {
             return this.$clientOptions?.history?.base || '';
         },
+        historyPrimaryKey () {
+            return this.$clientOptions?.history?.historyPrimaryKey || 'region-id';
+        },
         ...mapState({
             topics: function (state) {
                 return state.topics.all
@@ -1758,8 +1761,8 @@ export default {
 
             this.region = null;
 
-            if(this.getUrlParams()['region-id']) {
-                this.$store.dispatch('regions/load', this.getUrlParams()['region-id']).then((region) => {
+            if(this.getUrlParams()[this.historyPrimaryKey]) {
+                this.$store.dispatch('regions/load', this.getUrlParams()[this.historyPrimaryKey]).then((region) => {
                     this.region = region;
                 });
             }
