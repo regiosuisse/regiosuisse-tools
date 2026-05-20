@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <style>
+            body {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: normal;
+                color: rgb(75, 75, 75);
+            }
+
+            h1 {
+                font-size: 38px;
+                color: #9C0F06;
+            }
+
+            h2 {
+                font-size: 18px;
+                margin-top: 20px;
+            }
+
+            h3 {
+                font-size: 14px;
+            }
+
+            h1,
+            h2,
+            h3 {
+                font-weight: bold;
+            }
+
+            p {
+                margin-bottom: 10px;
+            }
+
+            a {
+                color: #9C0F06;
+                text-decoration: underline;
+            }
+
+            ul {
+                padding: 0;
+                margin-left: 22px;
+            }
+
+            li,
+            .list-item {
+                margin-bottom: 5px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+
+        <div style="width: 100%;">
+
+            <h1>{{ pv_trans(project, 'title', app.request.locale) }}</h1>
+
+            <div style="float: left; width: 60%;">
+
+                {{ pv_trans(project, 'description', app.request.locale) | raw }}
+
+                {% if project.contacts|length %}
+                    <h2>{{ 'Kontakt' |trans }}</h2>
+                    <div class="list">
+                        {% for contact in pv_trans(project, 'contacts', app.request.locale)|default([]) %}
+                            <div class="list-item">
+                                {% if contact.name|default %}
+                                    <strong>{{ contact.name|default('') }}</strong><br>
+                                {% endif %}
+
+                                {% if contact.firstName|default and contact.lastName|default %}
+                                    {{ contact.title|default('') }}
+                                    {{ contact.firstName|default('') }}
+                                    {{ contact.lastName|default('') }}<br>
+                                {% endif %}
+
+                                {% if contact.role|default %}
+                                    {{ contact.role|default('') }}<br>
+                                {% endif %}
+
+                                {% if contact.street|default %}
+                                    {{ contact.street|default('') }}<br>
+                                {% endif %}
+
+                                {% if contact.zipCode|default or contact.city|default %}
+                                    {{ contact.zipCode|default('') }}
+                                    {{ contact.city|default('') }}<br>
+                                {% endif %}
+
+                                {% if contact.phone|default %}
+                                    <a href="tel:{{ contact.phone|default('') }}">
+                                        {{ contact.phone|default('') }}
+                                    </a><br>
+                                {% endif %}
+
+                                {% if contact.email|default %}
+                                    <a href="mailto:{{ contact.email|default('') }}">
+                                        {{ contact.email|default('') }}
+                                    </a><br>
+                                {% endif %}
+
+                                {% if contact.website|default %}
+                                    {% set website = contact.website|default('') %}
+                                    {% set hasProtocol = website starts with 'http' %}
+
+                                    <a href="{{ hasProtocol ? website : 'http://' ~ website }}" target="_blank">
+                                        {{ hasProtocol ? (website|split('://')|last) : website }}
+                                    </a><br>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+            <div style="float: right; width: 30%;">
+
+                {% if images[0]|default %}
+                    <img style="width: 100%;margin-top:10px" src="{{ images[0] }}" alt="">
+                {% endif %}
+
+                {% if project.states|length %}
+                    <h2>{{ 'Kanton' |trans }}</h2>
+                    <div class="list">
+                        {% for state in project.states %}
+                            <div class="list-item">{{ pv_trans(state, 'name', app.request.locale) }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if project.topics|length %}
+                    <h2>{{ 'Thema' |trans }}</h2>
+                    <div class="list">
+                        {% for topic in project.topics %}
+                            <div class="list-item">{{ pv_trans(topic, 'name', app.request.locale) }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if project.programs|length %}
+                    <h2>{{ 'Programm' |trans }}</h2>
+                    <div class="list">
+                        {% for program in project.programs %}
+                            {% if program.url %}
+                                <div class="list-item">
+                                    <a href="{{ program.url }}">
+                                        {{ pv_trans(program, 'longName', app.request.locale)|default(pv_trans(program, 'name', app.request.locale)) }}
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="list-item">{{ pv_trans(program, 'longName', app.request.locale)|default(pv_trans(program, 'name', app.request.locale)) }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if project.startDate and project.endDate %}
+                    <h2>{{ 'Projektdauer' |trans }}</h2>
+                    <div class="list">
+                        <div class="list-item">{{ project.startDate|date('d.m.Y') }} - {{ project.endDate|date('d.m.Y') }}</div>
+                    </div>
+                {% endif %}
+
+
+                {% if project.projectCosts %}
+                    <h2>{{ 'Projektkosten' |trans }}</h2>
+                    <div class="list">
+                        <div class="list-item">{{ project.projectCosts|number_format(2)|replace({',': "'"}) }} CHF</div>
+                    </div>
+                {% endif %}
+
+                {% for financing in project.financing|default([]) %}
+
+                    {% if financing.id == 'costsFederation' %}
+                        <h2>{{ 'Förderung Bund' |trans }}</h2>
+                    {% endif %}
+
+                    {% if financing.id == 'costsCanton' %}
+                        <h2>{{ 'Förderung Kanton(e)' |trans }}</h2>
+                    {% endif %}
+
+                    {% if financing.id == 'costsExternal' %}
+                        <h2>{{ 'Finanzierung Dritte' |trans }}</h2>
+                    {% endif %}
+
+                    <div class="list">
+                        <div class="list-item">{{ financing.value|number_format(2)|replace({',': "'"}) }} CHF</div>
+                    </div>
+
+                {% endfor %}
+
+                {% if project.links|length %}
+                    <h2>{{ 'Links' |trans }}</h2>
+                    <div class="list">
+                        {% for link in pv_trans(project, 'links', app.request.locale)|default([]) %}
+                            <div class="list-item"><a href="{{ link.url }}" target="_blank">{{ link.label }}</a></div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </body>
+
+</html>

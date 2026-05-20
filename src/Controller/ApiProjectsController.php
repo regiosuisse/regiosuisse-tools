@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\File;
 use App\Service\ChmosService;
 use App\Service\ProjectService;
 use App\Util\PvTrans;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
+use Mpdf\Mpdf;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Attributes as OA;
@@ -26,6 +28,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/api/v1/projects', name: 'api_projects_')]
 class ApiProjectsController extends AbstractController
@@ -1371,6 +1374,96 @@ class ApiProjectsController extends AbstractController
                 'exception' => $exception->getMessage(),
             ], 400);
         }
+    }
+
+
+
+    #[Route(path: '/export/{id}-{_locale}.pdf', name: 'export_pdf', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns a file',
+        content: new OA\MediaType(mediaType: 'application/pdf', schema: new OA\Schema(type: 'string', format: 'binary'))
+    )]
+    #[OA\Tag(name: 'Financial Supports')]
+    public function exportPdf(Request $request, EntityManagerInterface $em,
+                              TranslatorInterface $translator): Response
+    {
+        $project = $em->getRepository(Project::class)
+            ->find($request->get('id'));
+
+        if(!$project) {
+            throw $this->createNotFoundException();
+        }
+
+        if(!$project->getIsPublic() && !$this->isGranted('ROLE_EDITOR')) {
+            throw $this->createNotFoundException();
+        }
+
+        $mpdf = new Mpdf([
+            'fontDir' => [
+                __DIR__.'/../../assets/fonts/',
+            ],
+            'fontdata' => [
+                'helveticaneue' => [
+                    'R' => 'helveticaneue.ttf',
+                    'B' => 'helveticaneuebold.ttf',
+                ]
+            ],
+            'margin_left' => 20,
+            'margin_right' => 15,
+            'margin_top' => 20,
+            'margin_bottom' => 25,
+            'margin_header' => 10,
+            'margin_footer' => 10,
+            'default_font' => 'helveticaneue',
+        ]);
+
+        $mpdf->SetTitle(PvTrans::translate($project, 'title', $request->getLocale()));
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->shrink_tables_to_fit = 1;
+
+        $imagesRaw = PvTrans::translate($project, 'images', $request->getLocale());
+        $images = [];
+
+        foreach(($imagesRaw ?: []) as $image) {
+
+            if($image) {
+                $file = $em->getRepository(File::class)
+                    ->find($image['id']);
+                $imagick = new \Imagick();
+                $data = stream_get_contents($file->getData());
+                $data = count(explode(';base64,', $data)) >= 2 ? explode(';base64,', $data, 2)[1] : $data;
+                $imagick->readImageBlob(base64_decode($data));
+
+                $i = tempnam(sys_get_temp_dir(), 'project'.$file->getId());
+                file_put_contents($i, $imagick->getImageBlob());
+
+                $images[] = $i;
+            }
+
+        }
+
+        $mpdf->WriteHTML($this->renderView('pdf/project.html.twig', [
+            'project' => $project,
+            'images' => $images,
+        ]));
+
+        $extension = 'pdf';
+        $fileName = $translator->trans('Projekte')
+            .' - '.PvTrans::translate($project, 'title', $request->getLocale())
+            .'.'.$extension;
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'project'.$project->getId());
+
+        $mpdf->Output($tmpFile, \Mpdf\Output\Destination::FILE);
+
+        $response = $this->file($tmpFile, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
+        $response->headers->set('Content-Type', 'application/pdf');
+
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+
     }
     
 }
