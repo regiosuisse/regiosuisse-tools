@@ -879,7 +879,7 @@ export default {
             let result = [];
 
             if(project) {
-                result.push('project-id='+project.id+'&title='+encodeURIComponent(translateField(project, 'title', this.locale)));
+                result.push(this.historyPrimaryKey+'='+project.id+'&title='+encodeURIComponent(translateField(project, 'title', this.locale)));
             }
 
             if(this.term) {

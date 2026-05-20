@@ -698,7 +698,7 @@ export default {
             let result = [];
 
             if(event) {
-                result.push('event-id='+event.id+'&title='+encodeURIComponent(translateField(event, 'title', this.locale)));
+                result.push(this.historyPrimaryKey+'='+event.id+'&title='+encodeURIComponent(translateField(event, 'title', this.locale)));
             }
 
             if(this.term) {

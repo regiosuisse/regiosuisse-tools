@@ -457,7 +457,7 @@ export default {
             let result = [];
 
             if(education) {
-                result.push('education-id='+education.id+'&name='+encodeURIComponent(translateField(education, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+education.id+'&name='+encodeURIComponent(translateField(education, 'name', this.locale)));
             }
 
             if(this.term) {

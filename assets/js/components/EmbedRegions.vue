@@ -448,7 +448,7 @@ export default {
             let result = [];
 
             if(region) {
-                result.push('region-id='+region.id+'&title='+encodeURIComponent(translateField(region, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+region.id+'&title='+encodeURIComponent(translateField(region, 'name', this.locale)));
             }
 
             if(this.term) {

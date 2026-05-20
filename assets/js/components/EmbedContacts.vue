@@ -613,7 +613,7 @@ export default {
             let result = [];
 
             if(contact) {
-                result.push('contact-id='+contact.id+'&name='+encodeURIComponent(translateField(contact, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+contact.id+'&name='+encodeURIComponent(translateField(contact, 'name', this.locale)));
             }
 
             if(this.term) {

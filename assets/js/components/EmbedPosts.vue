@@ -381,7 +381,7 @@ export default {
             let result = [];
 
             if(post) {
-                result.push('post-id='+post.id+'&name='+encodeURIComponent(translateField(post, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+post.id+'&name='+encodeURIComponent(translateField(post, 'name', this.locale)));
             }
 
             if(this.term) {

@@ -577,7 +577,7 @@ export default {
             let result = [];
 
             if(job) {
-                result.push('job-id='+job.id+'&name='+encodeURIComponent(translateField(job, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+job.id+'&name='+encodeURIComponent(translateField(job, 'name', this.locale)));
             }
 
             if(this.term) {

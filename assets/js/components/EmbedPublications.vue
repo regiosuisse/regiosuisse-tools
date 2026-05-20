@@ -824,7 +824,7 @@ export default {
             let result = [];
 
             if(publication) {
-                result.push('publication-id='+publication.id+'&name='+encodeURIComponent(translateField(publication, 'name', this.locale)));
+                result.push(this.historyPrimaryKey+'='+publication.id+'&name='+encodeURIComponent(translateField(publication, 'name', this.locale)));
             }
 
             if(this.term) {
