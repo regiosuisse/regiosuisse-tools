@@ -199,6 +199,7 @@
                 break-inside: avoid;
                 padding-bottom: var(--#{$instance-id}-gutter-width);
                 width: 100%;
+                word-break: break-word;
 
                 &-image {
                     position: relative;
