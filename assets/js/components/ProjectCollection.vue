@@ -9,6 +9,7 @@
                 <h3>Projektkollektion erstellen</h3>
 
                 <div class="project-collection-component-form-header-actions">
+                    <a class="button error" @click="clickDelete()" v-if="projectCollection.id">Löschen</a>
                     <a class="button warning" @click="clickCancel()">Abbrechen</a>
                     <a class="button primary" @click="clickSave()">Speichern</a>
                 </div>
@@ -256,6 +257,10 @@
 
         </div>
 
+        <transition name="fade">
+            <Modal v-if="modal" :config="modal"></Modal>
+        </transition>
+
     </div>
 
 </template>
@@ -266,6 +271,7 @@
     import {translateField} from '../utils/filters';
     import EmbedProjectsView from './EmbedProjectsView';
     import moment from 'moment';
+    import Modal from "./Modal.vue";
 
     export default {
         data() {
@@ -283,9 +289,11 @@
                 limit: 100,
                 offset: 0,
                 isLoadedFully: false,
+                modal: null,
             };
         },
         components: {
+            Modal,
             draggable,
             EmbedProjectsView,
         },
@@ -417,6 +425,33 @@
                 }
                 this.reloadProjects();
             },
+            clickDelete () {
+                this.modal = {
+                    title: 'Eintrag löschen',
+                    description: 'Sind Sie sicher dass Sie diesen Eintrag unwiderruflich löschen möchten?',
+                    actions: [
+                        {
+                            label: 'Endgültig löschen',
+                            class: 'error',
+                            onClick: () => {
+                                this.$store.dispatch('projectCollections/delete', this.projectCollection.id).then(() => {
+                                    this.$router.push('/project-collections');
+                                });
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+            },
+            clickCancel () {
+                this.$router.push('/project-collections');
+            },
             clickSave () {
                 if(!this.projectCollection.title.trim()) {
                     return alert('Geben Sie bitte einen Titel an um die Kollektion zu speichern.');
@@ -431,9 +466,6 @@
                 this.$store.dispatch('projectCollections/create', this.projectCollection).then(() => {
                     this.$router.push('/project-collections');
                 });
-            },
-            clickCancel () {
-                this.$router.push('/project-collections');
             },
             clickPreview (project) {
                 this.$store.dispatch('projects/load', project.id).then(() => {

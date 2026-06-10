@@ -9,6 +9,7 @@
                 <h3>Agenda Kollektion erstellen</h3>
 
                 <div class="event-collection-component-form-header-actions">
+                    <a class="button error" @click="clickDelete()" v-if="eventCollection.id">Löschen</a>
                     <a class="button warning" @click="clickCancel()">Abbrechen</a>
                     <a class="button primary" @click="clickSave()">Speichern</a>
                 </div>
@@ -204,6 +205,10 @@
 
         </div>
 
+        <transition name="fade">
+            <Modal v-if="modal" :config="modal"></Modal>
+        </transition>
+
     </div>
 
 </template>
@@ -213,6 +218,7 @@
     import draggable from 'vuedraggable';
     import { translateField } from '../utils/filters';
     import moment from 'moment';
+    import Modal from "./Modal.vue";
 
     export default {
         data() {
@@ -225,10 +231,12 @@
                     isDynamic: false,
                     selection: [],
                     filters: [],
-                }
+                },
+                modal: null,
             };
         },
         components: {
+            Modal,
             draggable,
         },
         computed: {
@@ -322,6 +330,33 @@
                 }
                 this.reloadEvents();
             },
+            clickDelete () {
+                this.modal = {
+                    title: 'Eintrag löschen',
+                    description: 'Sind Sie sicher dass Sie diesen Eintrag unwiderruflich löschen möchten?',
+                    actions: [
+                        {
+                            label: 'Endgültig löschen',
+                            class: 'error',
+                            onClick: () => {
+                                this.$store.dispatch('eventCollections/delete', this.eventCollection.id).then(() => {
+                                    this.$router.push('/event-collections');
+                                });
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+            },
+            clickCancel () {
+                this.$router.push('/event-collections');
+            },
             clickSave () {
                 if(!this.eventCollection.title.trim()) {
                     return alert('Geben Sie bitte einen Titel an um die Kollektion zu speichern.');
@@ -336,9 +371,6 @@
                 this.$store.dispatch('eventCollections/create', this.eventCollection).then(() => {
                     this.$router.push('/event-collections');
                 });
-            },
-            clickCancel () {
-                this.$router.push('/event-collections');
             },
             clickPreview (event) {
                 this.$store.dispatch('events/load', event.id).then(() => {
