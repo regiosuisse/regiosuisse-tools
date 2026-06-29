@@ -39,6 +39,7 @@ class InteractiveGraphicService {
     {
         if(($errors = $this->validateFields($payload, [
             'title',
+            'type',
             'description',
             'svg',
             'selector',
@@ -90,6 +91,7 @@ class InteractiveGraphicService {
     {
         $interactiveGraphic
             ->setTitle($payload['title'])
+            ->setType($payload['type'])
             ->setDescription($payload['description'])
             ->setSelector($payload['selector'])
             ->setStart($payload['start'])

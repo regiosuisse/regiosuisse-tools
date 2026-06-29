@@ -47,6 +47,13 @@ class InteractiveGraphic
     /**
      * @var string
      */
+    #[ORM\Column(name: 'type', type: 'text', nullable: true)]
+    #[Groups(['interactive_graphic'])]
+    private $type;
+
+    /**
+     * @var string
+     */
     #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     #[Groups(['interactive_graphic'])]
     private $description;
@@ -183,6 +190,30 @@ class InteractiveGraphic
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return InteractiveGraphic
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

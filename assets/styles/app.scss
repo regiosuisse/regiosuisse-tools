@@ -102,6 +102,7 @@ input[type=password],
 input[type=search],
 input[type=tel],
 input[type=text],
+input[type=number],
 input[type=url],
 textarea {
   padding: .25em .5em;
@@ -1553,15 +1554,38 @@ td {
   padding: 1em;
   background: $color-2;
   border-radius: .25em;
+  align-items: flex-start;
 
   &-svg {
     flex: 1;
     background: $white;
     padding: 1em;
+    position: relative;
 
     svg {
       width: 100%;
       height: auto;
+    }
+
+    &-markers {
+      position: absolute;
+      inset: 1em;
+      overflow: hidden;
+
+      &-marker {
+        position: absolute;
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 100%;
+        background: $theme-color-1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 0 5px $black;
+        transform: translateX(-50%) translateY(-50%);
+        color: $white;
+      }
     }
   }
 
@@ -1569,6 +1593,12 @@ td {
     flex: 1;
     background: $color-3;
     padding: 1em;
+
+    &-section {
+      border-bottom: 1px solid $color-5;
+      padding-bottom: 1em;
+      margin-bottom: 1em;
+    }
   }
 
 }

@@ -4,9 +4,21 @@
 
         <div v-html="getSvgStyle()"></div>
 
-        <div class="interactive-graphic-editor-component-svg" v-html="svg" ref="svg" @click="clickSvg"></div>
+        <div class="interactive-graphic-editor-component-svg" ref="svg" @click="clickSvg">
+            <div v-html="svg"></div>
+            <div class="interactive-graphic-editor-component-svg-markers" v-if="config?.markers?.length">
+                <div v-for="marker in config.markers"
+                     class="interactive-graphic-editor-component-svg-markers-marker"
+                     :style="{left: marker.x+'%', top: marker.y+'%'}">
+                    <div v-if="marker.symbol === 'number'">{{ marker.number ?? '#' }}</div>
+                    <div v-else-if="marker.symbol === 'video'" class="material-icons">movie</div>
+                    <div v-else-if="marker.symbol === 'audio'" class="material-icons">audiotrack</div>
+                </div>
+            </div>
+        </div>
 
-        <div class="interactive-graphic-editor-component-content">
+        <div class="interactive-graphic-editor-component-content"
+             v-if="type === 'default'">
 
             <template v-if="selectedElementIdentifier">
 
@@ -33,6 +45,67 @@
                 </div>
 
             </template>
+
+        </div>
+
+        <div class="interactive-graphic-editor-component-content"
+             v-if="type === 'hotspots'">
+
+            <div class="interactive-graphic-editor-component-content-section"
+                 v-for="(marker, idx) in config?.markers ?? []">
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="symbol">Symbol</label>
+                            <div class="select-wrapper">
+                                <select id="symbol"
+                                        class="form-control"
+                                        v-model="marker.symbol"
+                                        @change="onChangeConfig()">
+                                    <option value="number">Nummer</option>
+                                    <option value="video">Video</option>
+                                    <option value="audio">Audio</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" v-if="marker.symbol === 'number'">
+                            <label for="symbol">Nummer</label>
+                            <input type="number" class="form-control" v-model="marker.number" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Inhalt</label>
+                    <ckeditor :editor="editor" :config="editorConfig"
+                              v-model="marker.content"
+                              @blur="onChangeConfig()"></ckeditor>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>X-Koordinate</label>
+                            <input type="number" class="form-control" v-model.number="marker.x" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Y-Koordinate</label>
+                            <input type="number" class="form-control" v-model.number="marker.y" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                </div>
+
+                <a class="button error" @click="clickRemoveMarker(idx)">Entfernen</a>
+
+            </div>
+
+            <a class="button" @click="clickAddMarker()">Hinzufügen</a>
 
         </div>
 
@@ -86,11 +159,19 @@
                 type: Object,
                 required: false,
             },
+            type: {
+                type: String,
+                required: false,
+            },
         },
         computed: {
         },
         methods: {
             clickSvg (event) {
+
+                if(this.type === 'hotspots') {
+                    return;
+                }
 
                 let target = event.target;
 
@@ -171,6 +252,24 @@
 
                 this.onChangeConfig();
             },
+
+            clickAddMarker() {
+                this.config.markers = this.config?.markers ?? [];
+                this.config.markers.push({
+                    symbol: 'number',
+                    x: 50,
+                    y: 50,
+                    content: '',
+                });
+
+                this.onChangeConfig();
+            },
+
+            clickRemoveMarker(idx) {
+                this.config.markers.splice(idx, 1);
+                this.onChangeConfig();
+            },
+
         },
     }
 </script>
