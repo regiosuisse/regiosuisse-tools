@@ -6,8 +6,8 @@
 
         <div class="interactive-graphic-editor-component-svg" ref="svg" @click="clickSvg">
             <div v-html="svg"></div>
-            <div class="interactive-graphic-editor-component-svg-markers" v-if="config?.markers?.length">
-                <div v-for="marker in config.markers"
+            <div class="interactive-graphic-editor-component-svg-markers" v-if="localConfig?.markers?.length">
+                <div v-for="marker in localConfig.markers"
                      class="interactive-graphic-editor-component-svg-markers-marker"
                      :style="{left: marker.x+'%', top: marker.y+'%'}">
                     <div v-if="marker.symbol === 'number'">{{ marker.number ?? '#' }}</div>
@@ -34,13 +34,13 @@
 
                 <div v-if="['string', 'undefined'].includes(typeof config[selectedElementIdentifier])">
                     <ckeditor :editor="editor" :config="editorConfig"
-                              v-model="config[selectedElementIdentifier]" @blur="onChangeConfig()"></ckeditor>
+                              v-model="localConfig[selectedElementIdentifier]" @blur="onChangeConfig()"></ckeditor>
                 </div>
 
                 <div v-if="['object'].includes(typeof config[selectedElementIdentifier]) && config[selectedElementIdentifier].type === 'project'">
                     <div class="form-group">
                         <label>Projekt-ID</label>
-                        <input type="text" class="form-control" v-model="config[selectedElementIdentifier].id" @change="onChangeConfig()">
+                        <input type="text" class="form-control" v-model="localConfig[selectedElementIdentifier].id" @change="onChangeConfig()">
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@
              v-if="type === 'hotspots'">
 
             <div class="interactive-graphic-editor-component-content-section"
-                 v-for="(marker, idx) in config?.markers ?? []">
+                 v-for="(marker, idx) in localConfig?.markers ?? []">
 
 
                 <div class="row">
@@ -120,6 +120,7 @@
     export default {
         data() {
             return {
+                localConfig: {},
                 selectedElement: null,
                 selectedElementIdentifier: null,
                 editor: ClassicEditor,
@@ -238,13 +239,13 @@
                 return '<style>'+style+'</style>';
             },
             onChangeConfig () {
-                this.$emit('onChangeConfig', this.config);
+                this.$emit('onChangeConfig', this.localConfig);
             },
             onChangeType (type) {
-                this.config[this.selectedElementIdentifier] = '';
+                this.localConfig[this.selectedElementIdentifier] = '';
 
                 if(type === 'project') {
-                    this.config[this.selectedElementIdentifier] = {
+                    this.localConfig[this.selectedElementIdentifier] = {
                         type: type,
                         id: '',
                     };
@@ -254,22 +255,33 @@
             },
 
             clickAddMarker() {
-                this.config.markers = this.config?.markers ?? [];
-                this.config.markers.push({
-                    symbol: 'number',
-                    x: 50,
-                    y: 50,
-                    content: '',
-                });
+                this.localConfig.markers = this.localConfig?.markers ?? [];
+                this.localConfig.markers = [
+                    ...this.localConfig.markers,
+                    {
+                        symbol: 'number',
+                        x: 50,
+                        y: 50,
+                        content: '',
+                    }
+                ];
 
                 this.onChangeConfig();
             },
 
             clickRemoveMarker(idx) {
-                this.config.markers.splice(idx, 1);
+                this.localConfig.markers.splice(idx, 1);
                 this.onChangeConfig();
             },
 
+        },
+        watch: {
+            config: {
+                immediate: true,
+                handler(newVal) {
+                    this.localConfig = {...newVal};
+                },
+            },
         },
     }
 </script>

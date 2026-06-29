@@ -1560,7 +1560,8 @@ td {
     flex: 1;
     background: $white;
     padding: 1em;
-    position: relative;
+    position: sticky;
+    top: 0;
 
     svg {
       width: 100%;
