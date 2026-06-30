@@ -140,7 +140,10 @@
                             'undo',
                             'redo',
                         ]
-                    }
+                    },
+                    mediaEmbed: {
+                        previewsInData: true,
+                    },
                 },
             };
         },
