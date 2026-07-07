@@ -48,7 +48,7 @@ if (argv._[0] === 'union') {
     }
 
     result = simplify(result, {
-        tolerance: 0.00003,
+        tolerance: 0.00005,
         highQuality: false,
         mutate: false,
     });
