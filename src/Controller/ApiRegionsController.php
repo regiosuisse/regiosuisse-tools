@@ -212,10 +212,12 @@ class ApiRegionsController extends AbstractController
             'groups' => ['id', 'region'],
         ]);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json($result);
     }
@@ -250,10 +252,12 @@ class ApiRegionsController extends AbstractController
             'groups' => ['id', 'region'],
         ]);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json($result);
     }
@@ -280,10 +284,12 @@ class ApiRegionsController extends AbstractController
 
         $regionService->deleteRegion($region);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json([]);
     }
@@ -302,7 +308,7 @@ class ApiRegionsController extends AbstractController
     public function regionsGeojson(Request $request, EntityManagerInterface $em,
                          NormalizerInterface $normalizer, CacheInterface $cache, string $nodeJs): JsonResponse
     {
-        $geojson = $cache->get('regions.geojson.'.md5($request->get('type')), function (ItemInterface $item) use ($cache, $em, $request, $normalizer, $nodeJs) {
+        $geojson = $cache->get('regions.geojson.'.md5($request->get('type')).'.'.$request->getLocale(), function (ItemInterface $item) use ($cache, $em, $request, $normalizer, $nodeJs) {
 
             $item->expiresAt(new \DateTime('+720 days'));
 
@@ -322,7 +328,7 @@ class ApiRegionsController extends AbstractController
 
             foreach($regions as $region) {
 
-                $feature = $cache->get('regions.geojson.'.$region->getId(), function (ItemInterface $item) use ($region, $geojsonCities, $em, $request, $normalizer, $nodeJs) {
+                $feature = $cache->get('regions.geojson.'.$region->getId().'.'.$request->getLocale(), function (ItemInterface $item) use ($region, $geojsonCities, $em, $request, $normalizer, $nodeJs) {
 
                     $item->expiresAt(new \DateTime('+720 days'));
 
@@ -447,11 +453,11 @@ class ApiRegionsController extends AbstractController
 
             }
 
-            return $geojson;
+            return json_encode($geojson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         });
 
-        return $this->json($geojson);
+        return new JsonResponse($geojson, 200, [], true);
     }
 
     #[Route(path: '/geojson/cities/{_locale}.json', name: 'cities_geojson', methods: ['GET'])]
@@ -468,8 +474,8 @@ class ApiRegionsController extends AbstractController
     public function geojson(Request $request, EntityManagerInterface $em,
                          NormalizerInterface $normalizer, CacheInterface $cache): JsonResponse
     {
-        $geojson = $cache->get('cities.geojson', function (ItemInterface $item) use ($em, $request, $normalizer) {
-            $item->expiresAfter(3600);
+        $geojson = $cache->get('cities.geojson'.'.'.$request->getLocale(), function (ItemInterface $item) use ($em, $request, $normalizer) {
+            $item->expiresAt(new \DateTime('+720 days'));
 
             $geojson = file_get_contents(__DIR__.'/../../config/gis/cities.json');
             $geojson = json_decode($geojson, true);
@@ -516,10 +522,10 @@ class ApiRegionsController extends AbstractController
 
             }
 
-            return $geojson;
+            return json_encode($geojson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         });
 
-        return $this->json($geojson);
+        return new JsonResponse($geojson, 200, [], true);
     }
 
     #[Route(path: '.xlsx', name: 'xlsx', methods: ['GET'])]
