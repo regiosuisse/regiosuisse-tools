@@ -485,15 +485,17 @@ export default {
 
             let intersectFeatures = [];
 
-            regionsGeoJson.features.forEach((a) => {
-                regionsGeoJson.features.forEach((b) => {
-                    if(a === b) {
-                        return;
-                    }
+            for (let i = 0; i < regionsGeoJson.features.length; i++) {
 
-                    intersectFeatures.push(intersect(a, b));
-                });
-            });
+                for (let j = i + 1; j < regionsGeoJson.features.length; j++) {
+
+                    const result = intersect(regionsGeoJson.features[i], regionsGeoJson.features[j]);
+
+                    if (result) intersectFeatures.push(result);
+
+                }
+
+            }
 
             intersectFeatures = intersectFeatures.filter(a => a);
 
