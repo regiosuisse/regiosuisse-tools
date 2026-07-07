@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const union = require('@turf/union').default;
+const simplify = require('@turf/simplify').default;
 const argv = require('minimist')(process.argv.slice(2));
 
 function readArgJson(arg, label) {
@@ -39,12 +40,18 @@ if (argv._[0] === 'union') {
     const feature1 = readArgJson(argv._[1], 'Feature 1');
     const feature2 = readArgJson(argv._[2], 'Feature 2');
 
-    const result = union(feature1, feature2);
+    let result = union(feature1, feature2);
 
     if (!result) {
         console.error('Union returned null (non-overlapping or invalid inputs).');
         process.exit(1);
     }
+
+    result = simplify(result, {
+        tolerance: 0.00003,
+        highQuality: false,
+        mutate: false,
+    });
 
     process.stdout.write(JSON.stringify(result));
     process.exit(0);

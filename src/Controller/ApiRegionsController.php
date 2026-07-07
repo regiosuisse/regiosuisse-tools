@@ -294,6 +294,40 @@ class ApiRegionsController extends AbstractController
         return $this->json([]);
     }
 
+    private function roundGeojsonCoordinates(array $geometry, int $precision): array
+    {
+
+        $round = function ($value) use (&$round, $precision) {
+
+            if (!is_array($value)) {
+                return $value;
+            }
+
+            if (
+                count($value) === 2 &&
+                is_numeric($value[0]) &&
+                is_numeric($value[1])
+            ) {
+                return [
+                    round($value[0], $precision),
+                    round($value[1], $precision),
+                ];
+            }
+
+            foreach ($value as $k => $v) {
+                $value[$k] = $round($v);
+            }
+
+            return $value;
+
+        };
+
+        $geometry['coordinates'] = $round($geometry['coordinates']);
+
+        return $geometry;
+
+    }
+
     #[Route(path: '/{type}/geojson/{_locale}.json', name: 'regions_geojson', methods: ['GET'])]
     #[OA\Response(
         response: 200,
@@ -428,6 +462,7 @@ class ApiRegionsController extends AbstractController
                                 }
 
                                 $feature['geometry'] = $decoded['geometry'];
+                                $feature['geometry'] = $this->roundGeojsonCoordinates($feature['geometry'], 5);
 
                             } finally {
                                 if (is_string($tmp1) && file_exists($tmp1)) {
@@ -481,6 +516,11 @@ class ApiRegionsController extends AbstractController
             $geojson = json_decode($geojson, true);
 
             foreach($geojson['features'] as $featureKey => $feature) {
+
+                $geojson['features'][$featureKey]['geometry'] = $this->roundGeojsonCoordinates(
+                    $feature['geometry'],
+                    5
+                );
 
                 $municipalNumber = $feature['properties']['GMDNR'];
                 $city = $em->getRepository(City::class)->findOneBy([
