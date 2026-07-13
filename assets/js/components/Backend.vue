@@ -19,6 +19,12 @@
             </div>
 
             <ul>
+                <li v-if="hasRole('ROLE_EDITOR')">
+                    <router-link to="/dashboard">
+                        <span class="material-icons">analytics</span>
+                        <span class="label">Dashboard</span>
+                    </router-link>
+                </li>
                 <li v-if="hasRole('ROLE_EDITOR') && $env.PLUGIN_ENABLE_INBOX">
                     <router-link to="/inbox">
                         <span class="material-icons">inbox</span>

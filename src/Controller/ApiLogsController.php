@@ -82,10 +82,24 @@ class ApiLogsController extends AbstractController
     }
 
     #[Route(path: '', name: 'index', methods: ['GET'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_EDITOR')]
     #[OA\Parameter(
         name: 'term',
         description: 'Search term',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string'),
+    )]
+    #[OA\Parameter(
+        name: 'createdAtFrom',
+        description: 'Created at from',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string'),
+    )]
+    #[OA\Parameter(
+        name: 'createdAtTo',
+        description: 'Created at to',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string'),
@@ -156,6 +170,14 @@ class ApiLogsController extends AbstractController
             $qb
                 ->andWhere('(e.message LIKE :term OR e.data LIKE :term OR e.message LIKE :term OR e.meta LIKE :term)')
                 ->setParameter('term', '%'.$request->get('term').'%');
+        }
+
+        if($request->get('createdAtFrom') || $request->get('createdAtTo')) {
+            $qb
+                ->andWhere('e.createdAt >= :createdAtFrom AND e.createdAt <= :createdAtTo')
+                ->setParameter('createdAtFrom', $request->get('createdAtFrom') ?? '2020-01-01 00:00:00')
+                ->setParameter('createdAtTo', $request->get('createdAtTo') ?? (new \DateTime('now'))->format('Y-m-d H:i:s'));
+            ;
         }
 
         if($request->get('type') && !is_array($request->get('type'))) {
@@ -232,7 +254,7 @@ class ApiLogsController extends AbstractController
     }
     
     #[Route(path: '/{id}', name: 'get', methods: ['GET'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_EDITOR')]
     #[OA\Response(
         response: 200,
         description: 'Returns a single log',

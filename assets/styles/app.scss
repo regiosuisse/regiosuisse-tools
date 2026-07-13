@@ -921,6 +921,7 @@ label {
   @include embed-view;
 }
 
+.dashboard-component,
 .project-component,
 .project-collections-component,
 .project-collection-component,
@@ -1437,6 +1438,36 @@ td {
     border: 0;
     top: 0;
   }
+}
+
+.dashboard-component {
+  display: block;
+
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: .5em;
+
+    &-item {
+      margin: .5em;
+      padding: 1em;
+      border: 1px solid $color-2;
+      border-radius: .25em;
+      flex: 1;
+      color: inherit !important;
+      cursor: pointer;
+      box-sizing: border-box;
+
+      @include headlines() {
+        font-size: 1.25em;
+        line-height: 1;
+        margin-bottom: 1em;
+        font-weight: normal;
+        flex: 1;
+      }
+    }
+  }
+
 }
 
 .project-collections-component,

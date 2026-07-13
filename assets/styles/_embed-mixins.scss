@@ -90,6 +90,11 @@
             opacity: .25;
             pointer-events: none;
         }
+
+        &.is-active {
+            background: var(--#{$instance-id}-primary-color);
+            text-decoration: none;
+        }
     }
 
 }

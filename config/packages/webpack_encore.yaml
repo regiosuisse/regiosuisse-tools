@@ -50,6 +50,8 @@ webpack_encore:
         embed-publications-latest: '%kernel.project_dir%/public/embed/publications-latest'
         embed-financial-supports: '%kernel.project_dir%/public/embed/financial-supports'
         embed-financial-supports-latest: '%kernel.project_dir%/public/embed/financial-supports-latest'
+        embed-feedback: '%kernel.project_dir%/public/embed/feedback'
+        embed-feedback-latest: '%kernel.project_dir%/public/embed/feedback-latest'
         # pass "frontend" as the 3rg arg to the Twig functions
         # {{ encore_entry_script_tags('entry1', null, 'frontend') }}
 
