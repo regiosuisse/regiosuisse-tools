@@ -38,7 +38,7 @@
 
         <div class="dashboard-component-list">
 
-            <div class="dashboard-component-list-item">
+            <div class="dashboard-component-list-item" style="min-width: 75%;">
 
                 <h4>
                     Feedback:
@@ -64,6 +64,88 @@
                         </tr>
                         <tr v-if="!feedbacks.length">
                             <td colspan="4"><em>Keine Feedbacks gefunden</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="dashboard-component-list-item">
+
+                <h4>
+                    Beliebteste Projekte
+                </h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titel</th>
+                            <th>Aufrufe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="project in popularProjects.slice(0, 20)">
+                            <td>{{ project.id }}</td>
+                            <td>{{ project.title }}</td>
+                            <td>{{ project.count }}</td>
+                        </tr>
+                        <tr v-if="!popularProjects.length">
+                            <td colspan="3"><em>Keine beliebten Projekte gefunden</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="dashboard-component-list-item">
+
+                <h4>
+                    Beliebteste Agenda-Einträge
+                </h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titel</th>
+                            <th>Aufrufe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="event in popularEvents.slice(0, 20)">
+                            <td>{{ event.id }}</td>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.count }}</td>
+                        </tr>
+                        <tr v-if="!popularEvents.length">
+                            <td colspan="3"><em>Keine beliebten Agenda-Einträge gefunden</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="dashboard-component-list-item" style="min-width: 75%;">
+
+                <h4>
+                    Beliebteste Tools
+                </h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ursprung</th>
+                            <th>Aufrufe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="referer in popularTools.slice(0, 20)">
+                            <td><span style="word-break: break-all">{{ referer.referer }}</span></td>
+                            <td>{{ referer.count }}</td>
+                        </tr>
+                        <tr v-if="!popularTools.length">
+                            <td colspan="2"><em>Keine beliebten Tools gefunden</em></td>
                         </tr>
                     </tbody>
                 </table>
@@ -112,6 +194,79 @@
                 }, 0);
 
                 return 100 / total * positive;
+            },
+            popularTools() {
+
+                const rows = this.logs.filter(
+                    log =>
+                        log.category === 'Device Stats' && log.referer
+                );
+
+                const referers = {};
+
+                rows.forEach(row => {
+
+                    referers[row.referer] = {
+                        referer: row.referer,
+                        count: (referers[row.referer]?.count || 0) + 1,
+                    };
+
+                });
+
+                return Object.values(referers)
+                    .sort((a, b) => b.count - a.count);
+
+            },
+            popularProjects() {
+
+                const rows = this.logs.filter(
+                    log =>
+                        log.category === 'Project Navigation' &&
+                        log.action === 'Show Project'
+                );
+
+                const projects = {};
+
+                rows.forEach(row => {
+
+                    const value = JSON.parse(row.value);
+
+                    projects[value.id] = {
+                        id: value.id,
+                        title: value.title,
+                        count: (projects[value.id]?.count || 0) + 1,
+                    };
+
+                });
+
+                return Object.values(projects)
+                    .sort((a, b) => b.count - a.count);
+
+            },
+            popularEvents () {
+
+                const rows = this.logs.filter(
+                    log =>
+                        log.category === 'Event Navigation' &&
+                        log.action === 'Show Event'
+                );
+
+                const events = {};
+
+                rows.forEach(row => {
+
+                    const value = JSON.parse(row.value);
+
+                    events[value.id] = {
+                        id: value.id,
+                        title: value.title,
+                        count: (events[value.id]?.count || 0) + 1,
+                    };
+
+                });
+
+                return Object.values(events)
+                    .sort((a, b) => b.count - a.count);
             },
         },
         methods: {

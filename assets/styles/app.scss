@@ -1455,8 +1455,8 @@ td {
       border-radius: .25em;
       flex: 1;
       color: inherit !important;
-      cursor: pointer;
       box-sizing: border-box;
+      min-width: 25%;
 
       @include headlines() {
         font-size: 1.25em;
