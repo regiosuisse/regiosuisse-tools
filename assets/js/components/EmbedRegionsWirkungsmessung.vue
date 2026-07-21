@@ -101,6 +101,31 @@ import swissmaptiles from "../../../config/gis/swissmaptiles.json";
 
 const data = [
     {
+        "Jahr": 2026,
+        "Kanton": [
+            "SG"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Arealentwicklung Lichtensteig, Phase 2",
+        "Projektträgerschaft": "Verein «Ort für Macher*innen», im Verlauf des NRP-Projekts Übergabe an: Genossenschaft Stadtufer",
+        "Koordinaten Pin": [
+            47.32386846034559,
+            9.087681661381806,
+        ],
+        "Projektbeschreibung": "Mit der Arealentwicklung Stadtufer wird das leerstehende Areal der ehemaligen Fein-Elast Fabrik in Lichtensteig wieder belebt. Es entstehen Gewerbefläche für Kleingewerbe und teilweise Wohnraum.",
+        "Hinweise": null,
+        "Start": 2021,
+        "End": 2023,
+        "Eval": 2026,
+        "Projektkosten": 241500.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Lokale Wirtschaft"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf711",
+        "Link": "https://regiosuisse.ch/sites/default/files/2026-07/2026_WM1_Arealentwicklung_Lichtensteig_def.pdf"
+    },
+    {
         "Jahr": 2025,
         "Kanton": [
             "NE"
