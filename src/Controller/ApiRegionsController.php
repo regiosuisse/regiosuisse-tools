@@ -488,11 +488,100 @@ class ApiRegionsController extends AbstractController
 
             }
 
+            $geojson['intersections'] = $this->computeRegionIntersections($geojson['features'], $nodeJs);
+
             return json_encode($geojson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         });
 
         return new JsonResponse($geojson, 200, [], true);
+    }
+    
+    private function computeRegionIntersections(array $features, string $nodeJs): array
+    {
+        $empty = [
+            'type' => 'FeatureCollection',
+            'features' => [],
+        ];
+
+        if (count($features) < 2) {
+            return $empty;
+        }
+
+        // Only geometry matters for intersection; strip properties to keep the payload small.
+        $collection = [
+            'type' => 'FeatureCollection',
+            'features' => array_map(static function ($feature) {
+                return [
+                    'type' => 'Feature',
+                    'properties' => new \stdClass(),
+                    'geometry' => $feature['geometry'],
+                ];
+            }, array_values($features)),
+        ];
+
+        $inJson = json_encode($collection, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        if ($inJson === false) {
+            throw new \RuntimeException('Failed to encode intersection input JSON: ' . json_last_error_msg());
+        }
+
+        $tmpIn = tempnam(sys_get_temp_dir(), 'gis-int-in-');
+        $tmpOut = tempnam(sys_get_temp_dir(), 'gis-int-out-');
+
+        if ($tmpIn === false || $tmpOut === false) {
+            throw new \RuntimeException('Failed to create temp files.');
+        }
+
+        try {
+
+            if (file_put_contents($tmpIn, $inJson) === false) {
+                throw new \RuntimeException('Failed to write intersection input file.');
+            }
+
+            $cmd = sprintf(
+                '%s %s intersect %s > %s',
+                escapeshellcmd($nodeJs),
+                escapeshellarg(__DIR__ . '/../../bin/gis-util'),
+                escapeshellarg('@' . $tmpIn),
+                escapeshellarg($tmpOut)
+            );
+
+            shell_exec($cmd);
+
+            $out = file_get_contents($tmpOut);
+
+            if (!$out) {
+                throw new \RuntimeException('gis-util intersect execution failed (output file has no content).');
+            }
+
+            $decoded = json_decode($out, true);
+
+            if (!is_array($decoded) || !isset($decoded['type'])) {
+                throw new \RuntimeException('Invalid JSON output from gis-util intersect: ' . $out);
+            }
+
+            if (isset($decoded['features']) && is_array($decoded['features'])) {
+                foreach ($decoded['features'] as $key => $intersectFeature) {
+                    if (isset($intersectFeature['geometry'])) {
+                        $decoded['features'][$key]['geometry'] = $this->roundGeojsonCoordinates(
+                            $intersectFeature['geometry'],
+                            5
+                        );
+                    }
+                }
+            }
+
+            return $decoded;
+
+        } finally {
+            if (is_string($tmpIn) && file_exists($tmpIn)) {
+                @unlink($tmpIn);
+            }
+            if (is_string($tmpOut) && file_exists($tmpOut)) {
+                @unlink($tmpOut);
+            }
+        }
     }
 
     #[Route(path: '/geojson/cities/{_locale}.json', name: 'cities_geojson', methods: ['GET'])]

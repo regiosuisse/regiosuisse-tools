@@ -2,8 +2,40 @@
 
 const fs = require('fs');
 const union = require('@turf/union').default;
+const intersect = require('@turf/intersect').default;
+const combine = require('@turf/combine').default;
 const simplify = require('@turf/simplify').default;
 const argv = require('minimist')(process.argv.slice(2));
+
+function geometryBbox(geometry) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+    const scan = (coords) => {
+        if (!Array.isArray(coords)) {
+            return;
+        }
+
+        if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+            if (coords[0] < minX) minX = coords[0];
+            if (coords[0] > maxX) maxX = coords[0];
+            if (coords[1] < minY) minY = coords[1];
+            if (coords[1] > maxY) maxY = coords[1];
+            return;
+        }
+
+        for (const child of coords) {
+            scan(child);
+        }
+    };
+
+    scan(geometry && geometry.coordinates);
+
+    return [minX, minY, maxX, maxY];
+}
+
+function bboxOverlap(a, b) {
+    return a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1];
+}
 
 function readArgJson(arg, label) {
     if (!arg) {
@@ -54,6 +86,59 @@ if (argv._[0] === 'union') {
     });
 
     process.stdout.write(JSON.stringify(result));
+    process.exit(0);
+}
+
+if (argv._[0] === 'intersect') {
+    const collection = readArgJson(argv._[1], 'FeatureCollection');
+    const features = (collection && collection.features) || [];
+
+    // Precompute bounding boxes so we only clip pairs that can actually overlap.
+    const bboxes = features.map((feature) => geometryBbox(feature.geometry));
+
+    const intersections = [];
+
+    for (let i = 0; i < features.length; i++) {
+        for (let j = i + 1; j < features.length; j++) {
+            if (!bboxOverlap(bboxes[i], bboxes[j])) {
+                continue;
+            }
+
+            let result = null;
+
+            try {
+                result = intersect(features[i], features[j]);
+            } catch (e) {
+                result = null;
+            }
+
+            if (result) {
+                intersections.push(result);
+            }
+        }
+    }
+
+    let out;
+
+    if (!intersections.length) {
+        out = {
+            type: 'FeatureCollection',
+            features: [],
+        };
+    } else {
+        out = combine({
+            type: 'FeatureCollection',
+            features: intersections,
+        });
+
+        out = simplify(out, {
+            tolerance: 0.00005,
+            highQuality: false,
+            mutate: true,
+        });
+    }
+
+    process.stdout.write(JSON.stringify(out));
     process.exit(0);
 }
 

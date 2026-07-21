@@ -28,8 +28,6 @@
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
 import api from '../api';
 import {sleep, translateField} from '../utils/filters';
-import intersect from '@turf/intersect';
-import combine from '@turf/combine';
 import swissmaptiles from '../../../config/gis/swissmaptiles.json';
 
 export default {
@@ -483,28 +481,16 @@ export default {
 
             this.map.getSource('regions-outline').setData(regionsGeoJson);
 
-            let intersectFeatures = [];
-
-            for (let i = 0; i < regionsGeoJson.features.length; i++) {
-
-                for (let j = i + 1; j < regionsGeoJson.features.length; j++) {
-
-                    const result = intersect(regionsGeoJson.features[i], regionsGeoJson.features[j]);
-
-                    if (result) intersectFeatures.push(result);
-
-                }
-
-            }
-
-            intersectFeatures = intersectFeatures.filter(a => a);
-
-            this.hasOverlappingRegions = intersectFeatures.length > 0;
-
-            this.map.getSource('regions-intersect').setData(combine({
+            // The overlap overlay is precomputed server-side (see ApiRegionsController::computeRegionIntersections)
+            // and shipped as `intersections`, so no pairwise clipping happens on the client anymore.
+            let intersections = regionsGeoJson.intersections || {
                 type: 'FeatureCollection',
-                features: intersectFeatures,
-            }));
+                features: [],
+            };
+
+            this.hasOverlappingRegions = (intersections.features?.length || 0) > 0;
+
+            this.map.getSource('regions-intersect').setData(intersections);
 
         },
 
