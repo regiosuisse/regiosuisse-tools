@@ -308,10 +308,7 @@ class ApiProjectsController extends AbstractController
                 }
 
                 if($cooperation === 'national') {
-                    $cooperationQuery[] = 'programCooperation.name = :programNationalCooperationA'.$key.' OR SIZE(p.states) = 0 OR SIZE(p.states) >= 26';
-                    $qb
-                        ->setParameter('programNationalCooperationA'.$key, 'Innotour')
-                    ;
+                    $cooperationQuery[] = 'SIZE(p.states) = 0 OR SIZE(p.states) >= 26';
                 }
 
                 if($cooperation === 'inter-cantonal') {
