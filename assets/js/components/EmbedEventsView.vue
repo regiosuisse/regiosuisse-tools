@@ -139,7 +139,7 @@
 
         </div>
 
-        <Teleport :to="'#'+$env.INSTANCE_ID+'-events'">
+        <Teleport :to="'#'+$env.INSTANCE_ID+'-events .embed-events'">
 
             <transition name="embed-events-view-lightbox" mode="out-in">
 
