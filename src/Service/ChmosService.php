@@ -41,7 +41,7 @@ class ChmosService {
     public function performUpdate ($since = null, $till = null, $autoMerge = false)
     {
         $since = $since ?: new \DateTime('-3 years');
-        $endpoint = $this->url.'/project/1/list?updatedSince='.$since->format('d.m.Y');
+        $endpoint = $this->url.'/project/2/list?updatedSince='.$since->format('d.m.Y');
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -56,7 +56,7 @@ class ChmosService {
 
         if($till) {
 
-            $endpoint = $this->url.'/project/1/list?updatedSince='.$till->format('d.m.Y');
+            $endpoint = $this->url.'/project/2/list?updatedSince='.$till->format('d.m.Y');
             $response = $this->client->request('GET', $endpoint, [
                 'cert' => $this->certificate
             ]);
@@ -107,7 +107,7 @@ class ChmosService {
 
     public function performProjectUpdate ($id, $autoMerge = false)
     {
-        $endpoint = $this->url.'/project/1/'.$id;
+        $endpoint = $this->url.'/project/2/'.$id;
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -243,7 +243,7 @@ class ChmosService {
             return false;
         }
 
-        $endpoint = $this->url.'/project/1/'.$project->getProjectCode();
+        $endpoint = $this->url.'/project/2/'.$project->getProjectCode();
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -598,7 +598,7 @@ class ChmosService {
 
             try {
 
-                $endpoint = $this->url.str_replace('/project', '/project/1', $attachment['url']);
+                $endpoint = $this->url.str_replace('/project', '/project/2', $attachment['url']);
                 $response = $this->client->request('GET', $endpoint, [
                     'cert' => $this->certificate
                 ]);
