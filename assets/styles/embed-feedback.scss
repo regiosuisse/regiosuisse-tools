@@ -1,0 +1,54 @@
+@import 'config';
+@import 'embed-config';
+@import 'mixins';
+@import 'embed-mixins';
+
+.embed-feedback {
+    @include embed-variables;
+    @include embed-base;
+    padding-top: 1em;
+    text-align: center;
+
+    &-question {
+        margin-bottom: 1em;
+    }
+
+    &-answer {
+        display: flex;
+        gap: 1em;
+        justify-content: center;
+        margin-bottom: 1em;
+
+        &-button {
+            display: block;
+        }
+    }
+
+    &-comment {
+
+        label {
+            margin-bottom: 1em;
+            display: block;
+        }
+
+        textarea {
+            -webkit-appearance: none;
+            appearance: none;
+            display: block;
+            border: 1px solid var(--#{$instance-id}-grey-ultralight);
+            padding: .5em;
+            font: inherit;
+            width: 100%;
+            max-width: 32em;
+            margin: 0 auto;
+            border-radius: 0;
+        }
+
+    }
+
+    &-actions {
+        @include embed-actions;
+        border-top: 1px solid var(--#{$instance-id}-grey-ultralight);
+        padding-top: 1em;
+    }
+}

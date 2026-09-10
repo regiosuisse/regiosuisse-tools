@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import Backend from '../components/Backend';
+import Dashboard from '../components/Dashboard';
 import Inbox from '../components/Inbox';
 import Project from '../components/Project';
 import Projects from '../components/Projects';
@@ -42,7 +43,12 @@ const routes = [
         children: [
             {
                 path: '',
-                redirect: '/inbox',
+                redirect: '/dashboard',
+            },
+            {
+                path: 'dashboard',
+                name: 'dashboard',
+                component: Dashboard,
             },
             {
                 path: 'inbox',

@@ -1,0 +1,45 @@
+{% extends 'embed/iframe.html.twig' %}
+
+{% block title %}{{ parent() }} | {{ 'Feedback'|trans }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('embed-feedback', null, 'embed-feedback') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('embed-feedback', null, 'embed-feedback') }}
+{% endblock %}
+
+{% block body %}
+
+    <div id="app"></div>
+
+    <style>
+        {% if app.request.get('primaryColor') and app.request.get('primaryColor') starts with '#' %}
+            #app .embed-feedback {
+                --{{ env.INSTANCE_ID }}-primary-color: {{ app.request.get('primaryColor') }};
+            }
+        {% endif %}
+        {% if app.request.get('secondaryColor') and app.request.get('primaryColor') starts with '#' %}
+            #app .embed-feedback {
+                --{{ env.INSTANCE_ID }}-secondary-color: {{ app.request.get('secondaryColor') }};
+            }
+        {% endif %}
+    </style>
+
+    <script>
+        window.addEventListener('load', function () {
+            {{ env.INSTANCE_ID }}Feedback('#app', {
+                locale: '{{ app.request.locale }}'
+            });
+        });
+    </script>
+
+    {% include 'embed/iframe-resizer.html.twig' with { instanceName: env.INSTANCE_ID ~ 'Feedback' } %}
+
+{% endblock %}

@@ -41,7 +41,7 @@ class ChmosService {
     public function performUpdate ($since = null, $till = null, $autoMerge = false)
     {
         $since = $since ?: new \DateTime('-3 years');
-        $endpoint = $this->url.'/project/1/list?updatedSince='.$since->format('d.m.Y');
+        $endpoint = $this->url.'/project/2?updatedSince='.$since->format('d.m.Y');
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -56,7 +56,7 @@ class ChmosService {
 
         if($till) {
 
-            $endpoint = $this->url.'/project/1/list?updatedSince='.$till->format('d.m.Y');
+            $endpoint = $this->url.'/project/2?updatedSince='.$till->format('d.m.Y');
             $response = $this->client->request('GET', $endpoint, [
                 'cert' => $this->certificate
             ]);
@@ -107,7 +107,7 @@ class ChmosService {
 
     public function performProjectUpdate ($id, $autoMerge = false)
     {
-        $endpoint = $this->url.'/project/1/'.$id;
+        $endpoint = $this->url.'/project/2/'.$id;
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -243,7 +243,7 @@ class ChmosService {
             return false;
         }
 
-        $endpoint = $this->url.'/project/1/'.$project->getProjectCode();
+        $endpoint = $this->url.'/project/2/'.$project->getProjectCode();
         $response = $this->client->request('GET', $endpoint, [
             'cert' => $this->certificate
         ]);
@@ -598,7 +598,7 @@ class ChmosService {
 
             try {
 
-                $endpoint = $this->url.str_replace('/project', '/project/1', $attachment['url']);
+                $endpoint = $this->url.str_replace('/project', '/project/2', $attachment['url']);
                 $response = $this->client->request('GET', $endpoint, [
                     'cert' => $this->certificate
                 ]);
@@ -706,19 +706,19 @@ class ChmosService {
 
         foreach($chmosProject['institutionen'] as $chmosContact) {
             $contact = [
-                'foreignId' => $chmosContact['id'],
-                'email' => $chmosContact['kontEmail'],
-                'role' => $chmosContact['kontFunktion'],
-                'phoneMobile' => $chmosContact['kontMobil'],
-                'phone' => $chmosContact['kontTel'],
+                'foreignId' => $chmosContact['name'] ?? null,
+                'email' => $chmosContact['kontEmail'] ?? null,
+                'role' => $chmosContact['kontFunktion'] ?? null,
+                'phoneMobile' => $chmosContact['kontMobil'] ?? null,
+                'phone' => $chmosContact['kontTel'] ?? null,
                 'public' => !!$chmosContact['oeffentlich'],
-                'name' => $chmosContact['name'],
-                'lastName' => $chmosContact['kontNachname'],
-                'firstName' => $chmosContact['kontVorname'],
-                'country' => $chmosContact['land'],
-                'zipCode' => $chmosContact['plz'],
-                'city' => $chmosContact['ort'],
-                'street' => $chmosContact['strasse'],
+                'name' => $chmosContact['name'] ?? null,
+                'lastName' => $chmosContact['kontNachname'] ?? null,
+                'firstName' => $chmosContact['kontVorname'] ?? null,
+                'country' => $chmosContact['land'] ?? null,
+                'zipCode' => $chmosContact['plz'] ?? null,
+                'city' => $chmosContact['ort'] ?? null,
+                'street' => $chmosContact['strasse'] ?? null,
             ];
 
             if(!$contact['name'] && !$contact['firstName'] && !$contact['lastName']) {
@@ -812,14 +812,14 @@ class ChmosService {
             return [
                 'id'   => $topic->getId(),
                 'name' => $topic->getName(),
-                'foreignId' => $chmosTopic['id']
+                'foreignId' => $chmosTopic['textDe']
             ];
         }
 
         return [
             'id'   => null,
             'name' => $chmosTopic['textDe'],
-            'foreignId' => $chmosTopic['id']
+            'foreignId' => $chmosTopic['textDe']
         ];
     }
 
@@ -904,14 +904,14 @@ class ChmosService {
             return [
                 'id'   => $instrument->getId(),
                 'name' => $instrument->getName(),
-                'foreignId' => $chmosInstrument['id']
+                'foreignId' => $chmosInstrument['textDe']
             ];
         }
 
         return [
             'id'   => null,
             'name' => $chmosInstrument['textDe'],
-            'foreignId' => $chmosInstrument['id']
+            'foreignId' => $chmosInstrument['textDe']
         ];
     }
 

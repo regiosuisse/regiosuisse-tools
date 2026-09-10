@@ -113,7 +113,7 @@
                  v-if="financialSupport.beneficiaries?.length">
                 <h3>{{ $t('Begünstigte', locale) }}</h3>
                 <p>
-                    <template v-for="beneficiary in financialSupport.beneficiaries.map(e => getAuthorityById(e.id)).filter(e => e)">{{ translateField(beneficiary, 'name', locale) }}<br></template>
+                    <template v-for="beneficiary in financialSupport.beneficiaries.map(e => getBeneficiaryById(e.id)).filter(e => e)">{{ translateField(beneficiary, 'name', locale) }}<br></template>
                 </p>
             </div>
 

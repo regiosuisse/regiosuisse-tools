@@ -553,6 +553,9 @@ class ApiContactsController extends AbstractController
                 'Website' => 'S',
                 'Beschreibung' => 'T',
                 'Kontaktgruppen' => 'U',
+                'Erstellt am' => 'V',
+                'Geändert am' => 'W',
+                'Nachgefragt am' => 'X',
             ];
 
             $row = 1;
@@ -577,6 +580,9 @@ class ApiContactsController extends AbstractController
                 $sheet->setCellValue($columns['ID'] . $row, $contact->getId());
                 $sheet->setCellValue($columns['Status'] . $row, $contact->getIsPublic() ? 'Öffentlich' : 'Privat');
                 $sheet->setCellValue($columns['Typ'] . $row, $contact->getType() === 'company' ? 'Organisation' : 'Person');
+                $sheet->setCellValue($columns['Erstellt am'] . $row, $contact->getCreatedAt() ? $contact->getCreatedAt()->format('d.m.Y') : null);
+                $sheet->setCellValue($columns['Geändert am'] . $row, $contact->getUpdatedAt() ? $contact->getUpdatedAt()->format('d.m.Y') : null);
+                $sheet->setCellValue($columns['Nachgefragt am'] . $row, $contact->getVerificationEmailSentDate() ? $contact->getVerificationEmailSentDate()->format('d.m.Y') : null);
 
                 if ($contact->getType() === 'person') {
 

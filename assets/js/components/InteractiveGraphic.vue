@@ -26,6 +26,23 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="topic">Typ</label>
+                            <div class="select-wrapper">
+                                <select id="type"
+                                        class="form-control"
+                                        v-model="interactiveGraphic.type"
+                                        @change="interactiveGraphic.config = {}">
+                                    <option value="default">Standard</option>
+                                    <option value="hotspots">Hotspots</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6">
                         <label for="description">Beschreibung</label>
                         <textarea name="description" id="description" class="form-control" rows="4" v-model="interactiveGraphic.description"></textarea>
@@ -39,11 +56,13 @@
                     </div>
                 </div>
 
-                <div class="row" v-if="interactiveGraphic.svg && interactiveGraphic.selector">
+                <div class="row" v-if="interactiveGraphic.svg && (interactiveGraphic.selector || interactiveGraphic.type === 'hotspots')">
                     <div class="col-md-12">
                         <interactive-graphic-editor
+                            :key="interactiveGraphic.type"
                             :svg="interactiveGraphic.svg"
                             :selector="interactiveGraphic.selector"
+                            :type="interactiveGraphic.type"
                             :config="interactiveGraphic.config"
                             @onChangeConfig="onChangeConfig($event)"
                         ></interactive-graphic-editor>
@@ -57,14 +76,16 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row"
+                     v-if="interactiveGraphic.type === 'default'">
                     <div class="col-md-6">
                         <label for="selector">CSS Selektor</label>
                         <input id="selector" type="text" class="form-control" v-model="interactiveGraphic.selector">
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row"
+                     v-if="interactiveGraphic.type === 'default'">
                     <div class="col-md-6">
                         <label for="start">Start Element (CSS Selektor)</label>
                         <input id="start" type="text" class="form-control" v-model="interactiveGraphic.start">
@@ -91,6 +112,7 @@
                 term: '',
                 interactiveGraphic: {
                     title: '',
+                    type: 'default',
                     description: '',
                     selector: '',
                     start: '',
@@ -131,10 +153,10 @@
                 if(!this.interactiveGraphic.svg.trim()) {
                     return alert('Fügen Sie bitte eine SVG Grafik ein.');
                 }
-                if(!this.interactiveGraphic.selector.trim()) {
+                if(this.interactiveGraphic.type === 'default' && !this.interactiveGraphic.selector.trim()) {
                     return alert('Geben Sie bitte einen CSS Selektor an.');
                 }
-                if(!Object.keys(this.interactiveGraphic.config).length) {
+                if(this.interactiveGraphic.type === 'default' && !Object.keys(this.interactiveGraphic.config).length) {
                     return alert('Geben Sie bitte mindestens 1 interaktives Element an.');
                 }
 

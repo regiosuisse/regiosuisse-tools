@@ -118,10 +118,9 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>E-Mail</th>
-                    <th>Telefon</th>
                     <th>Organisation</th>
                     <th>Kontaktgruppe</th>
-                    <th>Thema</th>
+                    <th>Nachgefragt</th>
                     <th>Erstellt</th>
                     <th>Geändert</th>
                 </tr>
@@ -139,10 +138,10 @@
                     <td>{{ contact.id }}</td>
                     <td>{{ contact.firstName }} {{ contact.lastName }}</td>
                     <td>{{ contact.email }}</td>
-                    <td>{{ contact.phone }}</td>
                     <td><template v-for="company of getCompanies(contact)">{{ company.name }}<br></template></td>
                     <td v-html="formatOneToManyGroups(contact.contactGroups, getContactGroupById)"></td>
-                    <td>{{ formatOneToMany(contact.topics, getTopicById) }}</td>
+                    <td v-if="contact.verificationEmailSentDate">{{ formatDateTime(contact.verificationEmailSentDate) }}</td>
+                    <td v-else><em>Nie</em></td>
                     <td>{{ formatDateTime(contact.createdAt) }}</td>
                     <td>{{ formatDateTime(contact.updatedAt) }}</td>
                 </tr>

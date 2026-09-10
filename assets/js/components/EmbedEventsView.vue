@@ -139,31 +139,35 @@
 
         </div>
 
-        <transition name="embed-events-view-lightbox" mode="out-in">
-        
-            <div class="embed-events-view-lightbox" v-if="lightboxImage" @click="clickHideImage()">
+        <Teleport :to="'#'+$env.INSTANCE_ID+'-events .embed-events'">
 
-                <div class="embed-events-view-lightbox-content"
-                     :style="{backgroundImage: 'url('+$env.HOST+'/api/v1/files/view/'+ lightboxImage.id +'.' + lightboxImage.extension+')'}">
+            <transition name="embed-events-view-lightbox" mode="out-in">
+
+                <div class="embed-events-view-lightbox" v-if="lightboxImage" @click="clickHideImage()">
+
+                    <div class="embed-events-view-lightbox-content"
+                         :style="{backgroundImage: 'url('+$env.HOST+'/api/v1/files/view/'+ lightboxImage.id +'.' + lightboxImage.extension+')'}">
+                    </div>
+
+                    <div class="embed-events-view-lightbox-description" @click.stop v-if="lightboxImage.description || lightboxImage.copyright">
+                        <template v-if="lightboxImage.description">{{ lightboxImage.description }}</template>
+                        <template v-if="lightboxImage.description && lightboxImage.copyright"> | </template>
+                        <template v-if="lightboxImage.copyright">© {{ lightboxImage.copyright }}</template>
+                    </div>
+
+                    <a class="embed-events-view-lightbox-prev" @click.stop="clickPrevImage()">
+                        <span class="embed-events-view-lightbox-prev-icon"></span>
+                    </a>
+
+                    <a class="embed-events-view-lightbox-next" @click.stop="clickNextImage()">
+                        <span class="embed-events-view-lightbox-next-icon"></span>
+                    </a>
+
                 </div>
 
-                <div class="embed-events-view-lightbox-description" @click.stop v-if="lightboxImage.description || lightboxImage.copyright">
-                    <template v-if="lightboxImage.description">{{ lightboxImage.description }}</template>
-                    <template v-if="lightboxImage.description && lightboxImage.copyright"> | </template>
-                    <template v-if="lightboxImage.copyright">© {{ lightboxImage.copyright }}</template>
-                </div>
+            </transition>
 
-                <a class="embed-events-view-lightbox-prev" @click.stop="clickPrevImage()">
-                    <span class="embed-events-view-lightbox-prev-icon"></span>
-                </a>
-
-                <a class="embed-events-view-lightbox-next" @click.stop="clickNextImage()">
-                    <span class="embed-events-view-lightbox-next-icon"></span>
-                </a>
-
-            </div>
-
-        </transition>
+        </Teleport>
 
     </div>
 

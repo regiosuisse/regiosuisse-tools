@@ -212,10 +212,12 @@ class ApiRegionsController extends AbstractController
             'groups' => ['id', 'region'],
         ]);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json($result);
     }
@@ -250,10 +252,12 @@ class ApiRegionsController extends AbstractController
             'groups' => ['id', 'region'],
         ]);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json($result);
     }
@@ -280,12 +284,48 @@ class ApiRegionsController extends AbstractController
 
         $regionService->deleteRegion($region);
 
-        $cache->delete('geojson');
-        $cache->delete('cities.geojson');
-        $cache->delete('regions.geojson.'.md5($region->getType()));
-        $cache->delete('regions.geojson.'.$region->getId());
+        foreach(['de', 'fr', 'it', 'en'] as $locale) {
+            $cache->delete('geojson');
+            $cache->delete('cities.geojson'.'.'.$locale);
+            $cache->delete('regions.geojson.'.md5($region->getType()).'.'.$locale);
+            $cache->delete('regions.geojson.'.$region->getId().'.'.$locale);
+        }
 
         return $this->json([]);
+    }
+
+    private function roundGeojsonCoordinates(array $geometry, int $precision): array
+    {
+
+        $round = function ($value) use (&$round, $precision) {
+
+            if (!is_array($value)) {
+                return $value;
+            }
+
+            if (
+                count($value) === 2 &&
+                is_numeric($value[0]) &&
+                is_numeric($value[1])
+            ) {
+                return [
+                    round($value[0], $precision),
+                    round($value[1], $precision),
+                ];
+            }
+
+            foreach ($value as $k => $v) {
+                $value[$k] = $round($v);
+            }
+
+            return $value;
+
+        };
+
+        $geometry['coordinates'] = $round($geometry['coordinates']);
+
+        return $geometry;
+
     }
 
     #[Route(path: '/{type}/geojson/{_locale}.json', name: 'regions_geojson', methods: ['GET'])]
@@ -302,7 +342,7 @@ class ApiRegionsController extends AbstractController
     public function regionsGeojson(Request $request, EntityManagerInterface $em,
                          NormalizerInterface $normalizer, CacheInterface $cache, string $nodeJs): JsonResponse
     {
-        $geojson = $cache->get('regions.geojson.'.md5($request->get('type')), function (ItemInterface $item) use ($cache, $em, $request, $normalizer, $nodeJs) {
+        $geojson = $cache->get('regions.geojson.'.md5($request->get('type')).'.'.$request->getLocale(), function (ItemInterface $item) use ($cache, $em, $request, $normalizer, $nodeJs) {
 
             $item->expiresAt(new \DateTime('+720 days'));
 
@@ -322,7 +362,7 @@ class ApiRegionsController extends AbstractController
 
             foreach($regions as $region) {
 
-                $feature = $cache->get('regions.geojson.'.$region->getId(), function (ItemInterface $item) use ($region, $geojsonCities, $em, $request, $normalizer, $nodeJs) {
+                $feature = $cache->get('regions.geojson.'.$region->getId().'.'.$request->getLocale(), function (ItemInterface $item) use ($region, $geojsonCities, $em, $request, $normalizer, $nodeJs) {
 
                     $item->expiresAt(new \DateTime('+720 days'));
 
@@ -422,6 +462,7 @@ class ApiRegionsController extends AbstractController
                                 }
 
                                 $feature['geometry'] = $decoded['geometry'];
+                                $feature['geometry'] = $this->roundGeojsonCoordinates($feature['geometry'], 5);
 
                             } finally {
                                 if (is_string($tmp1) && file_exists($tmp1)) {
@@ -447,11 +488,100 @@ class ApiRegionsController extends AbstractController
 
             }
 
-            return $geojson;
+            $geojson['intersections'] = $this->computeRegionIntersections($geojson['features'], $nodeJs);
+
+            return json_encode($geojson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         });
 
-        return $this->json($geojson);
+        return new JsonResponse($geojson, 200, [], true);
+    }
+    
+    private function computeRegionIntersections(array $features, string $nodeJs): array
+    {
+        $empty = [
+            'type' => 'FeatureCollection',
+            'features' => [],
+        ];
+
+        if (count($features) < 2) {
+            return $empty;
+        }
+
+        // Only geometry matters for intersection; strip properties to keep the payload small.
+        $collection = [
+            'type' => 'FeatureCollection',
+            'features' => array_map(static function ($feature) {
+                return [
+                    'type' => 'Feature',
+                    'properties' => new \stdClass(),
+                    'geometry' => $feature['geometry'],
+                ];
+            }, array_values($features)),
+        ];
+
+        $inJson = json_encode($collection, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        if ($inJson === false) {
+            throw new \RuntimeException('Failed to encode intersection input JSON: ' . json_last_error_msg());
+        }
+
+        $tmpIn = tempnam(sys_get_temp_dir(), 'gis-int-in-');
+        $tmpOut = tempnam(sys_get_temp_dir(), 'gis-int-out-');
+
+        if ($tmpIn === false || $tmpOut === false) {
+            throw new \RuntimeException('Failed to create temp files.');
+        }
+
+        try {
+
+            if (file_put_contents($tmpIn, $inJson) === false) {
+                throw new \RuntimeException('Failed to write intersection input file.');
+            }
+
+            $cmd = sprintf(
+                '%s %s intersect %s > %s',
+                escapeshellcmd($nodeJs),
+                escapeshellarg(__DIR__ . '/../../bin/gis-util'),
+                escapeshellarg('@' . $tmpIn),
+                escapeshellarg($tmpOut)
+            );
+
+            shell_exec($cmd);
+
+            $out = file_get_contents($tmpOut);
+
+            if (!$out) {
+                throw new \RuntimeException('gis-util intersect execution failed (output file has no content).');
+            }
+
+            $decoded = json_decode($out, true);
+
+            if (!is_array($decoded) || !isset($decoded['type'])) {
+                throw new \RuntimeException('Invalid JSON output from gis-util intersect: ' . $out);
+            }
+
+            if (isset($decoded['features']) && is_array($decoded['features'])) {
+                foreach ($decoded['features'] as $key => $intersectFeature) {
+                    if (isset($intersectFeature['geometry'])) {
+                        $decoded['features'][$key]['geometry'] = $this->roundGeojsonCoordinates(
+                            $intersectFeature['geometry'],
+                            5
+                        );
+                    }
+                }
+            }
+
+            return $decoded;
+
+        } finally {
+            if (is_string($tmpIn) && file_exists($tmpIn)) {
+                @unlink($tmpIn);
+            }
+            if (is_string($tmpOut) && file_exists($tmpOut)) {
+                @unlink($tmpOut);
+            }
+        }
     }
 
     #[Route(path: '/geojson/cities/{_locale}.json', name: 'cities_geojson', methods: ['GET'])]
@@ -468,13 +598,18 @@ class ApiRegionsController extends AbstractController
     public function geojson(Request $request, EntityManagerInterface $em,
                          NormalizerInterface $normalizer, CacheInterface $cache): JsonResponse
     {
-        $geojson = $cache->get('cities.geojson', function (ItemInterface $item) use ($em, $request, $normalizer) {
-            $item->expiresAfter(3600);
+        $geojson = $cache->get('cities.geojson'.'.'.$request->getLocale(), function (ItemInterface $item) use ($em, $request, $normalizer) {
+            $item->expiresAt(new \DateTime('+720 days'));
 
             $geojson = file_get_contents(__DIR__.'/../../config/gis/cities.json');
             $geojson = json_decode($geojson, true);
 
             foreach($geojson['features'] as $featureKey => $feature) {
+
+                $geojson['features'][$featureKey]['geometry'] = $this->roundGeojsonCoordinates(
+                    $feature['geometry'],
+                    5
+                );
 
                 $municipalNumber = $feature['properties']['GMDNR'];
                 $city = $em->getRepository(City::class)->findOneBy([
@@ -516,10 +651,10 @@ class ApiRegionsController extends AbstractController
 
             }
 
-            return $geojson;
+            return json_encode($geojson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         });
 
-        return $this->json($geojson);
+        return new JsonResponse($geojson, 200, [], true);
     }
 
     #[Route(path: '.xlsx', name: 'xlsx', methods: ['GET'])]

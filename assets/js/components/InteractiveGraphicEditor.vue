@@ -4,9 +4,21 @@
 
         <div v-html="getSvgStyle()"></div>
 
-        <div class="interactive-graphic-editor-component-svg" v-html="svg" ref="svg" @click="clickSvg"></div>
+        <div class="interactive-graphic-editor-component-svg" ref="svg" @click="clickSvg">
+            <div v-html="svg"></div>
+            <div class="interactive-graphic-editor-component-svg-markers" v-if="localConfig?.markers?.length">
+                <div v-for="marker in localConfig.markers"
+                     class="interactive-graphic-editor-component-svg-markers-marker"
+                     :style="{left: marker.x+'%', top: marker.y+'%'}">
+                    <div v-if="marker.symbol === 'number'">{{ marker.number ?? '#' }}</div>
+                    <div v-else-if="marker.symbol === 'video'" class="material-icons">movie</div>
+                    <div v-else-if="marker.symbol === 'audio'" class="material-icons">audiotrack</div>
+                </div>
+            </div>
+        </div>
 
-        <div class="interactive-graphic-editor-component-content">
+        <div class="interactive-graphic-editor-component-content"
+             v-if="type === 'default'">
 
             <template v-if="selectedElementIdentifier">
 
@@ -22,17 +34,78 @@
 
                 <div v-if="['string', 'undefined'].includes(typeof config[selectedElementIdentifier])">
                     <ckeditor :editor="editor" :config="editorConfig"
-                              v-model="config[selectedElementIdentifier]" @blur="onChangeConfig()"></ckeditor>
+                              v-model="localConfig[selectedElementIdentifier]" @blur="onChangeConfig()"></ckeditor>
                 </div>
 
                 <div v-if="['object'].includes(typeof config[selectedElementIdentifier]) && config[selectedElementIdentifier].type === 'project'">
                     <div class="form-group">
                         <label>Projekt-ID</label>
-                        <input type="text" class="form-control" v-model="config[selectedElementIdentifier].id" @change="onChangeConfig()">
+                        <input type="text" class="form-control" v-model="localConfig[selectedElementIdentifier].id" @change="onChangeConfig()">
                     </div>
                 </div>
 
             </template>
+
+        </div>
+
+        <div class="interactive-graphic-editor-component-content"
+             v-if="type === 'hotspots'">
+
+            <div class="interactive-graphic-editor-component-content-section"
+                 v-for="(marker, idx) in localConfig?.markers ?? []">
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="symbol">Symbol</label>
+                            <div class="select-wrapper">
+                                <select id="symbol"
+                                        class="form-control"
+                                        v-model="marker.symbol"
+                                        @change="onChangeConfig()">
+                                    <option value="number">Nummer</option>
+                                    <option value="video">Video</option>
+                                    <option value="audio">Audio</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" v-if="marker.symbol === 'number'">
+                            <label for="symbol">Nummer</label>
+                            <input type="number" class="form-control" v-model="marker.number" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Inhalt</label>
+                    <ckeditor :editor="editor" :config="editorConfig"
+                              v-model="marker.content"
+                              @blur="onChangeConfig()"></ckeditor>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>X-Koordinate</label>
+                            <input type="number" class="form-control" v-model.number="marker.x" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Y-Koordinate</label>
+                            <input type="number" class="form-control" v-model.number="marker.y" @change="onChangeConfig()">
+                        </div>
+                    </div>
+                </div>
+
+                <a class="button error" @click="clickRemoveMarker(idx)">Entfernen</a>
+
+            </div>
+
+            <a class="button" @click="clickAddMarker()">Hinzufügen</a>
 
         </div>
 
@@ -47,6 +120,7 @@
     export default {
         data() {
             return {
+                localConfig: {},
                 selectedElement: null,
                 selectedElementIdentifier: null,
                 editor: ClassicEditor,
@@ -66,7 +140,10 @@
                             'undo',
                             'redo',
                         ]
-                    }
+                    },
+                    mediaEmbed: {
+                        previewsInData: true,
+                    },
                 },
             };
         },
@@ -86,11 +163,19 @@
                 type: Object,
                 required: false,
             },
+            type: {
+                type: String,
+                required: false,
+            },
         },
         computed: {
         },
         methods: {
             clickSvg (event) {
+
+                if(this.type === 'hotspots') {
+                    return;
+                }
 
                 let target = event.target;
 
@@ -157,19 +242,48 @@
                 return '<style>'+style+'</style>';
             },
             onChangeConfig () {
-                this.$emit('onChangeConfig', this.config);
+                this.$emit('onChangeConfig', this.localConfig);
             },
             onChangeType (type) {
-                this.config[this.selectedElementIdentifier] = '';
+                this.localConfig[this.selectedElementIdentifier] = '';
 
                 if(type === 'project') {
-                    this.config[this.selectedElementIdentifier] = {
+                    this.localConfig[this.selectedElementIdentifier] = {
                         type: type,
                         id: '',
                     };
                 }
 
                 this.onChangeConfig();
+            },
+
+            clickAddMarker() {
+                this.localConfig.markers = this.localConfig?.markers ?? [];
+                this.localConfig.markers = [
+                    ...this.localConfig.markers,
+                    {
+                        symbol: 'number',
+                        x: 50,
+                        y: 50,
+                        content: '',
+                    }
+                ];
+
+                this.onChangeConfig();
+            },
+
+            clickRemoveMarker(idx) {
+                this.localConfig.markers.splice(idx, 1);
+                this.onChangeConfig();
+            },
+
+        },
+        watch: {
+            config: {
+                immediate: true,
+                handler(newVal) {
+                    this.localConfig = {...newVal};
+                },
             },
         },
     }
