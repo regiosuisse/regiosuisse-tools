@@ -103,6 +103,31 @@ const data = [
     {
         "Jahr": 2026,
         "Kanton": [
+            "ZH"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Branchenübergreifende Tourismusangebote",
+        "Projektträgerschaft": "Standortförderung Zürcher Weinland",
+        "Koordinaten Pin": [
+            47.59384893794671,
+            8.678021440945198
+        ],
+        "Projektbeschreibung": null,
+        "Hinweise": null,
+        "Start": 2020,
+        "End": 2023,
+        "Eval": 2026,
+        "Projektkosten": 139260.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Tourismus"
+        ],
+        "id": "82818419-1b68-4fe8-9477-df1c576bf712",
+        "Link": "https://regiosuisse.ch/sites/default/files/2026-09/Wirkungsmessung_Tourismusangebote_ZH_260903.pdf"
+    },
+    {
+        "Jahr": 2026,
+        "Kanton": [
             "SG"
         ],
         "Fördermassnahme": "NRP",
@@ -1575,7 +1600,7 @@ const data = [
         ],
         "id": "711c2578-8a03-4758-ad2e-acec977ab12e",
         "Link": "https://regiosuisse.ch/sites/default/files/2022-01/L4%20Wirkungsmessung%202012%20Suissessences.pdf"
-    }
+    },
 ];
 
 export default {
