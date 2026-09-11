@@ -1,0 +1,38 @@
+<h1>{{ pv_trans(education, 'name', app.request.locale) }}</h1>
+
+{{ pv_trans(education, 'text', app.request.locale) | raw }}
+
+{% for image in education.images %}
+    <p><img src="{{ env.HOST }}/api/v1/files/view/{{ image.id }}.{{ image.extension }}" alt="{{ pv_trans(education, 'title', app.request.locale) }}"></p>
+{% endfor %}
+
+<aside>
+
+    {% if education.languages|length %}
+        <h3>{{ 'Durchführungssprache' | trans }}</h3>
+        <ul>
+            {% for e in education.languages %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if education.locations|length %}
+        <h3>{{ 'Durchführungsort' | trans }}</h3>
+        <ul>
+            {% for e in education.locations %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if pv_trans(education, 'links', app.request.locale)|default([])|length %}
+        <h3>{{ 'Links' | trans }}</h3>
+        <ul>
+            {% for link in pv_trans(education, 'links', app.request.locale) %}
+                <li><a href="{{ link.value|default }}" target="_blank">{{ link.label|default }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</aside>

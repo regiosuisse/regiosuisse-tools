@@ -1,0 +1,77 @@
+<h1>{{ pv_trans(financialSupport, 'name', app.request.locale) }}</h1>
+
+{{ pv_trans(financialSupport, 'description', app.request.locale) | raw }}
+
+<h2>{{ 'Kurzbeschrieb' | trans }}</h2>
+
+{{ pv_trans(financialSupport, 'additionalInformation', app.request.locale) | raw }}
+
+<h2>{{ 'Teilnahmekriterien' | trans }}</h2>
+
+{{ pv_trans(financialSupport, 'inclusionCriteria', app.request.locale) | raw }}
+
+<h2>{{ 'Ausschlusskriterien' | trans }}</h2>
+
+{{ pv_trans(financialSupport, 'exclusionCriteria', app.request.locale) | raw }}
+
+<h2>{{ 'Finanzierung' | trans }}</h2>
+
+{{ pv_trans(financialSupport, 'financingRatio', app.request.locale) | raw }}
+
+<aside>
+
+    {% if financialSupport.authorities|length %}
+        <h3>{{ 'Förderstelle' | trans }}</h3>
+        <ul>
+            {% for e in financialSupport.authorities %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if financialSupport.beneficiaries|length %}
+        <h3>{{ 'Begünstigte' | trans }}</h3>
+        <ul>
+            {% for e in financialSupport.beneficiaries %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if financialSupport.topics|length %}
+        <h3>{{ 'Thema' | trans }}</h3>
+        <ul>
+            {% for e in financialSupport.topics %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if financialSupport.projectTypes|length %}
+        <h3>{{ 'Projekttyp' | trans }}</h3>
+        <ul>
+            {% for e in financialSupport.projectTypes %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if financialSupport.instruments|length %}
+        <h3>{{ 'Unterstützungsarten' | trans }}</h3>
+        <ul>
+            {% for e in financialSupport.instruments %}
+                <li>{{ pv_trans(e, 'name', app.request.locale) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if pv_trans(financialSupport, 'links', app.request.locale)|default([])|length %}
+        <h3>{{ 'Links' | trans }}</h3>
+        <ul>
+            {% for link in pv_trans(financialSupport, 'links', app.request.locale) %}
+                <li><a href="{{ link.value|default }}" target="_blank">{{ link.label|default }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</aside>

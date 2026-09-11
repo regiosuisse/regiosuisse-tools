@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Entity\Education;
 use App\Entity\Event;
+use App\Entity\FinancialSupport;
+use App\Entity\Job;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -45,7 +47,7 @@ class EmbedController extends AbstractController
     {
         $project = $em->getRepository(Project::class)->find($request->get('id'));
 
-        if(!$project) {
+        if(!$project || !$project->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -59,7 +61,7 @@ class EmbedController extends AbstractController
     {
         $project = $em->getRepository(Project::class)->find($request->get('id'));
 
-        if(!$project) {
+        if(!$project || !$project->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -119,7 +121,7 @@ class EmbedController extends AbstractController
     {
         $event = $em->getRepository(Event::class)->find($request->get('id'));
 
-        if(!$event) {
+        if(!$event || !$event->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -133,7 +135,7 @@ class EmbedController extends AbstractController
     {
         $event = $em->getRepository(Event::class)->find($request->get('id'));
 
-        if(!$event) {
+        if(!$event || !$event->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -193,7 +195,7 @@ class EmbedController extends AbstractController
     {
         $education = $em->getRepository(Education::class)->find($request->get('id'));
 
-        if(!$education) {
+        if(!$education || !$education->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -207,7 +209,7 @@ class EmbedController extends AbstractController
     {
         $education = $em->getRepository(Education::class)->find($request->get('id'));
 
-        if(!$education) {
+        if(!$education || !$education->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -244,7 +246,7 @@ class EmbedController extends AbstractController
     {
         $job = $em->getRepository(Job::class)->find($request->get('id'));
 
-        if(!$job) {
+        if(!$job || !$job->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -258,7 +260,7 @@ class EmbedController extends AbstractController
     {
         $job = $em->getRepository(Job::class)->find($request->get('id'));
 
-        if(!$job) {
+        if(!$job || !$job->getIsPublic()) {
             throw $this->createNotFoundException();
         }
 
@@ -411,8 +413,36 @@ class EmbedController extends AbstractController
         return $this->render('embed/iframe/financial-supports.html.twig', []);
     }
 
+    #[Route('/static/financial-supports/{id}-{_locale}.html', name: 'static_financial-support')]
+    public function staticFinancialSupports(Request $request, EntityManagerInterface $em): Response
+    {
+        $financialSupport = $em->getRepository(FinancialSupport::class)->find($request->get('id'));
+
+        if(!$financialSupport || !$financialSupport->getIsPublic()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('embed/static/financial-support.html.twig', [
+            'financialSupport' => $financialSupport,
+        ]);
+    }
+
+    #[Route('/static/financial-supports/{id}-{_locale}/meta.html', name: 'static_financial-support_meta')]
+    public function staticFinancialSupportMeta(Request $request, EntityManagerInterface $em): Response
+    {
+        $financialSupport = $em->getRepository(FinancialSupport::class)->find($request->get('id'));
+
+        if(!$financialSupport || !$financialSupport->getIsPublic()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('embed/static/financial-support-meta.html.twig', [
+            'financialSupport' => $financialSupport,
+        ]);
+    }
+
     #[Route('/feedback/documentation.html', name: 'feedback_documentation')]
-    public function FeedbackDocumentation(string $host, string $instanceId): Response
+    public function feedbackDocumentation(string $host, string $instanceId): Response
     {
         $converter = new GithubFlavoredMarkdownConverter([
             'html_input' => 'strip',

@@ -1,0 +1,16 @@
+<h1>{{ pv_trans(job, 'name', app.request.locale) }}</h1>
+
+{{ pv_trans(job, 'description', app.request.locale) | raw }}
+
+<aside>
+
+    {% if pv_trans(job, 'links', app.request.locale)|default([])|length %}
+        <h3>{{ 'Links' | trans }}</h3>
+        <ul>
+            {% for link in pv_trans(job, 'links', app.request.locale) %}
+                <li><a href="{{ link.value|default }}" target="_blank">{{ link.label|default }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</aside>

@@ -1,0 +1,11 @@
+<meta name="twitter:card" content="summary" />
+
+{% set title = pv_trans(job, 'name', app.request.locale)|slice(0, 255) %}
+<meta name="title" content="{{ title }}" />
+<meta name="og:title" content="{{ title }}" />
+<meta name="twitter:title" content="{{ title }}" />
+
+{% set description = pv_trans(job, 'description', app.request.locale)|striptags|slice(0, 255) %}
+<meta name="description" content="{{ description }}" />
+<meta name="og:description" content="{{ description }}" />
+<meta name="twitter:description" content="{{ description }}" />
