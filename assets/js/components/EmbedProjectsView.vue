@@ -273,7 +273,9 @@ export default {
         linksHTML () {
             let result = [];
 
-            translateField(this.project, 'links', this.locale).forEach((item) => {
+            (translateField(this.project, 'links', this.locale) || [])
+                .filter(item => item.url && item.label)
+                .forEach((item) => {
 
                 let url = item.url.split('://').length > 1 ? item.url : 'http://'+item.url;
 
