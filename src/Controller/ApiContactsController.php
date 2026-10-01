@@ -552,10 +552,11 @@ class ApiContactsController extends AbstractController
                 'LinkedIn' => 'R',
                 'Website' => 'S',
                 'Beschreibung' => 'T',
-                'Kontaktgruppen' => 'U',
-                'Erstellt am' => 'V',
-                'Geändert am' => 'W',
-                'Nachgefragt am' => 'X',
+                'Kommentar' => 'U',
+                'Kontaktgruppen' => 'V',
+                'Erstellt am' => 'W',
+                'Geändert am' => 'X',
+                'Nachgefragt am' => 'Y',
             ];
 
             $row = 1;
@@ -583,18 +584,18 @@ class ApiContactsController extends AbstractController
                 $sheet->setCellValue($columns['Erstellt am'] . $row, $contact->getCreatedAt() ? $contact->getCreatedAt()->format('d.m.Y') : null);
                 $sheet->setCellValue($columns['Geändert am'] . $row, $contact->getUpdatedAt() ? $contact->getUpdatedAt()->format('d.m.Y') : null);
                 $sheet->setCellValue($columns['Nachgefragt am'] . $row, $contact->getVerificationEmailSentDate() ? $contact->getVerificationEmailSentDate()->format('d.m.Y') : null);
+                $sheet->setCellValue($columns['Kommentar'] . $row, $contact->getUserComment());
 
                 if ($contact->getType() === 'person') {
 
                     foreach ((PvTrans::trans($contact, 'employments', $locale) ?: []) as $entity) {
 
-                        if ($contact->getOfficialEmployment()) {
-
-                            if ($entity->getCompany() === $contact->getOfficialEmployment()->getCompany()) {
-                                $basisEntity = $entity->getCompany();
-                                $sheet->setCellValue($columns['Funktion'] . $row, $entity->getRole());
-                            }
+                        if (!$contact->getOfficialEmployment() || $entity->getCompany() === $contact->getOfficialEmployment()->getCompany()) {
+                            $basisEntity = $entity->getCompany();
+                            $sheet->setCellValue($columns['Funktion'] . $row, $entity->getRole());
+                            break;
                         }
+
                     }
                 }
 
