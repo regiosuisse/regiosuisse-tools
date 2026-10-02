@@ -47,3 +47,11 @@ services:
         bind:
             $url: '%env(TPOINT_URL)%'
 
+    App\Service\DeepLService:
+        arguments:
+            $authKey: '%env(DEEPL_AUTH_KEY)%'
+            $glossaryId: '%env(DEEPL_GLOSSARY_ID)%'
+            $styleRuleDE: '%env(DEEPL_STYLE_RULE_DE)%'
+            $styleRuleFR: '%env(DEEPL_STYLE_RULE_FR)%'
+            $styleRuleIT: '%env(DEEPL_STYLE_RULE_IT)%'
+

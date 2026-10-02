@@ -53,6 +53,386 @@ export default {
                 return new Promise(resolve => setTimeout(resolve, ms));
             },
 
+            translation: {
+
+                field(field, label, options = {}) {
+                    return {
+                        type: 'field',
+                        field: field,
+                        label: label,
+                        ...options,
+                    };
+                },
+
+                collection(field, label, translateFields = [], options = {}) {
+                    return {
+                        type: 'collection',
+                        field: field,
+                        label: label,
+                        translateFields: translateFields,
+                        ...options,
+                    };
+                },
+
+                clone(value) {
+                    return JSON.parse(JSON.stringify(value));
+                },
+
+                getContext(context, locale, create = false) {
+
+                    if(locale === 'de') {
+                        return context;
+                    }
+
+                    if(!context.translations) {
+
+                        if(!create) {
+                            return {};
+                        }
+
+                        context.translations = {};
+                    }
+
+                    if(create && !context.translations[locale]) {
+                        context.translations[locale] = {};
+                    }
+
+                    return context.translations[locale] || {};
+
+                },
+
+                getValue(context, field, locale) {
+
+                    let translatedContext = this.getContext(context, locale);
+
+                    return translatedContext[field] ?? '';
+
+                },
+
+                setValue(context, field, locale, value) {
+
+                    let translatedContext = this.getContext(context, locale, true);
+
+                    translatedContext[field] = value;
+
+                },
+
+                getCollection(context, field, locale) {
+
+                    let translatedContext = this.getContext(context, locale);
+
+                    return translatedContext[field] || [];
+
+                },
+
+                setCollection(context, field, locale, items) {
+
+                    let translatedContext = this.getContext(context, locale, true);
+
+                    translatedContext[field] = this.clone(items || []);
+
+                },
+
+                copyPart(context, sourceLocale, targetLocale, payload) {
+
+                    if(payload.type === 'field') {
+
+                        this.setValue(
+                            context,
+                            payload.field,
+                            targetLocale,
+                            this.getValue(context, payload.field, sourceLocale)
+                        );
+
+                        return;
+                    }
+
+                    if(payload.type === 'collection') {
+
+                        this.setCollection(
+                            context,
+                            payload.field,
+                            targetLocale,
+                            this.getCollection(context, payload.field, sourceLocale)
+                        );
+
+                    }
+
+                },
+
+                buildFields(context, sourceLocale, payload) {
+
+                    if(payload.type === 'field') {
+                        return {
+                            value: this.getValue(
+                                context,
+                                payload.field,
+                                sourceLocale
+                            ),
+                        };
+                    }
+
+                    let fields = {};
+
+                    if(payload.type === 'collection') {
+
+                        this.getCollection(
+                            context,
+                            payload.field,
+                            sourceLocale
+                        ).forEach((item, index) => {
+
+                            (payload.translateFields || []).forEach((field) => {
+
+                                fields[
+                                'item_'
+                                + index
+                                + '_'
+                                + field
+                                    ] = item[field] || '';
+
+                            });
+
+                        });
+
+                    }
+
+                    return fields;
+
+                },
+
+                applyTranslations(
+                    context,
+                    sourceLocale,
+                    targetLocale,
+                    payload,
+                    translations
+                ) {
+
+                    if(payload.type === 'field') {
+
+                        this.setValue(
+                            context,
+                            payload.field,
+                            targetLocale,
+                            translations.value || ''
+                        );
+
+                        return;
+                    }
+
+                    if(payload.type === 'collection') {
+
+                        let items = this.clone(
+                            this.getCollection(
+                                context,
+                                payload.field,
+                                sourceLocale
+                            )
+                        );
+
+                        items.forEach((item, index) => {
+
+                            (payload.translateFields || []).forEach((field) => {
+
+                                item[field] = translations[
+                                'item_'
+                                + index
+                                + '_'
+                                + field
+                                    ] || '';
+
+                            });
+
+                        });
+
+                        this.setCollection(
+                            context,
+                            payload.field,
+                            targetLocale,
+                            items
+                        );
+
+                    }
+
+                },
+
+                copyParts(
+                    context,
+                    sourceLocale,
+                    targetLocale,
+                    parts
+                ) {
+
+                    Object.values(parts || {}).forEach((payload) => {
+
+                        if(payload.canCopy === false) {
+                            return;
+                        }
+
+                        this.copyPart(
+                            context,
+                            sourceLocale,
+                            targetLocale,
+                            payload
+                        );
+
+                    });
+
+                },
+
+                buildPartsFields(
+                    context,
+                    sourceLocale,
+                    parts,
+                    prefix = ''
+                ) {
+
+                    let fields = {};
+
+                    Object.values(parts || {}).forEach((payload) => {
+
+                        if(payload.canTranslate === false) {
+                            return;
+                        }
+
+                        let translationKey = payload.translationKey !== undefined
+                            ? payload.translationKey
+                            : payload.field;
+
+                        if(payload.type === 'field') {
+
+                            fields[
+                            prefix
+                            + translationKey
+                                ] = this.getValue(
+                                context,
+                                payload.field,
+                                sourceLocale
+                            );
+
+                            return;
+                        }
+
+                        if(payload.type === 'collection') {
+
+                            this.getCollection(
+                                context,
+                                payload.field,
+                                sourceLocale
+                            ).forEach((item, index) => {
+
+                                (payload.translateFields || []).forEach((field) => {
+
+                                    fields[
+                                    prefix
+                                    + translationKey
+                                    + '_'
+                                    + index
+                                    + '_'
+                                    + field
+                                        ] = item[field] || '';
+
+                                });
+
+                            });
+
+                        }
+
+                    });
+
+                    return fields;
+
+                },
+
+                applyPartsTranslations(
+                    context,
+                    sourceLocale,
+                    targetLocale,
+                    parts,
+                    translations,
+                    prefix = ''
+                ) {
+
+                    Object.values(parts || {}).forEach((payload) => {
+
+                        if(payload.canTranslate === false) {
+
+                            if(payload.copyOnTranslate) {
+
+                                this.copyPart(
+                                    context,
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload
+                                );
+
+                            }
+
+                            return;
+                        }
+
+                        let translationKey = payload.translationKey !== undefined
+                            ? payload.translationKey
+                            : payload.field;
+
+                        if(payload.type === 'field') {
+
+                            this.setValue(
+                                context,
+                                payload.field,
+                                targetLocale,
+                                translations[
+                                prefix
+                                + translationKey
+                                    ] || ''
+                            );
+
+                            return;
+                        }
+
+                        if(payload.type === 'collection') {
+
+                            let items = this.clone(
+                                this.getCollection(
+                                    context,
+                                    payload.field,
+                                    sourceLocale
+                                )
+                            );
+
+                            items.forEach((item, index) => {
+
+                                (payload.translateFields || []).forEach((field) => {
+
+                                    item[field] = translations[
+                                    prefix
+                                    + translationKey
+                                    + '_'
+                                    + index
+                                    + '_'
+                                    + field
+                                        ] || '';
+
+                                });
+
+                            });
+
+                            this.setCollection(
+                                context,
+                                payload.field,
+                                targetLocale,
+                                items
+                            );
+
+                        }
+
+                    });
+
+                },
+
+            },
+
         };
     }
 }

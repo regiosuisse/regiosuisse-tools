@@ -1,4 +1,5 @@
 import api from '../../api/modules/events';
+import translationsApi from '../../api/modules/translations';
 
 export default {
     namespaced: true,
@@ -81,6 +82,17 @@ export default {
         createFromEmbed({ commit }, payload) {
             return api.createFromEmbed(payload).then((response) => {
                 return response.data;
+            });
+        },
+
+        translate ({ commit }, payload) {
+            commit('loaders/showLoader', 'events/translate', { root: true });
+            return translationsApi.deepl(payload).then((response) => {
+                commit('loaders/hideLoader', 'events/translate', { root: true });
+                return response.data.translations;
+            }).catch((error) => {
+                commit('loaders/hideLoader', 'events/translate', { root: true });
+                throw error;
             });
         },
     },

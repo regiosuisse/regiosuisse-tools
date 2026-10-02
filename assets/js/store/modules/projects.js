@@ -88,6 +88,17 @@ const actions = {
         });
     },
 
+    translate ({ commit }, payload) {
+        commit('loaders/showLoader', 'projects/translate', { root: true });
+        return api.translations.deepl(payload).then((response) => {
+            commit('loaders/hideLoader', 'projects/translate', { root: true });
+            return response.data.translations;
+        }).catch((error) => {
+            commit('loaders/hideLoader', 'projects/translate', { root: true });
+            throw error;
+        });
+    },
+
 };
 
 // mutations

@@ -26,26 +26,172 @@
 
             <div class="event-component-form-section">
 
+                <div class="translation-actions">
+
+                    <div class="translation-actions-group">
+
+                        <label>
+                            <span class="material-icons">content_copy</span>
+                            Inhalte kopieren
+                        </label>
+
+                        <div class="translation-actions-buttons">
+
+                            <span class="translation-actions-source">Quelle</span>
+
+                            <span class="material-icons">arrow_forward</span>
+
+                            <a class="button"
+                               v-if="locale !== 'de'"
+                               @click="clickCopyEventContent('de')"
+                               :title="'Inhalte von DE nach ' + locale.toUpperCase() + ' kopieren'">
+                                DE
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'fr'"
+                               @click="clickCopyEventContent('fr')"
+                               :title="'Inhalte von FR nach ' + locale.toUpperCase() + ' kopieren'">
+                                FR
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'it'"
+                               @click="clickCopyEventContent('it')"
+                               :title="'Inhalte von IT nach ' + locale.toUpperCase() + ' kopieren'">
+                                IT
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="translation-actions-group">
+
+                        <label>
+                            <span class="material-icons">translate</span>
+                            Mit DeepL übersetzen
+                        </label>
+
+                        <div class="translation-actions-buttons">
+
+                            <span class="translation-actions-source">Quelle</span>
+
+                            <span class="material-icons">arrow_forward</span>
+
+                            <a class="button"
+                               v-if="locale !== 'de'"
+                               @click="clickTranslateEventContent('de')"
+                               :title="'Mit DeepL von DE nach ' + locale.toUpperCase() + ' übersetzen'">
+                                DE
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'fr'"
+                               @click="clickTranslateEventContent('fr')"
+                               :title="'Mit DeepL von FR nach ' + locale.toUpperCase() + ' übersetzen'">
+                                FR
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'it'"
+                               @click="clickTranslateEventContent('it')"
+                               :title="'Mit DeepL von IT nach ' + locale.toUpperCase() + ' übersetzen'">
+                                IT
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="event-component-form-section">
+
                 <div class="row">
+
                     <div class="col-md-6" v-if="locale === 'de'">
-                        <label for="title">Titel</label>
+
+                        <div class="translation-field-label">
+
+                            <label for="title">Titel</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="eventTranslationParts.event.title"
+                                @copy="clickCopyEventPart($event, event)"
+                                @translate="clickTranslateEventPart($event, event)"
+                            ></TranslationFieldActions>
+
+                        </div>
+
                         <input id="title" type="text" class="form-control" v-model="event.title" :placeholder="translate('title', event)">
+
                     </div>
+
                     <div class="col-md-6" v-else>
-                        <label for="title">Titel (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                        <div class="translation-field-label">
+
+                            <label for="title">Titel (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="eventTranslationParts.event.title"
+                                @copy="clickCopyEventPart($event, event)"
+                                @translate="clickTranslateEventPart($event, event)"
+                            ></TranslationFieldActions>
+
+                        </div>
+
                         <input id="title" type="text" class="form-control" v-model="event.translations[locale].title" :placeholder="translate('title', event)">
+
                     </div>
+
                 </div>
 
                 <div class="row">
+
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="description">Teaser</label>
+
+                        <div class="translation-field-label">
+
+                            <label for="description">Teaser</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="eventTranslationParts.event.description"
+                                @copy="clickCopyEventPart($event, event)"
+                                @translate="clickTranslateEventPart($event, event)"
+                            ></TranslationFieldActions>
+
+                        </div>
+
                         <textarea name="description" id="description" class="form-control" rows="2" v-model="event.description" :placeholder="translate('description', event)"></textarea>
+
                     </div>
+
                     <div class="col-md-8" v-else>
-                        <label for="description">Teaser (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                        <div class="translation-field-label">
+
+                            <label for="description">Teaser (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="eventTranslationParts.event.description"
+                                @copy="clickCopyEventPart($event, event)"
+                                @translate="clickTranslateEventPart($event, event)"
+                            ></TranslationFieldActions>
+
+                        </div>
+
                         <textarea name="description" id="description" class="form-control" rows="2" v-model="event.translations[locale].description" :placeholder="translate('description', event)"></textarea>
+
                     </div>
+
                 </div>
 
                 <div class="row">
@@ -113,33 +259,125 @@
                     <div class="event-component-form-section-group-headline">Kontaktdetails</div>
 
                     <div class="row">
+
                         <div class="col-md-4" v-if="locale === 'de'">
-                            <label for="location">Terminort</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="location">Terminort</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.location"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="location" type="text" class="form-control" v-model="event.location" :placeholder="translate('location', event)">
+
                         </div>
+
                         <div class="col-md-4" v-else>
-                            <label for="location">Terminort (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="location">Terminort (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.location"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="location" type="text" class="form-control" v-model="event.translations[locale].location" :placeholder="translate('location', event)">
+
                         </div>
+
                         <div class="col-md-4" v-if="locale === 'de'">
-                            <label for="organizer">Veranstalter</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="organizer">Veranstalter</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.organizer"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="organizer" type="text" class="form-control" v-model="event.organizer" :placeholder="translate('organizer', event)">
+
                         </div>
+
                         <div class="col-md-4" v-else>
-                            <label for="organizer">Veranstalter (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="organizer">Veranstalter (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.organizer"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="organizer" type="text" class="form-control" v-model="event.translations[locale].organizer" :placeholder="translate('organizer', event)">
+
                         </div>
+
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-4" v-if="locale === 'de'">
-                            <label for="contact">Kontakt</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="contact">Kontakt</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.contact"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <textarea name="contact" id="contact" class="form-control" rows="3" v-model="event.contact" :placeholder="translate('contact', event)"></textarea>
+
                         </div>
+
                         <div class="col-md-4" v-else>
-                            <label for="contact">Kontakt (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="contact">Kontakt (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.contact"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <textarea name="contact" id="contact" class="form-control" rows="3" v-model="event.translations[locale].contact" :placeholder="translate('contact', event)"></textarea>
+
                         </div>
+
                     </div>
 
                 </div>
@@ -174,16 +412,47 @@
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-8" v-if="locale === 'de'">
-                            <label for="text">Beschreibung</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="text">Beschreibung</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.text"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <ckeditor id="text" :editor="editor" :config="editorConfig"
                                       v-model="event.text" :placeholder="translate('text', event)"></ckeditor>
+
                         </div>
+
                         <div class="col-md-8" v-else>
-                            <label for="text">Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="text">Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.text"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <ckeditor id="text" :editor="editor" :config="editorConfig"
                                       v-model="event.translations[locale].text" :placeholder="translate('text', event)"></ckeditor>
+
                         </div>
+
                     </div>
 
                     <div class="row">
@@ -193,14 +462,45 @@
                             <div class="event-component-form-section-program" v-for="(program, index) in event.programs">
 
                                 <div class="row">
+
                                     <div class="col-md-6" v-if="locale === 'de'">
-                                        <label :for="'title-'+index">Programmtitel</label>
+
+                                        <div class="translation-field-label">
+
+                                            <label :for="'title-'+index">Programmtitel</label>
+
+                                            <TranslationFieldActions
+                                                :locale="locale"
+                                                :payload="eventTranslationParts.program.title"
+                                                @copy="clickCopyEventPart($event, program)"
+                                                @translate="clickTranslateEventPart($event, program)"
+                                            ></TranslationFieldActions>
+
+                                        </div>
+
                                         <input :id="'title-'+index" type="text" class="form-control" v-model="program.title" :placeholder="translate('title', program)">
+
                                     </div>
+
                                     <div class="col-md-6" v-else>
-                                        <label :for="'title-'+index">Programmtitel (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                        <div class="translation-field-label">
+
+                                            <label :for="'title-'+index">Programmtitel (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                            <TranslationFieldActions
+                                                :locale="locale"
+                                                :payload="eventTranslationParts.program.title"
+                                                @copy="clickCopyEventPart($event, program)"
+                                                @translate="clickTranslateEventPart($event, program)"
+                                            ></TranslationFieldActions>
+
+                                        </div>
+
                                         <input :id="'title-'+index" type="text" class="form-control" v-model="program.translations[locale].title" :placeholder="translate('title', program)">
+
                                     </div>
+
                                 </div>
 
                                 <div class="event-component-form-section-program-rows">
@@ -208,54 +508,129 @@
                                     <div class="event-component-form-section-program-rows-row" v-for="(unit, unitIndex) in program.units">
 
                                         <div class="row">
+
                                             <div class="col-md-2" v-if="locale === 'de'">
-                                                <label :for="'time-'+index+'-'+unitIndex">Uhrzeit</label>
+
+                                                <div class="translation-field-label">
+
+                                                    <label :for="'time-'+index+'-'+unitIndex">Uhrzeit</label>
+
+                                                    <TranslationFieldActions
+                                                        :locale="locale"
+                                                        :payload="eventTranslationParts.unit.time"
+                                                        @copy="clickCopyEventPart($event, unit)"
+                                                        @translate="clickTranslateEventPart($event, unit)"
+                                                    ></TranslationFieldActions>
+
+                                                </div>
+
                                                 <input :id="'time-'+index+'-'+unitIndex" type="text" class="form-control" v-model="unit.time" :placeholder="translate('time', unit)">
+
                                             </div>
+
                                             <div class="col-md-2" v-else>
-                                                <label :for="'time-'+index+'-'+unitIndex">Uhrzeit (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                                <div class="translation-field-label">
+
+                                                    <label :for="'time-'+index+'-'+unitIndex">Uhrzeit (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                                    <TranslationFieldActions
+                                                        :locale="locale"
+                                                        :payload="eventTranslationParts.unit.time"
+                                                        @copy="clickCopyEventPart($event, unit)"
+                                                        @translate="clickTranslateEventPart($event, unit)"
+                                                    ></TranslationFieldActions>
+
+                                                </div>
+
                                                 <input :id="'time-'+index+'-'+unitIndex" type="text" class="form-control" v-model="unit.translations[locale].time" :placeholder="translate('time', unit)">
+
                                             </div>
+
                                             <div class="col-md-8">
+
                                                 <div class="event-component-form-section-program-rows-row-parts">
+
                                                     <div class="event-component-form-section-program-rows-row-parts-part" v-for="(description, descriptionIndex) in unit.descriptions">
+
                                                         <template v-if="locale === 'de'">
-                                                            <label :for="'description-'+index+'-'+unitIndex+'-'+descriptionIndex">
-                                                                Beschreibung
-                                                                <span class="material-icons" v-if="descriptionIndex > 0"
-                                                                   @click="clickRemoveUnitDescription(index, unitIndex, descriptionIndex)">cancel</span>
-                                                            </label>
+
+                                                            <div class="translation-field-label">
+
+                                                                <label :for="'description-'+index+'-'+unitIndex+'-'+descriptionIndex">
+                                                                    Beschreibung
+                                                                    <span class="material-icons" v-if="descriptionIndex > 0"
+                                                                          @click="clickRemoveUnitDescription(index, unitIndex, descriptionIndex)">cancel</span>
+                                                                </label>
+
+                                                                <TranslationFieldActions
+                                                                    :locale="locale"
+                                                                    :payload="eventTranslationParts.description.value"
+                                                                    @copy="clickCopyEventPart($event, description)"
+                                                                    @translate="clickTranslateEventPart($event, description)"
+                                                                ></TranslationFieldActions>
+
+                                                            </div>
+
                                                             <ckeditor :id="'description-'+index+'-'+unitIndex+'-'+descriptionIndex" :editor="editor" :config="simpleEditorConfig"
                                                                       v-model="unit.descriptions[descriptionIndex].value" :placeholder="translate('value', description)"></ckeditor>
+
                                                         </template>
+
                                                         <template v-else>
-                                                            <label :for="'description-'+index+'-'+unitIndex+'-'+descriptionIndex">
-                                                                Beschreibung (Übersetzung {{ locale.toUpperCase() }})
-                                                                <span class="material-icons" v-if="descriptionIndex > 0"
-                                                                   @click="clickRemoveUnitDescription(index, unitIndex, descriptionIndex)">material-icons</span>
-                                                            </label>
+
+                                                            <div class="translation-field-label">
+
+                                                                <label :for="'description-'+index+'-'+unitIndex+'-'+descriptionIndex">
+                                                                    Beschreibung (Übersetzung {{ locale.toUpperCase() }})
+                                                                    <span class="material-icons" v-if="descriptionIndex > 0"
+                                                                          @click="clickRemoveUnitDescription(index, unitIndex, descriptionIndex)">cancel</span>
+                                                                </label>
+
+                                                                <TranslationFieldActions
+                                                                    :locale="locale"
+                                                                    :payload="eventTranslationParts.description.value"
+                                                                    @copy="clickCopyEventPart($event, description)"
+                                                                    @translate="clickTranslateEventPart($event, description)"
+                                                                ></TranslationFieldActions>
+
+                                                            </div>
+
                                                             <ckeditor :id="'description-'+index+'-'+unitIndex+'-'+descriptionIndex" :editor="editor" :config="simpleEditorConfig"
                                                                       v-model="unit.descriptions[descriptionIndex].translations[locale].value" :placeholder="translate('value', description)"></ckeditor>
+
                                                         </template>
+
                                                     </div>
+
                                                 </div>
+
                                             </div>
+
                                             <div class="col-md-2">
+
                                                 <div class="event-component-form-section-program-rows-row-actions">
+
                                                     <button class="button" :class="{disabled: unitIndex === 0}" @click="clickMoveUpUnit(index, unitIndex)">
                                                         <span class="material-icons">keyboard_arrow_up</span>
                                                     </button>
+
                                                     <button class="button" :class="{disabled: unitIndex >= program.units.length-1}" @click="clickMoveDownUnit(index, unitIndex)">
                                                         <span class="material-icons">keyboard_arrow_down</span>
                                                     </button>
+
                                                     <button class="button" @click="clickAddUnitDescription(index, unitIndex)">
                                                         <span class="material-icons">view_column</span>
                                                     </button>
+
                                                     <button class="button error" @click="clickRemoveUnit(index, unitIndex)">
                                                         Einheit entfernen
                                                     </button>
+
                                                 </div>
+
                                             </div>
+
                                         </div>
 
                                     </div>
@@ -285,20 +660,65 @@
                     <div class="event-component-form-section-group-headline">Weiterführende Informationen</div>
 
                     <div class="row">
+
                         <div class="col-md-6" v-if="locale === 'de'">
-                            <label for="registration">Link zur Anmeldung</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="registration">Link zur Anmeldung</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.registration"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="registration" type="text" class="form-control" v-model="event.registration" :placeholder="translate('registration', event)">
+
                         </div>
+
                         <div class="col-md-6" v-else>
-                            <label for="registration">Link zur Anmeldung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="registration">Link zur Anmeldung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.registration"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="registration" type="text" class="form-control" v-model="event.translations[locale].registration" :placeholder="translate('registration', event)">
+
                         </div>
+
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-8">
-                            <label v-if="locale === 'de'">Links</label>
-                            <label v-else>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label v-if="locale === 'de'">Links</label>
+                                <label v-else>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.links"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <div class="row" v-for="(link, index) in (locale === 'de' ? event.links : event.translations[locale].links)">
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" v-model="link.label" placeholder="Bezeichnung">
@@ -310,7 +730,9 @@
                                     <button class="button error" @click="clickRemoveLink(index)">Link entfernen</button>
                                 </div>
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="row">
@@ -320,9 +742,23 @@
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-8">
-                            <label v-if="locale === 'de'">Videos</label>
-                            <label v-else>Videos (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label v-if="locale === 'de'">Videos</label>
+                                <label v-else>Videos (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="eventTranslationParts.event.videos"
+                                    @copy="clickCopyEventPart($event, event)"
+                                    @translate="clickTranslateEventPart($event, event)"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <div class="row" v-for="(video, index) in (locale === 'de' ? event.videos : event.translations[locale].videos)">
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" v-model="video.label" placeholder="Bezeichnung">
@@ -334,7 +770,9 @@
                                     <button class="button error" @click="clickRemoveVideo(index)">Video entfernen</button>
                                 </div>
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="row">
@@ -342,12 +780,14 @@
                             <button class="button success" @click="clickAddVideo()">Video hinzufügen</button>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-12">
                             <label for="images">Bilder</label>
                             <image-selector id="images" :items="event.images" :locale="locale" @changed="updateImages"></image-selector>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-12">
                             <label for="files">Dokumente</label>
@@ -386,6 +826,7 @@
     import { DatePicker } from 'v-calendar';
     import Modal from './Modal';
     import EmbedEventsView from './EmbedEventsView';
+    import TranslationFieldActions from './TranslationFieldActions';
 
     export default {
         data() {
@@ -495,6 +936,7 @@
             DatePicker,
             draggable,
             Modal,
+            TranslationFieldActions,
         },
         computed: {
             ...mapState({
@@ -503,6 +945,85 @@
                 languages: state => state.languages.all,
                 locations: state => state.locations.all,
             }),
+            eventTranslationParts() {
+                return {
+                    event: {
+                        title: this.$helpers.translation.field(
+                            'title',
+                            'Titel'
+                        ),
+                        description: this.$helpers.translation.field(
+                            'description',
+                            'Teaser'
+                        ),
+                        location: this.$helpers.translation.field(
+                            'location',
+                            'Terminort'
+                        ),
+                        organizer: this.$helpers.translation.field(
+                            'organizer',
+                            'Veranstalter'
+                        ),
+                        contact: this.$helpers.translation.field(
+                            'contact',
+                            'Kontakt'
+                        ),
+                        text: this.$helpers.translation.field(
+                            'text',
+                            'Beschreibung'
+                        ),
+                        registration: this.$helpers.translation.field(
+                            'registration',
+                            'Link zur Anmeldung',
+                            {
+                                canTranslate: false,
+                                copyOnTranslate: true,
+                            }
+                        ),
+                        links: this.$helpers.translation.collection(
+                            'links',
+                            'Links',
+                            ['label'],
+                            {
+                                translationKey: 'link',
+                            }
+                        ),
+                        videos: this.$helpers.translation.collection(
+                            'videos',
+                            'Videos',
+                            ['label'],
+                            {
+                                translationKey: 'video',
+                            }
+                        ),
+                    },
+                    program: {
+                        title: this.$helpers.translation.field(
+                            'title',
+                            'Programmtitel'
+                        ),
+                    },
+                    unit: {
+                        time: this.$helpers.translation.field(
+                            'time',
+                            'Uhrzeit',
+                            {
+                                canTranslate: false,
+                                copyOnTranslate: true,
+                            }
+                        ),
+                    },
+                    description: {
+                        value: this.$helpers.translation.field(
+                            'value',
+                            'Beschreibung',
+                            {
+                                translationKey: '',
+                            }
+                        ),
+                    },
+                };
+            },
         },
         methods: {
             clickDuplicate() {
@@ -611,7 +1132,7 @@
                                 ...this.defaultEvent(),
                                 ...JSON.parse(JSON.stringify(loadedEvent))
                             };
-                            
+
                             if (!this.event.translations) {
                                 this.event.translations = {
                                     fr: { links: [], videos: [] },
@@ -706,7 +1227,7 @@
                                         videos: []
                                     }
                                 }
-                                
+
                             };
 
                             // Set default values for empty arrays
@@ -965,7 +1486,7 @@
                                     videos: []
                                 }
                             }
-                            
+
                         };
 
                         // Set default values for empty arrays
@@ -979,7 +1500,437 @@
                     })
                     .catch(error => {
                     });
-            }
+            },
+            clickTranslateEventContent(sourceLocale) {
+
+                let targetLocale = this.locale;
+
+                if(sourceLocale === targetLocale) {
+                    return;
+                }
+
+                this.modal = {
+                    title: 'Mit DeepL übersetzen',
+                    description: 'Möchten Sie die Inhalte von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'Übersetzen',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.setTranslationModalProcessing();
+
+                                this.translateEventContent(
+                                    sourceLocale,
+                                    targetLocale
+                                );
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            translateEventContent(sourceLocale, targetLocale) {
+
+                let fields = this.$helpers.translation.buildPartsFields(
+                    this.event,
+                    sourceLocale,
+                    this.eventTranslationParts.event
+                );
+
+                (this.event.programs || []).forEach((program, programIndex) => {
+
+                    Object.assign(
+                        fields,
+                        this.$helpers.translation.buildPartsFields(
+                            program,
+                            sourceLocale,
+                            this.eventTranslationParts.program,
+                            'program_'
+                            + programIndex
+                            + '_'
+                        )
+                    );
+
+                    (program.units || []).forEach((unit, unitIndex) => {
+
+                        Object.assign(
+                            fields,
+                            this.$helpers.translation.buildPartsFields(
+                                unit,
+                                sourceLocale,
+                                this.eventTranslationParts.unit,
+                                'program_'
+                                + programIndex
+                                + '_unit_'
+                                + unitIndex
+                                + '_'
+                            )
+                        );
+
+                        (unit.descriptions || []).forEach((description, descriptionIndex) => {
+
+                            Object.assign(
+                                fields,
+                                this.$helpers.translation.buildPartsFields(
+                                    description,
+                                    sourceLocale,
+                                    this.eventTranslationParts.description,
+                                    'program_'
+                                    + programIndex
+                                    + '_unit_'
+                                    + unitIndex
+                                    + '_description_'
+                                    + descriptionIndex
+                                )
+                            );
+
+                        });
+
+                    });
+
+                });
+
+                return this.$store.dispatch('events/translate', {
+                    sourceLanguage: sourceLocale,
+                    targetLanguage: targetLocale,
+                    fields: fields,
+                }).then((translations) => {
+
+                    this.$helpers.translation.applyPartsTranslations(
+                        this.event,
+                        sourceLocale,
+                        targetLocale,
+                        this.eventTranslationParts.event,
+                        translations
+                    );
+
+                    (this.event.programs || []).forEach((program, programIndex) => {
+
+                        this.$helpers.translation.applyPartsTranslations(
+                            program,
+                            sourceLocale,
+                            targetLocale,
+                            this.eventTranslationParts.program,
+                            translations,
+                            'program_'
+                            + programIndex
+                            + '_'
+                        );
+
+                        (program.units || []).forEach((unit, unitIndex) => {
+
+                            this.$helpers.translation.applyPartsTranslations(
+                                unit,
+                                sourceLocale,
+                                targetLocale,
+                                this.eventTranslationParts.unit,
+                                translations,
+                                'program_'
+                                + programIndex
+                                + '_unit_'
+                                + unitIndex
+                                + '_'
+                            );
+
+                            (unit.descriptions || []).forEach((description, descriptionIndex) => {
+
+                                this.$helpers.translation.applyPartsTranslations(
+                                    description,
+                                    sourceLocale,
+                                    targetLocale,
+                                    this.eventTranslationParts.description,
+                                    translations,
+                                    'program_'
+                                    + programIndex
+                                    + '_unit_'
+                                    + unitIndex
+                                    + '_description_'
+                                    + descriptionIndex
+                                );
+
+                            });
+
+                        });
+
+                    });
+
+                    this.modal = null;
+
+                }).catch((error) => {
+
+                    this.modal = {
+                        title: 'Ein Fehler ist aufgetreten',
+                        description: error.response?.data?.error || error.message,
+                        actions: [
+                            {
+                                label: 'Verstanden',
+                                class: 'error',
+                                onClick: () => {
+                                    this.modal = null;
+                                }
+                            }
+                        ],
+                    };
+
+                });
+
+            },
+            clickCopyEventContent(sourceLocale) {
+
+                let targetLocale = this.locale;
+
+                if(sourceLocale === targetLocale) {
+                    return;
+                }
+
+                this.modal = {
+                    title: 'Sprache kopieren',
+                    description: 'Möchten Sie die Inhalte von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' kopieren? Die Inhalte werden nicht übersetzt. Bestehende Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'OK',
+                            class: 'primary',
+                            onClick: () => {
+                                this.copyEventContent(sourceLocale, targetLocale);
+                                this.modal = null;
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            copyEventContent(sourceLocale, targetLocale) {
+
+                this.$helpers.translation.copyParts(
+                    this.event,
+                    sourceLocale,
+                    targetLocale,
+                    this.eventTranslationParts.event
+                );
+
+                (this.event.programs || []).forEach((program) => {
+
+                    this.$helpers.translation.copyParts(
+                        program,
+                        sourceLocale,
+                        targetLocale,
+                        this.eventTranslationParts.program
+                    );
+
+                    (program.units || []).forEach((unit) => {
+
+                        this.$helpers.translation.copyParts(
+                            unit,
+                            sourceLocale,
+                            targetLocale,
+                            this.eventTranslationParts.unit
+                        );
+
+                        (unit.descriptions || []).forEach((description) => {
+
+                            this.$helpers.translation.copyParts(
+                                description,
+                                sourceLocale,
+                                targetLocale,
+                                this.eventTranslationParts.description
+                            );
+
+                        });
+
+                    });
+
+                });
+
+            },
+            clickCopyEventPart({ sourceLocale, targetLocale, payload }, context) {
+
+                context = context || this.event;
+
+                this.modal = {
+                    title: 'Inhalt kopieren',
+                    description: 'Möchten Sie „'
+                        + payload.label
+                        + '“ von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' kopieren? Bestehende Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'OK',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.$helpers.translation.copyPart(
+                                    context,
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload
+                                );
+
+                                this.modal = null;
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            clickTranslateEventPart({ sourceLocale, targetLocale, payload }, context) {
+
+                context = context || this.event;
+
+                this.modal = {
+                    title: 'Mit DeepL übersetzen',
+                    description: 'Möchten Sie „'
+                        + payload.label
+                        + '“ von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'Übersetzen',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.setTranslationModalProcessing();
+
+                                this.translateEventPart(
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload,
+                                    context
+                                );
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            translateEventPart(sourceLocale, targetLocale, payload, context) {
+
+                context = context || this.event;
+
+                let fields = this.$helpers.translation.buildFields(
+                    context,
+                    sourceLocale,
+                    payload
+                );
+
+                if(!Object.keys(fields).length) {
+
+                    this.$helpers.translation.applyTranslations(
+                        context,
+                        sourceLocale,
+                        targetLocale,
+                        payload,
+                        {}
+                    );
+
+                    this.modal = null;
+
+                    return Promise.resolve();
+
+                }
+
+                return this.$store.dispatch('events/translate', {
+                    sourceLanguage: sourceLocale,
+                    targetLanguage: targetLocale,
+                    fields: fields,
+                }).then((translations) => {
+
+                    this.$helpers.translation.applyTranslations(
+                        context,
+                        sourceLocale,
+                        targetLocale,
+                        payload,
+                        translations
+                    );
+
+                    this.modal = null;
+
+                }).catch((error) => {
+
+                    this.modal = {
+                        title: 'Ein Fehler ist aufgetreten',
+                        description: error.response?.data?.error || error.message,
+                        actions: [
+                            {
+                                label: 'Verstanden',
+                                class: 'error',
+                                onClick: () => {
+                                    this.modal = null;
+                                }
+                            }
+                        ],
+                    };
+
+                });
+
+            },
+            setTranslationModalProcessing() {
+
+                this.modal = {
+                    ...this.modal,
+                    actions: [
+                        {
+                            label: 'Wird verarbeitet...',
+                            class: 'disabled',
+                            onClick: () => {},
+                        }
+                    ],
+                };
+
+            },
         },
         created () {
             this.reload();

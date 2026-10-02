@@ -37,12 +37,115 @@
 
             </div>
 
+            <div class="project-component-form-row">
+
+                <div class="project-component-form-section translation-actions-section">
+
+                    <div class="translation-actions">
+
+                        <div class="translation-actions-group">
+
+                            <label>
+                                <span class="material-icons">content_copy</span>
+                                Inhalte kopieren
+                            </label>
+
+                            <div class="translation-actions-buttons">
+
+                                <span class="translation-actions-source">Quelle</span>
+
+                                <span class="material-icons">arrow_forward</span>
+
+                                <a class="button"
+                                   v-if="locale !== 'de'"
+                                   @click="clickCopyProjectContent('de')"
+                                   :title="'Inhalte von DE nach ' + locale.toUpperCase() + ' kopieren'">
+                                    DE
+                                </a>
+
+                                <a class="button"
+                                   v-if="locale !== 'fr'"
+                                   @click="clickCopyProjectContent('fr')"
+                                   :title="'Inhalte von FR nach ' + locale.toUpperCase() + ' kopieren'">
+                                    FR
+                                </a>
+
+                                <a class="button"
+                                   v-if="locale !== 'it'"
+                                   @click="clickCopyProjectContent('it')"
+                                   :title="'Inhalte von IT nach ' + locale.toUpperCase() + ' kopieren'">
+                                    IT
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                        <div class="translation-actions-group">
+
+                            <label>
+                                <span class="material-icons">translate</span>
+                                Mit DeepL übersetzen
+                            </label>
+
+                            <div class="translation-actions-buttons">
+
+                                <span class="translation-actions-source">Quelle</span>
+
+                                <span class="material-icons">arrow_forward</span>
+
+                                <a class="button"
+                                   v-if="locale !== 'de'"
+                                   @click="clickTranslateProjectContent('de')"
+                                   :title="'Mit DeepL von DE nach ' + locale.toUpperCase() + ' übersetzen'">
+                                    DE
+                                </a>
+
+                                <a class="button"
+                                   v-if="locale !== 'fr'"
+                                   @click="clickTranslateProjectContent('fr')"
+                                   :title="'Mit DeepL von FR nach ' + locale.toUpperCase() + ' übersetzen'">
+                                    FR
+                                </a>
+
+                                <a class="button"
+                                   v-if="locale !== 'it'"
+                                   @click="clickTranslateProjectContent('it')"
+                                   :title="'Mit DeepL von IT nach ' + locale.toUpperCase() + ' übersetzen'">
+                                    IT
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="project-component-form-section"></div>
+
+            </div>
+
             <div class="project-component-form-row" v-if="!isTranslationModeEnabled()">
 
                 <div class="project-component-form-section">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="title">Projektname (Übersetzung DE) *</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="title">Projektname (Übersetzung DE) *</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="projectTranslationParts.title"
+                                    @copy="clickCopyProjectPart"
+                                    @translate="clickTranslateProjectPart"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="title" type="text" class="form-control" v-model="project.title">
                         </div>
                     </div>
@@ -67,7 +170,20 @@
                 <div class="project-component-form-section">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="title">Projektname (Übersetzung {{ locale.toUpperCase() }}) *</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="title">Projektname (Übersetzung {{ locale.toUpperCase() }}) *</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="projectTranslationParts.title"
+                                    @copy="clickCopyProjectPart"
+                                    @translate="clickTranslateProjectPart"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <input id="title" type="text" class="form-control" v-model="project.translations[locale].title">
                         </div>
                     </div>
@@ -140,7 +256,20 @@
                 <div class="project-component-form-section">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="description">Beschreibung (Übersetzung DE)</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="description">Beschreibung (Übersetzung DE)</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="projectTranslationParts.description"
+                                    @copy="clickCopyProjectPart"
+                                    @translate="clickTranslateProjectPart"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <ckeditor id="description" :editor="editor" :config="editorConfig"
                                       v-model="project.description"></ckeditor>
                         </div>
@@ -167,7 +296,20 @@
                 <div class="project-component-form-section">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="description">Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <div class="translation-field-label">
+
+                                <label for="description">Beschreibung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="projectTranslationParts.description"
+                                    @copy="clickCopyProjectPart"
+                                    @translate="clickTranslateProjectPart"
+                                ></TranslationFieldActions>
+
+                            </div>
+
                             <ckeditor id="description" :editor="editor" :config="editorConfig"
                                       v-model="project.translations[locale].description"></ckeditor>
                         </div>
@@ -505,7 +647,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Links (Übersetzung DE)</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Links (Übersetzung DE)</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.links"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="row" v-for="link in project.links">
                                     <div class="col-md-5">
                                         <input placeholder="Bezeichnung" type="text" class="form-control" v-model="link.label">
@@ -519,9 +674,11 @@
                                         </a>
                                     </div>
                                 </div>
+
                                 <a class="form-control-add" @click="project.links.push({label: '', value: ''})">
                                     <span class="material-icons">add</span> Link hinzufügen
                                 </a>
+
                             </div>
                         </div>
                     </div>
@@ -552,7 +709,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.links"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="row" v-for="link in project.translations[locale].links">
                                     <div class="col-md-5">
                                         <input placeholder="Bezeichnung" type="text" class="form-control" v-model="link.label">
@@ -566,9 +736,11 @@
                                         </a>
                                     </div>
                                 </div>
+
                                 <a class="form-control-add" @click="project.translations[locale].links.push({label: '', value: ''})">
                                     <span class="material-icons">add</span> Link hinzufügen
                                 </a>
+
                             </div>
                         </div>
                     </div>
@@ -651,7 +823,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="files">Dokumente (Übersetzung DE)</label>
+
+                                <div class="translation-field-label">
+
+                                    <label for="files">Dokumente (Übersetzung DE)</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.files"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <file-selector id="files" :items="project.files" @changed="updateFiles"></file-selector>
                             </div>
                         </div>
@@ -676,7 +861,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="files">Dokumente (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <div class="translation-field-label">
+
+                                    <label for="files">Dokumente (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.files"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <file-selector id="files" :items="project.translations[locale].files" @changed="updateTranslatedFiles"></file-selector>
                             </div>
                         </div>
@@ -705,7 +903,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Videos (Übersetzung DE)</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Videos (Übersetzung DE)</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.videos"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="row" v-for="video in project.videos">
                                     <div class="col-md-5">
                                         <input placeholder="Bezeichnung" type="text" class="form-control" v-model="video.label">
@@ -724,9 +935,11 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <a class="form-control-add" @click="project.videos.push({label: '', value: ''})">
                                     <span class="material-icons">add</span> Video hinzufügen
                                 </a>
+
                             </div>
                         </div>
                     </div>
@@ -762,7 +975,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Videos (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Videos (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.videos"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="row" v-for="video in project.translations[locale].videos">
                                     <div class="col-md-5">
                                         <input placeholder="Bezeichnung" type="text" class="form-control" v-model="video.label">
@@ -781,9 +1007,11 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <a class="form-control-add" @click="project.translations[locale].videos.push({label: '', value: ''})">
                                     <span class="material-icons">add</span> Video hinzufügen
                                 </a>
+
                             </div>
                         </div>
                     </div>
@@ -843,7 +1071,7 @@
                         <div class="col-md-6" :class="{'disabled': project.lng === diff.lng}">
                             <label for="lngDiff">
                                 <span class="material-icons" v-if="project.lng !== diff.lng" @click="mergeFields('lng')">keyboard_backspace</span>
-                                Längengrad (Lng)
+                                Breitengrad (Lng)
                             </label>
                             <input readonly id="lngDiff" type="text" class="form-control" v-model="diff.lng">
                         </div>
@@ -859,7 +1087,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Kontakte (Übersetzung DE)</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Kontakte (Übersetzung DE)</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.contacts"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="project-component-form-section-contact" v-for="contact in project.contacts">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -931,6 +1172,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="project-component-form-section-contact">
                                     <div class="button primary" @click="project.contacts.push({})">Kontakt hinzufügen</div>
                                 </div>
@@ -943,9 +1185,10 @@
                             <div class="col-md-12" :class="{'disabled': compareContacts(project.contacts, diff.contacts)}">
                                 <label>
                                     <span class="material-icons" v-if="!compareContacts(project.contacts, diff.contacts)"
-                                       @click="mergeOptions('contacts')">keyboard_backspace</span>
+                                          @click="mergeOptions('contacts')">keyboard_backspace</span>
                                     Kontakte
                                 </label>
+
                                 <div class="project-component-form-section-contact" v-for="contact in diff.contacts">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -1023,7 +1266,20 @@
                     <div class="project-component-form-section">
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                <div class="translation-field-label">
+
+                                    <label>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                                    <TranslationFieldActions
+                                        :locale="locale"
+                                        :payload="projectTranslationParts.contacts"
+                                        @copy="clickCopyProjectPart"
+                                        @translate="clickTranslateProjectPart"
+                                    ></TranslationFieldActions>
+
+                                </div>
+
                                 <div class="project-component-form-section-contact" v-for="contact in project.translations[locale].contacts">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -1095,6 +1351,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="project-component-form-section-contact">
                                     <div class="button primary" @click="project.translations[locale].contacts.push({})">Kontakt hinzufügen</div>
                                 </div>
@@ -1107,9 +1364,10 @@
                             <div class="col-md-12" :class="{'disabled': compareContacts(project.translations[locale].contacts, diff.translations[locale].contacts)}">
                                 <label>
                                     <span class="material-icons" v-if="!compareContacts(project.translations[locale].contacts, diff.translations[locale].contacts)"
-                                       @click="mergeOptions('contacts', locale)">keyboard_backspace</span>
+                                          @click="mergeOptions('contacts', locale)">keyboard_backspace</span>
                                     Kontakte
                                 </label>
+
                                 <div class="project-component-form-section-contact" v-for="contact in diff.translations[locale].contacts">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -1185,9 +1443,10 @@
                             <div class="col-md-12" :class="{'disabled': compareContacts(project.translations[locale].contacts, diff.contacts)}">
                                 <label>
                                     <span class="material-icons" v-if="!compareContacts(project.translations[locale].contacts, diff.contacts)"
-                                       @click="mergeOptions('contacts', locale)">keyboard_backspace</span>
+                                          @click="mergeOptions('contacts', locale)">keyboard_backspace</span>
                                     Kontakte
                                 </label>
+
                                 <div class="project-component-form-section-contact" v-for="contact in diff.contacts">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -1275,6 +1534,7 @@
                         </p>
                     </template>
                 </div>
+
                 <div class="project-component-form-section"></div>
 
             </div>
@@ -1306,6 +1566,7 @@
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import Modal from './Modal';
     import EmbedProjectsView from './EmbedProjectsView';
+    import TranslationFieldActions from './TranslationFieldActions';
 
     export default {
         components: {
@@ -1315,6 +1576,7 @@
             DatePicker,
             EmbedProjectsView,
             Modal,
+            TranslationFieldActions,
         },
         computed: {
             ...mapState({
@@ -1341,6 +1603,50 @@
                 getBusinessSectorById: 'businessSectors/getById',
                 getTagById: 'tags/getById',
             }),
+            projectTranslationParts() {
+                return {
+                    title: this.$helpers.translation.field(
+                        'title',
+                        'Projektname'
+                    ),
+                    description: this.$helpers.translation.field(
+                        'description',
+                        'Beschreibung'
+                    ),
+                    links: this.$helpers.translation.collection(
+                        'links',
+                        'Links',
+                        ['label'],
+                        {
+                            translationKey: 'link',
+                        }
+                    ),
+                    files: this.$helpers.translation.collection(
+                        'files',
+                        'Dokumente',
+                        [],
+                        {
+                            canTranslate: false,
+                        }
+                    ),
+                    videos: this.$helpers.translation.collection(
+                        'videos',
+                        'Videos',
+                        ['label'],
+                        {
+                            translationKey: 'video',
+                        }
+                    ),
+                    contacts: this.$helpers.translation.collection(
+                        'contacts',
+                        'Kontakte',
+                        ['role'],
+                        {
+                            translationKey: 'contact',
+                        }
+                    ),
+                };
+            },
         },
         data() {
             return {
@@ -1799,7 +2105,294 @@
             },
             filterNumber(input) {
                 return parseFloat(input.toString().replaceAll(',', '.')) || 0.0;
-            }
+            },
+            clickTranslateProjectContent(sourceLocale) {
+
+                let targetLocale = this.locale;
+
+                if(sourceLocale === targetLocale) {
+                    return;
+                }
+
+                this.modal = {
+                    title: 'Mit DeepL übersetzen',
+                    description: 'Möchten Sie die Inhalte von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'Übersetzen',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.setTranslationModalProcessing();
+
+                                this.translateProjectContent(
+                                    sourceLocale,
+                                    targetLocale
+                                );
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            translateProjectContent(sourceLocale, targetLocale) {
+
+                let fields = this.$helpers.translation.buildPartsFields(
+                    this.project,
+                    sourceLocale,
+                    this.projectTranslationParts
+                );
+
+                return this.$store.dispatch('projects/translate', {
+                    sourceLanguage: sourceLocale,
+                    targetLanguage: targetLocale,
+                    fields: fields,
+                }).then((translations) => {
+
+                    this.$helpers.translation.applyPartsTranslations(
+                        this.project,
+                        sourceLocale,
+                        targetLocale,
+                        this.projectTranslationParts,
+                        translations
+                    );
+
+                    this.modal = null;
+
+                }).catch((error) => {
+
+                    this.modal = {
+                        title: 'Ein Fehler ist aufgetreten',
+                        description: error.response?.data?.error || error.message,
+                        actions: [
+                            {
+                                label: 'Verstanden',
+                                class: 'error',
+                                onClick: () => {
+                                    this.modal = null;
+                                }
+                            }
+                        ],
+                    };
+
+                });
+
+            },
+            clickCopyProjectContent(sourceLocale) {
+
+                let targetLocale = this.locale;
+
+                if(sourceLocale === targetLocale) {
+                    return;
+                }
+
+                this.modal = {
+                    title: 'Sprache kopieren',
+                    description: 'Möchten Sie die Inhalte von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' kopieren? Die Inhalte werden nicht übersetzt. Bestehende Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'OK',
+                            class: 'primary',
+                            onClick: () => {
+                                this.copyProjectContent(sourceLocale, targetLocale);
+                                this.modal = null;
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            copyProjectContent(sourceLocale, targetLocale) {
+
+                this.$helpers.translation.copyParts(
+                    this.project,
+                    sourceLocale,
+                    targetLocale,
+                    this.projectTranslationParts
+                );
+
+            },
+            clickCopyProjectPart({ sourceLocale, targetLocale, payload }) {
+
+                this.modal = {
+                    title: 'Inhalt kopieren',
+                    description: 'Möchten Sie „'
+                        + payload.label
+                        + '“ von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' kopieren? Bestehende Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'OK',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.$helpers.translation.copyPart(
+                                    this.project,
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload
+                                );
+
+                                this.modal = null;
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            clickTranslateProjectPart({ sourceLocale, targetLocale, payload }) {
+
+                this.modal = {
+                    title: 'Mit DeepL übersetzen',
+                    description: 'Möchten Sie „'
+                        + payload.label
+                        + '“ von '
+                        + sourceLocale.toUpperCase()
+                        + ' nach '
+                        + targetLocale.toUpperCase()
+                        + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                        + targetLocale.toUpperCase()
+                        + ' werden überschrieben.',
+                    actions: [
+                        {
+                            label: 'Übersetzen',
+                            class: 'primary',
+                            onClick: () => {
+
+                                this.setTranslationModalProcessing();
+
+                                this.translateProjectPart(
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload
+                                );
+
+                            }
+                        },
+                        {
+                            label: 'Abbrechen',
+                            class: 'warning',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            },
+            translateProjectPart(sourceLocale, targetLocale, payload) {
+
+                let fields = this.$helpers.translation.buildFields(
+                    this.project,
+                    sourceLocale,
+                    payload
+                );
+
+                if(!Object.keys(fields).length) {
+
+                    this.$helpers.translation.applyTranslations(
+                        this.project,
+                        sourceLocale,
+                        targetLocale,
+                        payload,
+                        {}
+                    );
+
+                    this.modal = null;
+
+                    return Promise.resolve();
+
+                }
+
+                return this.$store.dispatch('projects/translate', {
+                    sourceLanguage: sourceLocale,
+                    targetLanguage: targetLocale,
+                    fields: fields,
+                }).then((translations) => {
+
+                    this.$helpers.translation.applyTranslations(
+                        this.project,
+                        sourceLocale,
+                        targetLocale,
+                        payload,
+                        translations
+                    );
+
+                    this.modal = null;
+
+                }).catch((error) => {
+
+                    this.modal = {
+                        title: 'Ein Fehler ist aufgetreten',
+                        description: error.response?.data?.error || error.message,
+                        actions: [
+                            {
+                                label: 'Verstanden',
+                                class: 'error',
+                                onClick: () => {
+                                    this.modal = null;
+                                }
+                            }
+                        ],
+                    };
+
+                });
+
+            },
+            setTranslationModalProcessing() {
+
+                this.modal = {
+                    ...this.modal,
+                    actions: [
+                        {
+                            label: 'Wird verarbeitet...',
+                            class: 'disabled',
+                            onClick: () => {},
+                        }
+                    ],
+                };
+
+            },
         },
     }
 </script>

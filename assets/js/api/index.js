@@ -34,7 +34,7 @@ import posts from './modules/posts';
 import tags from './modules/tags';
 import circularEconomyProjects from './modules/circular-economy-projects';
 import publications from './modules/publications';
-
+import translations from './modules/translations'
 export default {
     logs,
     users,
@@ -72,4 +72,5 @@ export default {
     tags,
     circularEconomyProjects,
     publications,
+    translations,
 }
