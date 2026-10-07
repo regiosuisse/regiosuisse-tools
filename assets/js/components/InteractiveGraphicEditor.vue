@@ -11,8 +11,9 @@
                      class="interactive-graphic-editor-component-svg-markers-marker"
                      :style="{left: marker.x+'%', top: marker.y+'%'}">
                     <div v-if="marker.symbol === 'number'">{{ marker.number ?? '#' }}</div>
-                    <div v-else-if="marker.symbol === 'video'" class="material-icons">movie</div>
+                    <div v-else-if="marker.symbol === 'video'" class="material-icons">play_arrow</div>
                     <div v-else-if="marker.symbol === 'audio'" class="material-icons">audiotrack</div>
+                    <div v-else-if="marker.symbol === 'text'" class="material-icons">menu_book</div>
                 </div>
             </div>
         </div>
@@ -67,6 +68,7 @@
                                     <option value="number">Nummer</option>
                                     <option value="video">Video</option>
                                     <option value="audio">Audio</option>
+                                    <option value="text">Text</option>
                                 </select>
                             </div>
                         </div>
