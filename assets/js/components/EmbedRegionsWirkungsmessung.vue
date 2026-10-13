@@ -103,6 +103,31 @@ const data = [
     {
         "Jahr": 2026,
         "Kanton": [
+            "JU"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Ensemble vers une région connectée (Smart Village)",
+        "Projektträgerschaft": "Administration communale de Haute-Ajoie",
+        "Koordinaten Pin": [
+            47.39250334492722,
+            7.00272246893301
+        ],
+        "Projektbeschreibung": null,
+        "Hinweise": null,
+        "Start": 2022,
+        "End": 2025,
+        "Eval": 2026,
+        "Projektkosten": 69282.35,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Digitalisierung"
+        ],
+        "id": "82818419-1b68-4fe8-8477-df2c576bf712",
+        "Link": "https://regiosuisse.ch/sites/default/files/2026-10/Haute-Ajoie_RapportEvaluation_WM2026_def.pdf"
+    },
+    {
+        "Jahr": 2026,
+        "Kanton": [
             "ZH"
         ],
         "Fördermassnahme": "NRP",
