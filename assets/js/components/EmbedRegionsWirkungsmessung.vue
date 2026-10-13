@@ -1975,7 +1975,7 @@ export default {
                             ${project.link ? `<p><a href="${project.link}" target="_blank">${this.$t('Zum Kurzbericht', this.locale)}</a></p>` : ``}
                         </div>
                     `;
-                    if(parseInt(project.year) >= 2025) {
+                    if(parseInt(project.year) >= 2026) {
                         el.querySelector('svg').style.fill = '#FF0000';
                     }
                     let marker = new mapboxgl.Marker(el).setLngLat([project.lngLat[0], project.lngLat[1]]).addTo(this.map);
