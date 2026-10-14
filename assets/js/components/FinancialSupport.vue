@@ -537,19 +537,21 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="translation-field-label">
+                        <div class="col-md-10">
+                            <div class="translation-field-label">
+                                <label v-if="locale === 'de'">Kontakte</label>
+                                <label v-else>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
 
-                            <label v-if="locale === 'de'">Kontakte</label>
-                            <label v-else>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
-
-                            <TranslationFieldActions
-                                :locale="locale"
-                                :payload="financialSupportTranslationParts.contacts"
-                                @copy="clickCopyFinancialSupportPart"
-                                @translate="clickTranslateFinancialSupportPart"
-                            ></TranslationFieldActions>
+                                <TranslationFieldActions
+                                    :locale="locale"
+                                    :payload="financialSupportTranslationParts.contacts"
+                                    @copy="clickCopyFinancialSupportPart"
+                                    @translate="clickTranslateFinancialSupportPart"
+                                ></TranslationFieldActions>
+                            </div>
 
                         </div>
+
                         <div class="financial-support-component-form-section-contact" v-for="(contact, index) in (locale === 'de' ? financialSupport.contacts : financialSupport.translations[locale].contacts)">
                             <div class="row">
                                 <div class="col-md-12">
