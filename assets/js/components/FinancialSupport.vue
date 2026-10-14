@@ -1,3 +1,4 @@
+
 <template>
 
     <div class="financial-support-component">
@@ -23,24 +24,154 @@
 
             <div class="financial-support-component-form-section">
 
+                <div class="translation-actions">
+
+                    <div class="translation-actions-group">
+
+                        <label>
+                            <span class="material-icons">content_copy</span>
+                            Inhalte kopieren
+                        </label>
+
+                        <div class="translation-actions-buttons">
+
+                            <span class="translation-actions-source">Quelle</span>
+
+                            <span class="material-icons">arrow_forward</span>
+
+                            <a class="button"
+                               v-if="locale !== 'de'"
+                               @click="clickCopyFinancialSupportContent('de')"
+                               :title="'Inhalte von DE nach ' + locale.toUpperCase() + ' kopieren'">
+                                DE
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'fr'"
+                               @click="clickCopyFinancialSupportContent('fr')"
+                               :title="'Inhalte von FR nach ' + locale.toUpperCase() + ' kopieren'">
+                                FR
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'it'"
+                               @click="clickCopyFinancialSupportContent('it')"
+                               :title="'Inhalte von IT nach ' + locale.toUpperCase() + ' kopieren'">
+                                IT
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="translation-actions-group">
+
+                        <label>
+                            <span class="material-icons">translate</span>
+                            Mit DeepL übersetzen
+                        </label>
+
+                        <div class="translation-actions-buttons">
+
+                            <span class="translation-actions-source">Quelle</span>
+
+                            <span class="material-icons">arrow_forward</span>
+
+                            <a class="button"
+                               v-if="locale !== 'de'"
+                               @click="clickTranslateFinancialSupportContent('de')"
+                               :title="'Mit DeepL von DE nach ' + locale.toUpperCase() + ' übersetzen'">
+                                DE
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'fr'"
+                               @click="clickTranslateFinancialSupportContent('fr')"
+                               :title="'Mit DeepL von FR nach ' + locale.toUpperCase() + ' übersetzen'">
+                                FR
+                            </a>
+
+                            <a class="button"
+                               v-if="locale !== 'it'"
+                               @click="clickTranslateFinancialSupportContent('it')"
+                               :title="'Mit DeepL von IT nach ' + locale.toUpperCase() + ' übersetzen'">
+                                IT
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="financial-support-component-form-section">
+
                 <div class="row">
                     <div class="col-md-6" v-if="locale === 'de'">
-                        <label for="title">Bezeichnung</label>
+                        <div class="translation-field-label">
+
+                            <label for="title">Bezeichnung</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.name"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <input id="title" type="text" class="form-control" v-model="financialSupport.name" :placeholder="translateField(financialSupport, 'name', locale)">
                     </div>
                     <div class="col-md-6" v-else>
-                        <label for="title">Bezeichnung (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="title">Bezeichnung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.name"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <input id="title" type="text" class="form-control" v-model="financialSupport.translations[locale].name" :placeholder="translateField(financialSupport, 'name', locale)">
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12" v-if="locale === 'de'">
-                        <label for="images">Logo</label>
+                    <div class="col-md-6" v-if="locale === 'de'">
+                        <div class="translation-field-label">
+
+                            <label for="images">Logo</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.logo"
+                                :can-translate="false"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <image-selector id="images" :multiple="false" :item="financialSupport.logo" :locale="locale" @changed="financialSupport.logo = $event"></image-selector>
                     </div>
-                    <div class="col-md-12" v-else>
-                        <label for="images">Logo (Übersetzung {{ locale.toUpperCase() }})</label>
+                    <div class="col-md-6" v-else>
+                        <div class="translation-field-label">
+
+                            <label for="images">Logo (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.logo"
+                                :can-translate="false"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <image-selector id="images" :multiple="false" :item="financialSupport.translations[locale].logo" :locale="'de'" @changed="financialSupport.translations[locale].logo = $event"></image-selector>
                     </div>
                 </div>
@@ -88,12 +219,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Zusammenfassung</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Zusammenfassung</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.description"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.description" :placeholder="translateField(financialSupport, 'description', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Zusammenfassung (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Zusammenfassung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.description"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].description" :placeholder="translateField(financialSupport, 'description', locale)"></ckeditor>
                     </div>
@@ -109,12 +262,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Kurzbeschrieb</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Kurzbeschrieb</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.additionalInformation"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.additionalInformation" :placeholder="translateField(financialSupport, 'additionalInformation', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Kurzbeschrieb (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Kurzbeschrieb (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.additionalInformation"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].additionalInformation" :placeholder="translateField(financialSupport, 'additionalInformation', locale)"></ckeditor>
                     </div>
@@ -122,12 +297,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Teilnahmebedingungen</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Teilnahmebedingungen</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.inclusionCriteria"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.inclusionCriteria" :placeholder="translateField(financialSupport, 'inclusionCriteria', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Teilnahmebedingungen (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Teilnahmebedingungen (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.inclusionCriteria"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].inclusionCriteria" :placeholder="translateField(financialSupport, 'inclusionCriteria', locale)"></ckeditor>
                     </div>
@@ -135,12 +332,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Ausschlusskriterien</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Ausschlusskriterien</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.exclusionCriteria"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.exclusionCriteria" :placeholder="translateField(financialSupport, 'exclusionCriteria', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Ausschlusskriterien (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Ausschlusskriterien (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.exclusionCriteria"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].exclusionCriteria" :placeholder="translateField(financialSupport, 'exclusionCriteria', locale)"></ckeditor>
                     </div>
@@ -148,12 +367,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Gesuchstellung</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Gesuchstellung</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.application"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.application" :placeholder="translateField(financialSupport, 'application', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Gesuchstellung (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Gesuchstellung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.application"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].application" :placeholder="translateField(financialSupport, 'application', locale)"></ckeditor>
                     </div>
@@ -185,12 +426,34 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="text">Finanzierung</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Finanzierung</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.financingRatio"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.financingRatio" :placeholder="translateField(financialSupport, 'financingRatio', locale)"></ckeditor>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="text">Finanzierung (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="text">Finanzierung (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.financingRatio"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <ckeditor id="text" :editor="editor" :config="editorConfig"
                                   v-model="financialSupport.translations[locale].financingRatio" :placeholder="translateField(financialSupport, 'financingRatio', locale)"></ckeditor>
                     </div>
@@ -206,19 +469,52 @@
 
                 <div class="row">
                     <div class="col-md-8" v-if="locale === 'de'">
-                        <label for="contact">Relevanz für Regionale Entwicklungsstrategien (RES)</label>
+                        <div class="translation-field-label">
+
+                            <label for="contact">Relevanz für Regionale Entwicklungsstrategien (RES)</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.res"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <textarea name="res" id="res" class="form-control" rows="3" v-model="financialSupport.res" :placeholder="translateField(financialSupport, 'res', locale)"></textarea>
                     </div>
                     <div class="col-md-8" v-else>
-                        <label for="contact">Relevanz für Regionale Entwicklungsstrategien (RES) (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label for="contact">Relevanz für Regionale Entwicklungsstrategien (RES) (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.res"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <textarea name="res" id="res" class="form-control" rows="3" v-model="financialSupport.translations[locale].res" :placeholder="translateField(financialSupport, 'res', locale)"></textarea>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-8">
-                        <label v-if="locale === 'de'">Links</label>
-                        <label v-else>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label v-if="locale === 'de'">Links</label>
+                            <label v-else>Links (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.links"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <div class="row" v-for="(link, index) in (locale === 'de' ? financialSupport.links : financialSupport.translations[locale].links)">
                             <div class="col-md-4">
                                 <input type="text" class="form-control" v-model="link.label" placeholder="Bezeichnung">
@@ -241,8 +537,19 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <label v-if="locale === 'de'">Kontakte</label>
-                        <label v-else>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
+                        <div class="translation-field-label">
+
+                            <label v-if="locale === 'de'">Kontakte</label>
+                            <label v-else>Kontakte (Übersetzung {{ locale.toUpperCase() }})</label>
+
+                            <TranslationFieldActions
+                                :locale="locale"
+                                :payload="financialSupportTranslationParts.contacts"
+                                @copy="clickCopyFinancialSupportPart"
+                                @translate="clickTranslateFinancialSupportPart"
+                            ></TranslationFieldActions>
+
+                        </div>
                         <div class="financial-support-component-form-section-contact" v-for="(contact, index) in (locale === 'de' ? financialSupport.contacts : financialSupport.translations[locale].contacts)">
                             <div class="row">
                                 <div class="col-md-12">
@@ -340,6 +647,7 @@ import ImageSelector from './ImageSelector';
 import FileSelector from './FileSelector';
 import { DatePicker } from 'v-calendar';
 import Modal from './Modal';
+import TranslationFieldActions from './TranslationFieldActions';
 import {translateField} from '../utils/filters';
 
 export default {
@@ -410,6 +718,7 @@ export default {
         FileSelector,
         DatePicker,
         Modal,
+        TranslationFieldActions,
     },
     computed: {
         ...mapState({
@@ -425,6 +734,66 @@ export default {
         ...mapGetters({
             getAuthorityById: 'authorities/getById',
         }),
+        financialSupportTranslationParts() {
+            return {
+                name: this.$helpers.translation.field(
+                    'name',
+                    'Bezeichnung'
+                ),
+                description: this.$helpers.translation.field(
+                    'description',
+                    'Zusammenfassung'
+                ),
+                additionalInformation: this.$helpers.translation.field(
+                    'additionalInformation',
+                    'Kurzbeschrieb'
+                ),
+                inclusionCriteria: this.$helpers.translation.field(
+                    'inclusionCriteria',
+                    'Teilnahmebedingungen'
+                ),
+                exclusionCriteria: this.$helpers.translation.field(
+                    'exclusionCriteria',
+                    'Ausschlusskriterien'
+                ),
+                application: this.$helpers.translation.field(
+                    'application',
+                    'Gesuchstellung'
+                ),
+                financingRatio: this.$helpers.translation.field(
+                    'financingRatio',
+                    'Finanzierung'
+                ),
+                res: this.$helpers.translation.field(
+                    'res',
+                    'Relevanz für Regionale Entwicklungsstrategien (RES)'
+                ),
+                logo: this.$helpers.translation.field(
+                    'logo',
+                    'Logo',
+                    {
+                        canTranslate: false,
+                        copyOnTranslate: true,
+                    }
+                ),
+                links: this.$helpers.translation.collection(
+                    'links',
+                    'Links',
+                    ['label'],
+                    {
+                        translationKey: 'link',
+                    }
+                ),
+                contacts: this.$helpers.translation.collection(
+                    'contacts',
+                    'Kontakte',
+                    ['role'],
+                    {
+                        translationKey: 'contact',
+                    }
+                ),
+            };
+        },
     },
     methods: {
         clickDelete () {
@@ -479,6 +848,26 @@ export default {
                 this.$store.commit('financialSupports/set', {});
                 this.$store.dispatch('financialSupports/load', this.$route.params.id).then(() => {
                     this.financialSupport = {...this.selectedFinancialSupport};
+
+                    if(!this.financialSupport.translations) {
+                        this.financialSupport.translations = {};
+                    }
+
+                    ['fr', 'it'].forEach((locale) => {
+
+                        if(!this.financialSupport.translations[locale]) {
+                            this.financialSupport.translations[locale] = {};
+                        }
+
+                        if(!this.financialSupport.translations[locale].links) {
+                            this.financialSupport.translations[locale].links = [];
+                        }
+
+                        if(!this.financialSupport.translations[locale].contacts) {
+                            this.financialSupport.translations[locale].contacts = [];
+                        }
+
+                    });
                 });
             }
         },
@@ -496,6 +885,311 @@ export default {
         },
         clickRemoveContact(index) {
             let contact = (this.locale === 'de' ? this.financialSupport.contacts : this.financialSupport.translations[this.locale].contacts).splice(index, 1)[0];
+        },
+        clickTranslateFinancialSupportContent(sourceLocale) {
+
+            let targetLocale = this.locale;
+
+            if(sourceLocale === targetLocale) {
+                return;
+            }
+
+            this.modal = {
+                title: 'Mit DeepL übersetzen',
+                description: 'Möchten Sie die Inhalte von '
+                    + sourceLocale.toUpperCase()
+                    + ' nach '
+                    + targetLocale.toUpperCase()
+                    + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                    + targetLocale.toUpperCase()
+                    + ' werden überschrieben.',
+                actions: [
+                    {
+                        label: 'Übersetzen',
+                        class: 'primary',
+                        onClick: () => {
+
+                            this.setTranslationModalProcessing();
+
+                            this.translateFinancialSupportContent(
+                                sourceLocale,
+                                targetLocale
+                            );
+
+                        }
+                    },
+                    {
+                        label: 'Abbrechen',
+                        class: 'warning',
+                        onClick: () => {
+                            this.modal = null;
+                        }
+                    }
+                ],
+            };
+
+        },
+        translateFinancialSupportContent(sourceLocale, targetLocale) {
+
+            let fields = this.$helpers.translation.buildPartsFields(
+                this.financialSupport,
+                sourceLocale,
+                this.financialSupportTranslationParts
+            );
+
+            return this.$store.dispatch('financialSupports/translate', {
+                sourceLanguage: sourceLocale,
+                targetLanguage: targetLocale,
+                fields: fields,
+            }).then((translations) => {
+
+                this.$helpers.translation.applyPartsTranslations(
+                    this.financialSupport,
+                    sourceLocale,
+                    targetLocale,
+                    this.financialSupportTranslationParts,
+                    translations
+                );
+
+                this.modal = null;
+
+            }).catch((error) => {
+
+                this.modal = {
+                    title: 'Ein Fehler ist aufgetreten',
+                    description: error.response?.data?.error || error.message,
+                    actions: [
+                        {
+                            label: 'Verstanden',
+                            class: 'error',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            });
+
+        },
+        clickCopyFinancialSupportContent(sourceLocale) {
+
+            let targetLocale = this.locale;
+
+            if(sourceLocale === targetLocale) {
+                return;
+            }
+
+            this.modal = {
+                title: 'Sprache kopieren',
+                description: 'Möchten Sie die Inhalte von '
+                    + sourceLocale.toUpperCase()
+                    + ' nach '
+                    + targetLocale.toUpperCase()
+                    + ' kopieren? Die Inhalte werden nicht übersetzt. Bestehende Inhalte in '
+                    + targetLocale.toUpperCase()
+                    + ' werden überschrieben.',
+                actions: [
+                    {
+                        label: 'OK',
+                        class: 'primary',
+                        onClick: () => {
+                            this.copyFinancialSupportContent(sourceLocale, targetLocale);
+                            this.modal = null;
+                        }
+                    },
+                    {
+                        label: 'Abbrechen',
+                        class: 'warning',
+                        onClick: () => {
+                            this.modal = null;
+                        }
+                    }
+                ],
+            };
+
+        },
+        copyFinancialSupportContent(sourceLocale, targetLocale) {
+
+            this.$helpers.translation.copyParts(
+                this.financialSupport,
+                sourceLocale,
+                targetLocale,
+                this.financialSupportTranslationParts
+            );
+
+        },
+        clickCopyFinancialSupportPart({ sourceLocale, targetLocale, payload }) {
+
+            this.modal = {
+                title: 'Inhalt kopieren',
+                description: 'Möchten Sie „'
+                    + payload.label
+                    + '“ von '
+                    + sourceLocale.toUpperCase()
+                    + ' nach '
+                    + targetLocale.toUpperCase()
+                    + ' kopieren? Bestehende Inhalte in '
+                    + targetLocale.toUpperCase()
+                    + ' werden überschrieben.',
+                actions: [
+                    {
+                        label: 'OK',
+                        class: 'primary',
+                        onClick: () => {
+
+                            if(payload.label === 'Logo') {
+
+                                let source = sourceLocale === 'de'
+                                    ? this.financialSupport
+                                    : this.financialSupport.translations[sourceLocale];
+
+                                let target = targetLocale === 'de'
+                                    ? this.financialSupport
+                                    : this.financialSupport.translations[targetLocale];
+
+                                target.logo = source.logo
+                                    ? JSON.parse(JSON.stringify(source.logo))
+                                    : null;
+
+                            } else {
+
+                                this.$helpers.translation.copyPart(
+                                    this.financialSupport,
+                                    sourceLocale,
+                                    targetLocale,
+                                    payload
+                                );
+
+                            }
+
+                            this.modal = null;
+
+                        }
+                    },
+                    {
+                        label: 'Abbrechen',
+                        class: 'warning',
+                        onClick: () => {
+                            this.modal = null;
+                        }
+                    }
+                ],
+            };
+
+        },
+        clickTranslateFinancialSupportPart({ sourceLocale, targetLocale, payload }) {
+
+            this.modal = {
+                title: 'Mit DeepL übersetzen',
+                description: 'Möchten Sie „'
+                    + payload.label
+                    + '“ von '
+                    + sourceLocale.toUpperCase()
+                    + ' nach '
+                    + targetLocale.toUpperCase()
+                    + ' übersetzen? Bestehende übersetzbare Inhalte in '
+                    + targetLocale.toUpperCase()
+                    + ' werden überschrieben.',
+                actions: [
+                    {
+                        label: 'Übersetzen',
+                        class: 'primary',
+                        onClick: () => {
+
+                            this.setTranslationModalProcessing();
+
+                            this.translateFinancialSupportPart(
+                                sourceLocale,
+                                targetLocale,
+                                payload
+                            );
+
+                        }
+                    },
+                    {
+                        label: 'Abbrechen',
+                        class: 'warning',
+                        onClick: () => {
+                            this.modal = null;
+                        }
+                    }
+                ],
+            };
+
+        },
+        translateFinancialSupportPart(sourceLocale, targetLocale, payload) {
+
+            let fields = this.$helpers.translation.buildFields(
+                this.financialSupport,
+                sourceLocale,
+                payload
+            );
+
+            if(!Object.keys(fields).length) {
+
+                this.$helpers.translation.applyTranslations(
+                    this.financialSupport,
+                    sourceLocale,
+                    targetLocale,
+                    payload,
+                    {}
+                );
+
+                this.modal = null;
+
+                return Promise.resolve();
+
+            }
+
+            return this.$store.dispatch('financialSupports/translate', {
+                sourceLanguage: sourceLocale,
+                targetLanguage: targetLocale,
+                fields: fields,
+            }).then((translations) => {
+
+                this.$helpers.translation.applyTranslations(
+                    this.financialSupport,
+                    sourceLocale,
+                    targetLocale,
+                    payload,
+                    translations
+                );
+
+                this.modal = null;
+
+            }).catch((error) => {
+
+                this.modal = {
+                    title: 'Ein Fehler ist aufgetreten',
+                    description: error.response?.data?.error || error.message,
+                    actions: [
+                        {
+                            label: 'Verstanden',
+                            class: 'error',
+                            onClick: () => {
+                                this.modal = null;
+                            }
+                        }
+                    ],
+                };
+
+            });
+
+        },
+        setTranslationModalProcessing() {
+
+            this.modal = {
+                ...this.modal,
+                actions: [
+                    {
+                        label: 'Wird verarbeitet...',
+                        class: 'disabled',
+                        onClick: () => {},
+                    }
+                ],
+            };
+
         },
         translateField,
     },
