@@ -623,7 +623,10 @@ export default {
                         id: filter.entity.id,
                     });
 
-                    this.$clientOptions?.middleware?.trackSelectFilter(filter, false);
+                    this.$clientOptions?.middleware?.trackSelectFilter?.({
+                        filter: filter,
+                        enabled: false,
+                    });
                 }
 
                 return;
@@ -649,7 +652,10 @@ export default {
                     id: filter.entity.id,
                 });
 
-                this.$clientOptions?.middleware?.trackSelectFilter?.(filter, true);
+                this.$clientOptions?.middleware?.trackSelectFilter?.({
+                    filter: filter,
+                    enabled: true,
+                });
             }
         },
 
@@ -668,7 +674,9 @@ export default {
             if(!this.disableTelemetry) {
                 track('Project Search', 'Change', this.term);
 
-                this.$clientOptions?.middleware?.trackSearchProjects?.(this.term);
+                this.$clientOptions?.middleware?.trackSearchProjects?.({
+                    term: this.term,
+                });
             }
 
         },
@@ -679,7 +687,9 @@ export default {
             if(!this.disableTelemetry) {
                 track('Project Map Toggle', 'Change', this.isMapEnabled);
 
-                this.$clientOptions?.middleware?.trackToggleMap?.(this.isMapEnabled);
+                this.$clientOptions?.middleware?.trackToggleMap?.({
+                    enabled: this.isMapEnabled,
+                });
             }
 
             this.filters = !this.isMapEnabled ? [] : [
@@ -767,21 +777,10 @@ export default {
                     title: translateField(project, 'title', this.locale),
                 });
 
-                this.$clientOptions?.middleware?.trackShowProject?.(project, {
-                    title: translateField(project, 'title', this.locale),
+                this.$clientOptions?.middleware?.trackShowProject?.({
+                    project: project,
                     source: source,
-                    topics: (project.topics || [])
-                        .map(e => this.getTopicById(e.id))
-                        .filter(Boolean)
-                        .map(e => translateField(e, 'name', this.locale)),
-                    programs: (project.programs || [])
-                        .map(e => this.getProgramById(e.id))
-                        .filter(Boolean)
-                        .map(e => translateField(e, 'name', this.locale)),
-                    states: (project.states || [])
-                        .map(e => this.getStateById(e.id))
-                        .filter(Boolean)
-                        .map(e => translateField(e, 'name', this.locale)),
+                    topics: this.topics,
                 });
             }
 

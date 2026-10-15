@@ -504,6 +504,11 @@ export default {
                         type: filter.type,
                         id: filter.entity.id,
                     });
+
+                    this.$clientOptions?.middleware?.trackSelectFilter?.({
+                        filter: filter,
+                        enabled: false,
+                    });
                 }
 
                 return;
@@ -523,6 +528,11 @@ export default {
                     type: filter.type,
                     id: filter.entity.id,
                 });
+
+                this.$clientOptions?.middleware?.trackSelectFilter?.({
+                    filter: filter,
+                    enabled: true,
+                });
             }
         },
 
@@ -539,7 +549,11 @@ export default {
             }
 
             if(!this.disableTelemetry) {
-                track('FinancialSupport Search', 'Change', this.term);
+                track('FinancialSupport Search', 'Change', this.term)
+
+                this.$clientOptions?.middleware?.trackSearchFinancialSupports?.({
+                    term: this.term,
+                });
             }
 
         },
@@ -556,6 +570,11 @@ export default {
                 track('FinancialSupport Navigation', 'Show FinancialSupport', {
                     id: financialSupport.id,
                     name: translateField(financialSupport, 'name', this.locale),
+                });
+
+                this.$clientOptions?.middleware?.trackShowFinancialSupport?.({
+                    financialSupport: financialSupport,
+                    topics: this.topics,
                 });
             }
 
