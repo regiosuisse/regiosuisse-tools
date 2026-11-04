@@ -103,6 +103,32 @@ const data = [
     {
         "Jahr": 2026,
         "Kanton": [
+            "VS"
+        ],
+        "Fördermassnahme": "NRP",
+        "Projekt": "Village du PALP 2",
+        "Projektträgerschaft": "Association Grand Mirific PALP Festival",
+        "Koordinaten Pin": [
+            46.06567914046643,
+            7.219447997879181
+        ],
+        "Projektbeschreibung": null,
+        "Hinweise": null,
+        "Start": 2022,
+        "End": 2024,
+        "Eval": 2026,
+        "Projektkosten": 1520000.0,
+        "Anteil NRP in %": null,
+        "Tags": [
+            "Tourismus",
+            "Lokale Wirtschaft"
+        ],
+        "id": "82818419-1b68-4fe8-8477-df2c576bf713",
+        "Link": "https://regiosuisse.ch/sites/default/files/2026-11/L3_Rapport%20Mesure%20d%20impact%202026_PALP.pdf"
+    },
+    {
+        "Jahr": 2026,
+        "Kanton": [
             "JU"
         ],
         "Fördermassnahme": "NRP",
@@ -1734,6 +1760,9 @@ export default {
         filteredPrograms() {
             return this.programs.filter(e => this.projects.find(project => project.programs.find(ee => ee.id === e.id)));
         },
+        recentProjectIds() {
+            return data.slice(0, 4).map(project => project.id);
+        },
     },
 
     methods: {
@@ -1975,9 +2004,10 @@ export default {
                             ${project.link ? `<p><a href="${project.link}" target="_blank">${this.$t('Zum Kurzbericht', this.locale)}</a></p>` : ``}
                         </div>
                     `;
-                    if(parseInt(project.year) >= 2026) {
+                    if(this.recentProjectIds.includes(project.id)) {
                         el.querySelector('svg').style.fill = '#FF0000';
                     }
+
                     let marker = new mapboxgl.Marker(el).setLngLat([project.lngLat[0], project.lngLat[1]]).addTo(this.map);
                     this.markers.push(marker);
                     el.querySelector('a')?.addEventListener('click', (event) => {
