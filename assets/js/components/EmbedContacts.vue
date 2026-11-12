@@ -828,6 +828,7 @@ export default {
 
     },
 
+
     mounted() {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
@@ -835,6 +836,31 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('contacts/load', this.getUrlParams()[this.historyPrimaryKey]).then((contact) => {
                 this.contact = contact;
+
+                if(!contact || this.disableTelemetry) {
+                    return;
+                }
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowContact?.({
+                        contact: contact,
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 

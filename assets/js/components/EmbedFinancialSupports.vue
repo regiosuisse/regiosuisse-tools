@@ -787,6 +787,7 @@ export default {
 
     },
 
+
     mounted() {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
@@ -794,6 +795,31 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('financialSupports/load', this.getUrlParams()[this.historyPrimaryKey]).then((financialSupport) => {
                 this.financialSupport = financialSupport;
+
+                if(!financialSupport || this.disableTelemetry) {
+                    return;
+                }
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowFinancialSupport?.({
+                        financialSupport: financialSupport,
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 

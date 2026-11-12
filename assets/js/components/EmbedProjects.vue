@@ -1040,6 +1040,30 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('projects/load', this.getUrlParams()[this.historyPrimaryKey]).then((project) => {
                 this.project = project;
+
+                if(!project || this.disableTelemetry) return;
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowProject?.({
+                        project: project,
+                        source: 'direct',
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 
