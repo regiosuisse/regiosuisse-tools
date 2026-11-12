@@ -588,11 +588,6 @@ class ApiContactsController extends AbstractController
 
                 if ($contact->getType() === 'person') {
 
-                    if($contact->getOfficialEmployment()) {
-                        $basisEntity = $contact->getOfficialEmployment()->getCompany();
-                        $sheet->setCellValue($columns['Funktion'] . $row, $contact->getOfficialEmployment()->getRole());
-                    }
-
                     foreach ((PvTrans::trans($contact, 'employments', $locale) ?: []) as $entity) {
 
                         if($basisEntity->getType() === 'person') {
@@ -753,7 +748,11 @@ class ApiContactsController extends AbstractController
                 'LinkedIn' => 'R',
                 'Website' => 'S',
                 'Beschreibung' => 'T',
-                'Kontaktgruppen' => 'U',
+                'Kommentar' => 'U',
+                'Kontaktgruppen' => 'V',
+                'Erstellt am' => 'W',
+                'Geändert am' => 'X',
+                'Nachgefragt am' => 'Y',
             ];
 
             $row = 1;
@@ -789,6 +788,10 @@ class ApiContactsController extends AbstractController
                     $sheet->setCellValue($columns['ID'] . $row, $contact->getId());
                     $sheet->setCellValue($columns['Status'] . $row, $contact->getIsPublic() ? 'Öffentlich' : 'Privat');
                     $sheet->setCellValue($columns['Typ'] . $row, $contact->getType() === 'company' ? 'Organisation' : 'Person');
+                    $sheet->setCellValue($columns['Erstellt am'] . $row, $contact->getCreatedAt() ? $contact->getCreatedAt()->format('d.m.Y') : null);
+                    $sheet->setCellValue($columns['Geändert am'] . $row, $contact->getUpdatedAt() ? $contact->getUpdatedAt()->format('d.m.Y') : null);
+                    $sheet->setCellValue($columns['Nachgefragt am'] . $row, $contact->getVerificationEmailSentDate() ? $contact->getVerificationEmailSentDate()->format('d.m.Y') : null);
+                    $sheet->setCellValue($columns['Kommentar'] . $row, $contact->getUserComment());
 
                     if ($contact->getType() === 'person') {
 
@@ -796,13 +799,19 @@ class ApiContactsController extends AbstractController
 
                             foreach ($entity->getContactGroups() as $employmentContactGroup) {
 
-                                if (intval($employmentContactGroup->getId()) === intval($currentContactGroup->getId())) {
+                                if (!$contact->getOfficialEmployment() || intval($employmentContactGroup->getId()) === intval($currentContactGroup->getId())) {
                                     $basisEntity = $entity->getCompany();
 
                                     $sheet->setCellValue($columns['Funktion'] . $row, $entity->getRole());
                                 }
                             }
                         }
+
+                        if($basisEntity->getType() === 'person' && $contact->getOfficialEmployment()) {
+                            $basisEntity = $contact->getOfficialEmployment()->getCompany();
+                            $sheet->setCellValue($columns['Funktion'] . $row, $contact->getOfficialEmployment()->getRole());
+                        }
+
                     }
 
                     $sheet->setCellValue($columns['Organisation'] . $row, PvTrans::trans($basisEntity, 'companyName', $locale));

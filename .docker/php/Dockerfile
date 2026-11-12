@@ -1,5 +1,17 @@
 FROM php:8.1.18-fpm
 
+RUN printf '%s\n' \
+    'deb [check-valid-until=no] https://archive.debian.org/debian bullseye main' \
+    'deb [check-valid-until=no] https://archive.debian.org/debian bullseye-updates main' \
+    'deb [check-valid-until=no] https://archive.debian.org/debian-security bullseye-security main' \
+    > /etc/apt/sources.list \
+    && rm -f /etc/apt/sources.list.d/debian.sources \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl wget git \
+    && rm -rf /var/lib/apt/lists/*
+
 # install basic dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
