@@ -589,6 +589,10 @@ class ApiContactsController extends AbstractController
                 if ($contact->getType() === 'person') {
 
                     foreach ((PvTrans::trans($contact, 'employments', $locale) ?: []) as $entity) {
+                        
+                        if($basisEntity->getType() === 'person') {
+                            $basisEntity = $entity->getCompany();
+                        }
 
                         if (!$contact->getOfficialEmployment() || $entity->getCompany() === $contact->getOfficialEmployment()->getCompany()) {
                             $basisEntity = $entity->getCompany();
