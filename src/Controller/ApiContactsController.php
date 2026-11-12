@@ -588,10 +588,16 @@ class ApiContactsController extends AbstractController
 
                 if ($contact->getType() === 'person') {
 
+                    if($contact->getOfficialEmployment()) {
+                        $basisEntity = $contact->getOfficialEmployment()->getCompany();
+                        $sheet->setCellValue($columns['Funktion'] . $row, $contact->getOfficialEmployment()->getRole());
+                    }
+
                     foreach ((PvTrans::trans($contact, 'employments', $locale) ?: []) as $entity) {
-                        
+
                         if($basisEntity->getType() === 'person') {
                             $basisEntity = $entity->getCompany();
+                            $sheet->setCellValue($columns['Funktion'] . $row, $entity->getRole());
                         }
 
                         if (!$contact->getOfficialEmployment() || $entity->getCompany() === $contact->getOfficialEmployment()->getCompany()) {
