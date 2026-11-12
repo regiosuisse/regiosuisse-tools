@@ -473,6 +473,13 @@ export default {
                         window.history.replaceState(null, null, this.getHistoryQueryString());
                     }
 
+                    if(!this.disableTelemetry) {
+                        this.$clientOptions?.middleware?.trackSelectFilter?.({
+                            filter: filter,
+                            enabled: false,
+                        });
+                    }
+
                     return;
                 }
             }
@@ -491,6 +498,11 @@ export default {
                     track('Contact Filter', 'Disable', {
                         type: filter.type,
                         id: filter.entity.id,
+                    });
+
+                    this.$clientOptions?.middleware?.trackSelectFilter?.({
+                        filter: filter,
+                        enabled: false,
                     });
                 }
 
@@ -511,6 +523,11 @@ export default {
                     type: filter.type,
                     id: filter.entity.id,
                 });
+
+                this.$clientOptions?.middleware?.trackSelectFilter?.({
+                    filter: filter,
+                    enabled: true,
+                });
             }
         },
 
@@ -528,6 +545,10 @@ export default {
 
             if(!this.disableTelemetry) {
                 track('Contact Search', 'Change', this.term);
+
+                this.$clientOptions?.middleware?.trackSearchContacts?.({
+                    term: this.term,
+                });
             }
 
         },
@@ -542,6 +563,11 @@ export default {
                 track('Contact Navigation', 'Show Contact', {
                     id: contact.id,
                     name: translateField(contact, 'name', this.locale),
+                });
+
+                this.$clientOptions?.middleware?.trackShowContact?.({
+                    contact: contact,
+                    topics: this.topics,
                 });
             }
 
@@ -802,6 +828,7 @@ export default {
 
     },
 
+
     mounted() {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
@@ -809,6 +836,31 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('contacts/load', this.getUrlParams()[this.historyPrimaryKey]).then((contact) => {
                 this.contact = contact;
+
+                if(!contact || this.disableTelemetry) {
+                    return;
+                }
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowContact?.({
+                        contact: contact,
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 

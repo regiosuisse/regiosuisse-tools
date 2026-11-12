@@ -622,6 +622,11 @@ export default {
                         type: filter.type,
                         id: filter.entity.id,
                     });
+
+                    this.$clientOptions?.middleware?.trackSelectFilter?.({
+                        filter: filter,
+                        enabled: false,
+                    });
                 }
 
                 return;
@@ -646,6 +651,11 @@ export default {
                     type: filter.type,
                     id: filter.entity.id,
                 });
+
+                this.$clientOptions?.middleware?.trackSelectFilter?.({
+                    filter: filter,
+                    enabled: true,
+                });
             }
         },
 
@@ -663,13 +673,24 @@ export default {
 
             if(!this.disableTelemetry) {
                 track('Project Search', 'Change', this.term);
+
+                this.$clientOptions?.middleware?.trackSearchProjects?.({
+                    term: this.term,
+                });
             }
 
         },
 
         clickToggleMap() {
             this.isMapEnabled = !this.isMapEnabled;
-            track('Project Map Toggle', 'Change', this.isMapEnabled);
+
+            if(!this.disableTelemetry) {
+                track('Project Map Toggle', 'Change', this.isMapEnabled);
+
+                this.$clientOptions?.middleware?.trackToggleMap?.({
+                    enabled: this.isMapEnabled,
+                });
+            }
 
             this.filters = !this.isMapEnabled ? [] : [
                 {
@@ -742,7 +763,7 @@ export default {
 
         },
 
-        clickShowProject(project) {
+        clickShowProject(project, source = 'list') {
 
             this.lastFocusedElement = document.activeElement;
 
@@ -754,6 +775,12 @@ export default {
                 track('Project Navigation', 'Show Project', {
                     id: project.id,
                     title: translateField(project, 'title', this.locale),
+                });
+
+                this.$clientOptions?.middleware?.trackShowProject?.({
+                    project: project,
+                    source: source,
+                    topics: this.topics,
                 });
             }
 
@@ -804,7 +831,7 @@ export default {
         async clickMapProject(id) {
 
             await this.$store.dispatch('projects/load', id).then((project) => {
-                this.clickShowProject(project);
+                this.clickShowProject(project, 'map');
             });
 
         },
@@ -1013,6 +1040,30 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('projects/load', this.getUrlParams()[this.historyPrimaryKey]).then((project) => {
                 this.project = project;
+
+                if(!project || this.disableTelemetry) return;
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowProject?.({
+                        project: project,
+                        source: 'direct',
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 

@@ -801,9 +801,13 @@
 
         </div>
 
-        <div class="event-component-overlay" v-if="showPreview" @click="showPreview = false">
+        <div class="event-component-overlay" v-show="showPreview" @click="showPreview = false">
 
-            <EmbedEventsView @click.stop @clickClose="showPreview = false"
+            <div :id="$env.INSTANCE_ID + '-events'">
+                <div class="embed-events" @click.stop></div>
+            </div>
+
+            <EmbedEventsView v-if="showPreview" @click.stop @clickClose="showPreview = false"
                              :event="event" :locale="locale"></EmbedEventsView>
 
         </div>

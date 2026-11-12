@@ -528,6 +528,13 @@ export default {
             }
 
             this.reload();
+
+            if(!this.disableTelemetry) {
+                this.$clientOptions?.middleware?.trackToggleEventFilter?.({
+                    type: 'regiosuisse',
+                    enabled: this.type === 'regiosuisse',
+                });
+            }
         },
 
         clickToggleArchive() {
@@ -538,6 +545,13 @@ export default {
             }
 
             this.reload();
+
+            if(!this.disableTelemetry) {
+                this.$clientOptions?.middleware?.trackToggleEventFilter?.({
+                    type: 'archive',
+                    enabled: this.archive === 1,
+                });
+            }
         },
 
         clickToggleFilter(filter) {
@@ -558,6 +572,11 @@ export default {
                         type: filter.type,
                         id: filter.entity.id,
                     });
+
+                    this.$clientOptions?.middleware?.trackSelectFilter?.({
+                        filter: filter,
+                        enabled: false,
+                    });
                 }
 
                 return;
@@ -574,6 +593,11 @@ export default {
                 track('Event Filter', 'Enable', {
                     type: filter.type,
                     id: filter.entity.id,
+                });
+
+                this.$clientOptions?.middleware?.trackSelectFilter?.({
+                    filter: filter,
+                    enabled: true,
                 });
             }
         },
@@ -632,6 +656,11 @@ export default {
                 track('Event Navigation', 'Show Event', {
                     id: event.id,
                     title: translateField(event, 'title', this.locale),
+                });
+
+                this.$clientOptions?.middleware?.trackShowEvent?.({
+                    event: event,
+                    topics: this.topics,
                 });
             }
 
@@ -954,6 +983,7 @@ export default {
 
     },
 
+
     mounted() {
         window.addEventListener('click', this.clickOutside);
         window.addEventListener('keyup', this.keyUp);
@@ -961,6 +991,31 @@ export default {
         if(this.history && this.getUrlParams()[this.historyPrimaryKey]) {
             this.$store.dispatch('events/load', this.getUrlParams()[this.historyPrimaryKey]).then((event) => {
                 this.event = event;
+
+                if(!event || this.disableTelemetry) {
+                    return;
+                }
+
+                const trackDirect = () => {
+                    this.$clientOptions?.middleware?.trackShowEvent?.({
+                        event: event,
+                        topics: this.topics,
+                    });
+                };
+
+                if((this.$store.state.topics.all || []).length) {
+                    trackDirect();
+                } else {
+                    const unwatch = this.$watch(
+                        () => (this.$store.state.topics.all || []).length,
+                        (count) => {
+                            if(count > 0) {
+                                unwatch();
+                                trackDirect();
+                            }
+                        }
+                    );
+                }
             });
         }
 

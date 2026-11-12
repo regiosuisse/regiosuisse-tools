@@ -1,4 +1,5 @@
 import api from '../../api';
+import translationsApi from '../../api/modules/translations';
 
 // initial state
 const state = () => ({
@@ -85,6 +86,17 @@ const actions = {
         return api.financialSupports.delete(id).then((response) => {
             commit('loaders/hideLoader', 'financialSupports/'+id, { root: true });
             commit('remove', id);
+        });
+    },
+
+    translate ({ commit }, payload) {
+        commit('loaders/showLoader', 'financialSupports/translate', { root: true });
+        return translationsApi.deepl(payload).then((response) => {
+            commit('loaders/hideLoader', 'financialSupports/translate', { root: true });
+            return response.data.translations;
+        }).catch((error) => {
+            commit('loaders/hideLoader', 'financialSupports/translate', { root: true });
+            throw error;
         });
     },
 
